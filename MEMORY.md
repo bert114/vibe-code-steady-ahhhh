@@ -4,9 +4,10 @@ Update this after major decisions, completed phases, or bugs that future agents 
 
 ## Current State
 
-- Current task: Foundation phase — scaffold repo tools and start building
+- Current task: Foundation scaffold complete — React → Express → local Postgres verified; next is Check-In phase (Weeks 3–4)
 - Current phase: Foundation (Weeks 1–2 per TechDesign: repo, client/server scaffold, Postgres connection, migrations, health endpoint, dev auth bypass, lint/test commands)
-- Next step: `git init`, root `.gitignore`, then scaffold root orchestration package + `client/` + `server/` per `docs/TechDesign-Steady-Ahh-MVP.md`
+- Primary coding tool: opencode (Level C, in-between) — reads `AGENTS.md` directly; `vibe.project.json` keeps `claude,codex` adapters as valid pointers (CLI tool list has no `opencode` value; left unchanged to keep `doctor` green)
+- Next step: scaffold root orchestration package + `client/` + `server/` per `docs/TechDesign-Steady-Ahh-MVP.md`
 - Blocked by: none
 
 ## Decisions
