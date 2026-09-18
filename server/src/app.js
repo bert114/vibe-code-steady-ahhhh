@@ -5,6 +5,7 @@ import { env } from './config/env.js'
 import { checkDatabase } from './db/pool.js'
 import { authResolver } from './middleware/auth.js'
 import { errorHandler, notFound } from './middleware/error.js'
+import { checkinsRouter } from './modules/checkins/checkins.routes.js'
 
 export function createApp() {
   const app = express()
@@ -18,6 +19,8 @@ export function createApp() {
   app.get('/api/health', async (_req, res) => {
     res.json({ status: 'ok', db: await checkDatabase() })
   })
+
+  app.use('/api/check-ins', checkinsRouter)
 
   app.use(notFound)
   app.use(errorHandler)

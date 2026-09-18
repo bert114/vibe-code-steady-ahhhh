@@ -39,7 +39,7 @@ is genuinely all there is.
 conventions that differ from the framework default, so the surrounding code
 would teach the wrong pattern; failures that took real time to diagnose.
 
-- **No application code exists yet.** `docs/` and `agent_docs/` are the contract; the `client/` + `server/` tree in the TechDesign is the plan. Don't hunt for code that isn't there — implement to the plan.
+- **Foundation scaffold exists.** `client/`, `server/`, root orchestration, and `.env.example` are implemented and verified; feature code follows the `client/` + `server/` tree in the TechDesign. `docs/` and `agent_docs/` remain the contract — implement to the plan.
 - **Docs are load-bearing for tooling.** The `vibeworkflow` CLI parses the fenced JSON meta blocks at the end of both the PRD and TechDesign docs. Keep those blocks valid; don't rename or rename-format the files without approval.
 - **Deterministic pattern engine first, AI second.** The server always gates AI on rule-produced evidence (`server/src/services/patterns/`); AI only rephrases that evidence into user-facing language. No autonomous background analysis agents.
 - **AI is called only from Express, never from the client.** The client never holds or sends AI credentials.
