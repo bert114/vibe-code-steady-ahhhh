@@ -71,6 +71,7 @@ function authedApp(userId) {
 }
 
 describe.skipIf(!HAS_DB)('checkins api (db)', () => {
+  // 30s: Neon free compute sleeps and can take seconds to wake on first contact.
   it('POST creates, GET lists, GET :id reads — scoped to the owner', async () => {
     await pool.query('INSERT INTO users (id) VALUES ($1), ($2) ON CONFLICT DO NOTHING', [
       USER_A,
@@ -78,33 +79,37 @@ describe.skipIf(!HAS_DB)('checkins api (db)', () => {
     ])
     await pool.query('DELETE FROM checkins WHERE user_id IN ($1, $2)', [USER_A, USER_B])
 
-    const created = await request(authedApp(USER_A)).post('/api/check-ins').send(validBody)
-    expect(created.status).toBe(201)
-    expect(created.body).toMatchObject({
-      moodScore: 3,
-      energyScore: 2,
-      drainScore: 4,
-      emotions: ['tired'],
-    })
-    expect(created.body.id).toBeDefined()
+    try {
+      const created = await request(authedApp(USER_A)).post('/api/check-ins').send(validBody)
+      expect(created.status).toBe(201)
+      expect(created.body).toMatchObject({
+        moodScore: 3,
+        energyScore: 2,
+        drainScore: 4,
+        emotions: ['tired'],
+      })
+      expect(created.body.id).toBeDefined()
 
-    const list = await request(authedApp(USER_A)).get('/api/check-ins')
-    expect(list.status).toBe(200)
-    expect(list.body.checkins).toHaveLength(1)
+      const list = await request(authedApp(USER_A)).get('/api/check-ins')
+      expect(list.status).toBe(200)
+      expect(list.body.checkins).toHaveLength(1)
 
-    // User isolation: B sees neither the row nor the list entry.
-    const otherList = await request(authedApp(USER_B)).get('/api/check-ins')
-    expect(otherList.body.checkins).toHaveLength(0)
-    const crossRead = await request(authedApp(USER_B)).get(`/api/check-ins/${created.body.id}`)
-    expect(crossRead.status).toBe(404)
-    expect(crossRead.body.error.code).toBe('CHECKIN_NOT_FOUND')
+      // User isolation: B sees neither the row nor the list entry.
+      const otherList = await request(authedApp(USER_B)).get('/api/check-ins')
+      expect(otherList.body.checkins).toHaveLength(0)
+      const crossRead = await request(authedApp(USER_B)).get(`/api/check-ins/${created.body.id}`)
+      expect(crossRead.status).toBe(404)
+      expect(crossRead.body.error.code).toBe('CHECKIN_NOT_FOUND')
 
     // Owner can read it back.
     const ownRead = await request(authedApp(USER_A)).get(`/api/check-ins/${created.body.id}`)
     expect(ownRead.status).toBe(200)
     expect(ownRead.body.id).toBe(created.body.id)
-
-    await pool.query('DELETE FROM checkins WHERE user_id IN ($1, $2)', [USER_A, USER_B])
+    } finally {
+      await pool.query('DELETE FROM checkins WHERE user_id IN ($1, $2)', [USER_A, USER_B])
+    }
     await pool.end()
-  })
+  },
+  // 30s: Neon free compute sleeps and can take seconds to wake on first contact.
+  30000)
 })

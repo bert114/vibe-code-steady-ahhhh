@@ -1,5 +1,7 @@
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import CheckInPage from '../features/checkins/pages/CheckInPage.jsx'
+import DashboardPage from '../features/reminders/pages/DashboardPage.jsx'
+import InsightsPage from '../features/insights/pages/InsightsPage.jsx'
 
 function Placeholder({ title, hint }) {
   return (
@@ -29,9 +31,9 @@ export default function AppRouter() {
             />
           }
         />
-        <Route path="/dashboard" element={<Placeholder title="Dashboard" />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/check-in" element={<CheckInPage />} />
-        <Route path="/insights" element={<Placeholder title="Insights" />} />
+        <Route path="/insights" element={<InsightsPage />} />
         <Route path="*" element={<Placeholder title="Not found" />} />
       </Routes>
     </BrowserRouter>
