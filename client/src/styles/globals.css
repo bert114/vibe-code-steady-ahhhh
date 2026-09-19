@@ -28,3 +28,11 @@ a {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
+
+
+
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text);
+}

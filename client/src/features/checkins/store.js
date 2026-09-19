@@ -12,14 +12,19 @@ const emptyDraft = {
 
 // Small feature-scoped store: form draft + history list + request state.
 // No server-state mirroring beyond what this feature renders.
+// justSaved distinguishes a real save from a history load so the
+// success banner never looks like an auto-submit.
 export const useCheckinsStore = create((set, get) => ({
   draft: { ...emptyDraft },
   checkins: [],
   status: "idle", // idle | saving | loading | succeeded | failed
   error: null,
+  justSaved: false,
 
-  setDraft: (patch) => set((s) => ({ draft: { ...s.draft, ...patch } })),
-  resetDraft: () => set({ draft: { ...emptyDraft } }),
+  setDraft: (patch) =>
+    set((s) => ({ draft: { ...s.draft, ...patch }, justSaved: false })),
+  resetDraft: () =>
+    set({ draft: { ...emptyDraft }, justSaved: false }),
 
   saveDraft: async () => {
     const { draft } = get();
@@ -37,22 +42,23 @@ export const useCheckinsStore = create((set, get) => ({
         status: "succeeded",
         checkins: [saved, ...s.checkins],
         draft: { ...emptyDraft },
+        justSaved: true,
       }));
       return saved;
     } catch (err) {
       console.log(err.message);
-      set({ status: "failed", error: err.message });
+      set({ status: "failed", error: err.message, justSaved: false });
       throw err;
     }
   },
 
   loadHistory: async () => {
-    set({ status: "loading", error: null });
+    set({ status: "loading", error: null, justSaved: false });
     try {
       const { checkins } = await listCheckins();
-      set({ status: "succeeded", checkins });
+      set({ status: "succeeded", checkins, justSaved: false });
     } catch (err) {
-      set({ status: "failed", error: err.message });
+      set({ status: "failed", error: err.message, justSaved: false });
     }
   },
 }));

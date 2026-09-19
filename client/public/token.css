@@ -1,0 +1,207 @@
+:root {
+    /* Core dark palette — neutral grays */
+    --bg-dark: hsl(0 0% 0%);
+    --bg: hsl(0 0% 5%);
+    --bg-light: hsl(0 0% 10%);
+    --text: hsl(0 0% 95%);
+    --text-muted: hsl(0 0% 70%);
+
+
+    /* Derived tokens */
+    --border: hsl(0 0% 30%);
+    --border-muted: hsl(0 0% 15%);
+    --primary: #184E77;
+    --accent: hsl(0 0% 95%);
+    --highlight: hsl(0 0% 100%);
+    --surface: hsl(0 0% 10%);
+    --surface-elevated: hsl(0 0% 15%);
+
+    /* Semantic aliases for landing page */
+    --color-bg: var(--bg);
+    --color-surface: var(--surface);
+    --color-surface-elevated: var(--surface-elevated);
+    --color-border: var(--border);
+    --color-border-hover: var(--primary);
+    --color-text: var(--text);
+    --color-text-muted: var(--text-muted);
+    --color-accent: var(--primary);
+    --color-accent-hover: var(--bg-dark);
+    --color-accent-muted: hsl(0 0% 15%);
+    --color-accent-border: hsl(0 0% 95% / 0.2);
+    --color-safety: hsl(0 0% 70%);
+    --color-safety-bg: hsl(0 0% 8%);
+    --color-safety-border: hsl(0 0% 20%);
+
+    /* Fonts */
+    --font-sans: 'Geist', 'Outfit', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
+
+    /* Radii */
+    --radius-card: 1rem;
+    --radius-button: 9999px;
+    --radius-input: 0.75rem;
+
+    /* Spacing */
+    --space-section: 6rem;
+    --space-section-lg: 8rem;
+
+    /* Gradient */
+    --gradient: linear-gradient(0deg, var(--bg), var(--bg-light));
+
+    --gradient: linear-gradient(0deg, var(--bg) 95%, var(--bg-light));
+
+
+    --gradient-light: linear-gradient(0deg, var(--bg) 95%, var(--bg-light));
+
+
+
+    --gradient-hover: linear-gradient(0deg, var(--bg), var(--bg-light));
+
+    /* Motion */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --duration-fast: 150ms;
+    --duration-normal: 300ms;
+    --duration-slow: 500ms;
+
+    --shadow-s: inset 0 1px 2px #ffffff30, 0 1px 2px #00000030, 0 2px 4px #00000015;
+    --shadow-m: inset 0 1px 2px #ffffff50, 0 2px 4px #00000030, 0 4px 8px #00000015;
+    --shadow-l: inset 0 1px 2px #ffffff70, 0 4px 6px #00000030, 0 6px 10px #00000015;
+}
+
+.bg-dark {
+    background-color: var(--bg-dark);
+}
+
+.bg {
+    background-color: var(--bg);
+}
+
+.bg-light {
+    background-color: var(--bg-light);
+}
+
+.text {
+    color: var(--text);
+}
+
+.text-muted {
+    color: var(--text-muted);
+}
+
+.border {
+    border: 1px solid var(--border);
+}
+
+
+
+
+.border-muted {
+    border: 1px solid var(--border-muted);
+}
+
+.shadow {
+    box-shadow: var(--shadow-m);
+}
+
+.shadow-s {
+    box-shadow: var(--shadow-s);
+}
+
+.shadow-m {
+    box-shadow: var(--shadow-m);
+}
+
+.shadow-l {
+    box-shadow: var(--shadow-l);
+}
+
+.hover-shadow-m:hover {
+    box-shadow: var(--shadow-m);
+}
+
+
+.gradient-light {
+    background: var(--gradient-light);
+}
+
+.is-selected {
+    background-color: var(--text);
+    color: var(--bg-dark);
+}
+
+.hover-selected:hover {
+    background-color: var(--text);
+    color: var(--bg-dark);
+}
+
+
+:root {
+    /* Step -6: 4.1943px → 15.9908px */
+    --step--6: clamp(0.2621rem, -0.0395rem + 1.3405vw, 0.9994rem);
+    /* Step -5: 5.2429px → 19.9885px */
+    --step--5: clamp(0.3277rem, -0.0493rem + 1.6756vw, 1.2493rem);
+    /* Step -4: 6.5536px → 24.9856px */
+    --step--4: clamp(0.4096rem, -0.0617rem + 2.0945vw, 1.5616rem);
+    /* Step -3: 8.192px → 31.232px */
+    --step--3: clamp(0.512rem, -0.0771rem + 2.6182vw, 1.952rem);
+    /* Step -2: 10.24px → 39.04px */
+    --step--2: clamp(0.64rem, -0.0964rem + 3.2727vw, 2.44rem);
+    /* Step -1: 12.8px → 48.8px */
+    --step--1: clamp(0.8rem, -0.1205rem + 4.0909vw, 3.05rem);
+    /* Step 0: 16px → 61px */
+    --step-0: clamp(1rem, -0.1506rem + 5.1136vw, 3.8125rem);
+}
+
+
+
+h1 {
+    font-size: var(--step-0);
+    letter-spacing: -0.02em;
+    line-height: 100%;
+    margin-bottom: var(--step--3);
+}
+
+h2 {
+    font-size: var(--step--1);
+    letter-spacing: -0.0175em;
+    line-height: 110%;
+}
+
+h3 {
+    font-size: var(--step--2);
+    letter-spacing: -0.015em;
+    line-height: 115%;
+}
+
+h4 {
+    font-size: var(--step--3);
+    letter-spacing: -0.01em;
+    line-height: 130%;
+}
+
+h5 {
+    font-size: var(--step--4);
+    letter-spacing: -0.0075em;
+    line-height: 125%;
+}
+
+h6 {
+    font-size: var(--step--5);
+    letter-spacing: -0.005em;
+    line-height: 120%;
+}
+
+p {
+    font-size: var(--step--6);
+    letter-spacing: normal;
+    line-height: 150%;
+}
+
+.p4 {
+    padding: var(--step--6);
+}
+
+.p1 {
+    padding: var(--step--1);
+}
