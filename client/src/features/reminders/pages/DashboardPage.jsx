@@ -159,7 +159,7 @@ function Reminders({ reminders, unreadReminders, markingId, onMarkRead }) {
 }
 
 export default function DashboardPage() {
-  const { summary, status, error, markingId, load, markRead } =
+  const { summary, status, markingId, load, markRead } =
     useDashboardStore();
   const loading = status === "loading" || status === "idle";
   const scopeRef = useReveal([status, summary]);
@@ -187,9 +187,6 @@ export default function DashboardPage() {
           })}
         </p>
       </div>
-      {error && (
-        <p role="alert">Couldn&apos;t load your dashboard right now: {error}</p>
-      )}
       {loading ? (
         <p>Looking at your recent check-ins…</p>
       ) : (

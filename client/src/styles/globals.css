@@ -361,6 +361,125 @@ main>section {
   color: var(--text-muted);
 }
 
+/* Toast notifications — fixed bottom-center stack above all content */
+.toast-stack {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+  width: min(100% - 2rem, 420px);
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-lighter);
+  color: var(--text);
+  box-shadow: var(--shadow-card);
+  pointer-events: auto;
+  animation: toast-in 200ms var(--ease-out) both;
+}
+
+.toast--error {
+  border-left: 3px solid var(--danger);
+}
+
+.toast--error .toast__icon {
+  color: var(--danger);
+}
+
+.toast--success {
+  border-left: 3px solid var(--success);
+}
+
+.toast--success .toast__icon {
+  color: var(--success);
+}
+
+.toast__icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  margin-top: 0.1rem;
+}
+
+.toast__body {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.toast__message {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.toast__details {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.toast__more {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+}
+
+.toast__close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.toast__close:hover {
+  background: var(--bg-dark);
+  color: var(--text);
+}
+
+.toast__close svg {
+  width: 14px;
+  height: 14px;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Rhythm chart */
 .rhythm-chart {
   margin: 0 0 1.25rem;
@@ -782,21 +901,10 @@ main>section {
 }
 
 /* Shared content */
-.notice,
-.checkin-page__notice {
+.notice {
   padding: 0.85rem 1rem;
   border-radius: 8px;
   font-size: 0.9rem;
-}
-
-.checkin-page__notice--error {
-  background: color-mix(in oklch, var(--danger) 16%, transparent);
-  color: var(--danger);
-}
-
-.checkin-page__notice--success {
-  background: color-mix(in oklch, var(--success) 16%, transparent);
-  color: var(--success);
 }
 
 section>p,

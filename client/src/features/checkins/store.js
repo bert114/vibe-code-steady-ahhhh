@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useToastStore } from "../../components/ui/toastStore.js";
 import { createCheckin, listCheckins } from "./api.js";
 
 const emptyDraft = {
@@ -38,6 +39,7 @@ export const useCheckinsStore = create((set, get) => ({
         checkins: [saved, ...s.checkins],
         draft: { ...emptyDraft },
       }));
+      useToastStore.getState().success("Saved. Thank you for checking in.");
       return saved;
     } catch (err) {
       console.log(err.message);

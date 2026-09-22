@@ -1,12 +1,15 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import ToastStack from '../../components/ui/Toast.jsx'
+import { useToastStore } from '../../components/ui/toastStore.js'
 import FeedbackLink from './components/FeedbackLink.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
 
 afterEach(() => {
   // No globals: true in vite.config.js, so RTL auto-cleanup never registers.
   cleanup()
+  useToastStore.getState().clear()
   vi.unstubAllGlobals()
 })
 
@@ -114,15 +117,19 @@ describe('dashboard page', () => {
     expect(screen.queryByRole('button', { name: 'Mark as read' })).not.toBeInTheDocument()
   })
 
-  it('shows an alert when the summary cannot load', async () => {
+  it('shows an error toast (not an inline alert) when the summary cannot load', async () => {
     vi.stubGlobal('fetch', () => Promise.reject(new TypeError('fetch failed')))
     render(
       <MemoryRouter>
         <DashboardPage />
+        <ToastStack />
       </MemoryRouter>,
     )
-    // Mount triggers load(); rejection surfaces through the error contract.
-    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    // Mount triggers load(); the shared request helper surfaces the failure
+    // as an error toast — the page itself renders no inline alert.
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent(/could not reach the server/i)
+    expect(alert.closest('.toast-stack')).not.toBeNull()
   })
 })
 

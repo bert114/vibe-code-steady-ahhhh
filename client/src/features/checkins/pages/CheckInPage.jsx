@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import CheckInForm from '../components/CheckInForm.jsx'
 import { useCheckinsStore } from '../store.js'
 
@@ -20,12 +20,8 @@ function HistoryList({ checkins }) {
 }
 
 export default function CheckInPage() {
-  const { checkins, status, error, saveDraft, loadHistory, resetDraft } = useCheckinsStore()
+  const { checkins, status, saveDraft, loadHistory, resetDraft } = useCheckinsStore()
   const saving = status === 'saving'
-  // 'succeeded' also covers the initial history load, which isn't a save —
-  // only show the confirmation after an actual saving -> succeeded step.
-  const [justSaved, setJustSaved] = useState(false)
-  const prevStatusRef = useRef(status)
 
   useEffect(() => {
     resetDraft()
@@ -33,31 +29,11 @@ export default function CheckInPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (prevStatusRef.current === 'saving' && status === 'succeeded') {
-      setJustSaved(true)
-    } else if (status === 'saving') {
-      setJustSaved(false)
-    }
-    prevStatusRef.current = status
-  }, [status])
-
   return (
     <main className="checkin-page">
       <p className="page-eyebrow">A moment for yourself</p>
       <h1>Check-In</h1>
       <p className="checkin-page__intro">Answer one question at a time — it only takes a moment.</p>
-
-      {status === 'failed' && (
-        <p role="alert" className="checkin-page__notice checkin-page__notice--error">
-          Couldn&apos;t save or load right now: {error}
-        </p>
-      )}
-      {justSaved && (
-        <p role="status" className="checkin-page__notice checkin-page__notice--success">
-          Saved. Thank you for checking in.
-        </p>
-      )}
 
       <div className="card checkin-card">
         <CheckInForm onSubmit={() => saveDraft().catch(() => {})} saving={saving} />

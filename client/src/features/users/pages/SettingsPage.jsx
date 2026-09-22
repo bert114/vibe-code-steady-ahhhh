@@ -19,7 +19,6 @@ function ClerkSignOut({ onSignedOut }) {
 function DeleteAccount({ onDeleted }) {
   const [confirming, setConfirming] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const [error, setError] = useState(null)
 
   async function handleDelete() {
     if (!confirming) {
@@ -27,12 +26,11 @@ function DeleteAccount({ onDeleted }) {
       return
     }
     setDeleting(true)
-    setError(null)
     try {
       await deleteMyAccount()
       onDeleted()
-    } catch (err) {
-      setError(err.message)
+    } catch {
+      // Failure already surfaced as an error toast by the shared request helper.
     } finally {
       setDeleting(false)
     }
@@ -44,7 +42,6 @@ function DeleteAccount({ onDeleted }) {
         Deleting your account permanently removes your check-ins, insights, reminders, and
         analysis history. This cannot be undone.
       </p>
-      {error && <p role="alert">Couldn&apos;t delete your account right now: {error}</p>}
       <button type="button" onClick={handleDelete} disabled={deleting}>
         {deleting ? 'Deleting…' : confirming ? 'Click again to confirm deletion' : 'Delete my account'}
       </button>

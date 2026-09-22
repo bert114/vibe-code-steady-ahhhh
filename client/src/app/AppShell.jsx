@@ -1,4 +1,5 @@
 import { Link, NavLink } from 'react-router-dom'
+import ToastStack from '../components/ui/Toast.jsx'
 
 // Persistent chrome for the whole app: a slim top bar with the four
 // destinations a signed-in person needs, so no page is ever a dead end.
@@ -36,6 +37,7 @@ export default function AppShell({ children }) {
         </div>
       </header>
       {children}
+      <ToastStack />
     </div>
   )
 }

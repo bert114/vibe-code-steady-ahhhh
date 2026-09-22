@@ -1,11 +1,14 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import ToastStack from '../../components/ui/Toast.jsx'
+import { useToastStore } from '../../components/ui/toastStore.js'
 import InsightsPage from './pages/InsightsPage.jsx'
 
 afterEach(() => {
   // No globals: true in vite.config.js, so RTL auto-cleanup never registers.
   cleanup()
+  useToastStore.getState().clear()
   vi.unstubAllGlobals()
 })
 
@@ -17,6 +20,7 @@ describe('insights page', () => {
     render(
       <MemoryRouter>
         <InsightsPage />
+        <ToastStack />
       </MemoryRouter>,
     )
 
@@ -24,8 +28,11 @@ describe('insights page', () => {
     expect(
       screen.getByRole('button', { name: /analyze my recent check-ins/i }),
     ).toBeInTheDocument()
-    // Unreachable server: the error contract surfaces via role=alert.
-    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    // Unreachable server: the shared request helper surfaces the failure as
+    // an error toast — the page itself renders no inline alert.
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent(/could not reach the server/i)
+    expect(alert.closest('.toast-stack')).not.toBeNull()
   })
 
   it('frames boundary insights as Observed / Reflection', async () => {

@@ -40,7 +40,7 @@ function InsightCard({ insight }) {
 }
 
 export default function InsightsPage() {
-  const { insights, lastInsight, status, notice, error, load, analyze } = useInsightsStore()
+  const { insights, lastInsight, status, load, analyze } = useInsightsStore()
   const busy = status === 'loading' || status === 'analyzing'
 
   useEffect(() => {
@@ -60,9 +60,7 @@ export default function InsightsPage() {
           {status === 'analyzing' ? 'Analyzing…' : 'Analyze my recent check-ins'}
         </button>
       </div>
-      {notice && <p role="status">{notice}</p>}
-      {error && <p role="alert">Couldn&apos;t load insights right now: {error}</p>}
-      {!busy && shown.length === 0 && !notice && (
+      {!busy && shown.length === 0 && (
         <p>No insights yet. Record a few check-ins, then run an analysis.</p>
       )}
       {shown.map((insight) => (

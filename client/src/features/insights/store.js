@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { useToastStore } from '../../components/ui/toastStore.js'
 import { analyzeInsights, getInsights } from './api.js'
 
 // Small feature-scoped store: insight list + analysis request state.
@@ -23,12 +24,18 @@ export const useInsightsStore = create((set) => ({
     set({ status: 'analyzing', error: null, notice: null })
     try {
       const result = await analyzeInsights()
+      const fallbackMessage = result.fallback ? (result.message ?? null) : null
       set({
         status: 'succeeded',
         insights: result.insights ?? [],
         lastInsight: result.lastInsight ?? null,
-        notice: result.fallback ? (result.message ?? null) : null,
+        notice: fallbackMessage,
       })
+      if (fallbackMessage) {
+        useToastStore.getState().error(fallbackMessage)
+      } else {
+        useToastStore.getState().success('Analysis complete. Your insights are up to date.')
+      }
     } catch (err) {
       set({ status: 'failed', error: err.message })
     }
