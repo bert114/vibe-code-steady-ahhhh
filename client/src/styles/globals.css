@@ -389,6 +389,11 @@ main>section {
   display: flex;
   flex-direction: column;
   padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+
+.dashboard-panel--battery-compact:hover {
+  box-shadow: var(--shadow-card-hover);
 }
 
 .battery-head {
@@ -472,6 +477,11 @@ main>section {
 .dashboard-panel--overview {
   padding: 1.5rem;
   border-radius: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.dashboard-panel--overview:hover {
+  box-shadow: var(--shadow-card-hover);
 }
 
 .dashboard-panel--overview h2 {
@@ -494,8 +504,8 @@ main>section {
   padding: 0.35rem 0.7rem;
   border: 1px solid var(--border-muted);
   border-radius: 9999px;
-  background: var(--bg-dark);
-  color: var(--text-muted);
+  background: var(--bg-lighter);
+  color: var(--text);
   font-family: 'Satoshi', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
@@ -512,6 +522,7 @@ main>section {
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 0.5rem;
   align-items: stretch;
+  padding-top: 4.25rem;
 }
 
 .capsule-col {
@@ -526,9 +537,14 @@ main>section {
   background: transparent;
 }
 
-.capsule-col:hover,
-.capsule-col:focus-visible {
-  background: var(--bg-dark);
+.capsule-col:hover .capsule-fill,
+.capsule-col:focus-visible .capsule-fill {
+  filter: brightness(1.25);
+}
+
+.capsule-col:hover .capsule-label,
+.capsule-col:focus-visible .capsule-label {
+  color: var(--text);
 }
 
 .capsule-track {
@@ -548,16 +564,16 @@ main>section {
   width: 100%;
   min-height: 12px;
   border-radius: inherit;
-  background: var(--highlight);
+  background: var(--bg-light);
 }
 
 .capsule-fill--active {
-  background: var(--text);
+  background: var(--primary100);
 }
 
 .capsule-fill--empty {
   min-height: 0;
-  background: transparent;
+  background: var(--bg-dark);
 }
 
 .capsule-label {
@@ -605,6 +621,39 @@ main>section {
 .capsule-col:focus-visible .capsule-tip {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+/* Edge clamp: end-column tooltips pin inside the card instead of clipping past it. */
+.capsule-col:first-child .capsule-tip {
+  left: 0;
+  transform: translate(0, 4px);
+}
+
+.capsule-col:first-child:hover .capsule-tip,
+.capsule-col:first-child:focus-visible .capsule-tip {
+  transform: translate(0, 0);
+}
+
+.capsule-col:first-child .capsule-tip::after {
+  left: 18px;
+  transform: none;
+}
+
+.capsule-col:last-child .capsule-tip {
+  left: auto;
+  right: 0;
+  transform: translate(0, 4px);
+}
+
+.capsule-col:last-child:hover .capsule-tip,
+.capsule-col:last-child:focus-visible .capsule-tip {
+  transform: translate(0, 0);
+}
+
+.capsule-col:last-child .capsule-tip::after {
+  left: auto;
+  right: 18px;
+  transform: none;
 }
 
 .capsule-tip__date {

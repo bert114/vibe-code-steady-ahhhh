@@ -53,9 +53,22 @@ describe('energy overview chart', () => {
     expect(container.textContent).not.toMatch(/Current Level/)
   })
 
-  it('shows faint tracks with no check-ins', () => {
-    render(<EnergyOverview checkins={[]} />)
+  it('shows hollow dark tracks with no check-ins', () => {
+    const { container } = render(<EnergyOverview checkins={[]} />)
     expect(screen.getAllByRole('button')).toHaveLength(7)
     expect(screen.getByRole('img', { name: /no energy readings/i })).toBeInTheDocument()
+    // All empty: every fill is the empty variant, none carry muted utility.
+    expect(container.querySelectorAll('.capsule-fill--empty')).toHaveLength(7)
+    expect(container.querySelector('.elem-muted')).toBeNull()
+  })
+
+  it('keeps filled days distinct from empty days', () => {
+    const { container } = render(<EnergyOverview checkins={checkins} />)
+    const empty = container.querySelectorAll('.capsule-fill--empty')
+    expect(empty.length).toBeGreaterThan(0)
+    expect(container.querySelector('.elem-muted')).toBeNull()
+    expect(
+      container.querySelectorAll('.capsule-fill:not(.capsule-fill--empty)').length,
+    ).toBeGreaterThan(0)
   })
 })
