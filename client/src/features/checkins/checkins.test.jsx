@@ -70,3 +70,84 @@ describe('check-in page', () => {
     expect(screen.getByText('Step 2 of 4')).toBeInTheDocument()
   })
 })
+
+describe('check-in stepper redesign', () => {
+  function renderPage() {
+    const { container } = render(
+      <MemoryRouter>
+        <CheckInPage />
+      </MemoryRouter>,
+    )
+    return container
+  }
+
+  it('shows stroked face icons instead of numbers, with captions as names', () => {
+    const container = renderPage()
+    const faces = container.querySelectorAll('.score-option__face')
+    expect(faces).toHaveLength(5)
+    faces.forEach((svg) => {
+      expect(svg.getAttribute('aria-hidden')).toBe('true')
+      expect(svg.querySelector('circle')).not.toBeNull()
+    })
+    container.querySelectorAll('.score-option').forEach((label) => {
+      expect(label.textContent).not.toMatch(/\d/)
+    })
+    expect(screen.queryByText('🔋')).not.toBeInTheDocument()
+  })
+
+  it('tracks progress in a vertical step list with aria-current', () => {
+    renderPage()
+    const nav = screen.getByRole('navigation', { name: 'Check-in steps' })
+    expect(nav).toBeInTheDocument()
+    expect(screen.getByText('Step 1 of 4')).toBeInTheDocument()
+    const current = document.querySelector('[aria-current="step"]')
+    expect(current?.textContent).toMatch(/Mood/)
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Good' }))
+    expect(document.querySelector('[aria-current="step"]')?.textContent).toMatch(/Energy/)
+  })
+
+  it('lets completed steps jump back via the step list', () => {
+    renderPage()
+    fireEvent.click(screen.getByRole('radio', { name: 'Good' }))
+    expect(screen.getByText('Step 2 of 4')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /Mood/ }))
+    expect(screen.getByText('Step 1 of 4')).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Good' })).toBeChecked()
+  })
+
+  it('matches energy icons to energy captions, not mood faces', () => {
+    const container = renderPage()
+    // Mood step: faces.
+    expect(container.querySelectorAll('.score-option__face')).toHaveLength(5)
+    expect(container.querySelector('.score-option__icon')).toBeNull()
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Good' }))
+    // Energy step: battery levels with energy captions.
+    expect(screen.getByRole('radiogroup', { name: /energy/i })).toBeInTheDocument()
+    const batteries = container.querySelectorAll('.score-option__icon')
+    expect(batteries).toHaveLength(5)
+    batteries.forEach((svg) => {
+      expect(svg.getAttribute('aria-hidden')).toBe('true')
+    })
+    expect(container.querySelector('.score-option__face')).toBeNull()
+    expect(screen.getByRole('radio', { name: 'Full tank' })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Running on empty' })).toBeInTheDocument()
+    expect(container.querySelector('.score-option__face')).toBeNull()
+  })
+
+  it('matches drain icons to drain captions, not mood faces', () => {
+    const container = renderPage()
+    fireEvent.click(screen.getByRole('radio', { name: 'Good' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'Energized' }))
+    expect(screen.getByRole('radiogroup', { name: /draining/i })).toBeInTheDocument()
+    const drops = container.querySelectorAll('.score-option__icon')
+    expect(drops).toHaveLength(5)
+    drops.forEach((svg) => {
+      expect(svg.getAttribute('aria-hidden')).toBe('true')
+    })
+    expect(container.querySelector('.score-option__face')).toBeNull()
+    expect(screen.getByRole('radio', { name: 'Overwhelming' })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Light' })).toBeInTheDocument()
+  })
+})

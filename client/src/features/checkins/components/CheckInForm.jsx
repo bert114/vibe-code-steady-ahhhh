@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useCheckinsStore } from '../store.js'
+import DrainIcon from './DrainIcon.jsx'
+import EnergyIcon from './EnergyIcon.jsx'
+import FaceIcon from './FaceIcon.jsx'
 
 const SCORES = [1, 2, 3, 4, 5]
 
@@ -11,28 +14,67 @@ const SCORE_STEPS = [
     name: 'moodScore',
     question: "How's your mood right now?",
     captions: ['Rough', 'Low', 'Okay', 'Good', 'Great'],
+    Icon: FaceIcon,
   },
   {
     key: 'energyScore',
     name: 'energyScore',
     question: "How's your energy?",
     captions: ['Running on empty', 'Low', 'Steady', 'Energized', 'Full tank'],
+    Icon: EnergyIcon,
   },
   {
     key: 'drainScore',
     name: 'drainScore',
     question: 'How draining has it been?',
     captions: ['Light', 'Mild', 'Moderate', 'Heavy', 'Overwhelming'],
+    Icon: DrainIcon,
   },
 ]
 
 // Total steps = one per score, plus a final "anything else" step.
 const TOTAL_STEPS = SCORE_STEPS.length + 1
 
+const STEP_NAMES = ['Mood', 'Energy', 'Drain', 'Details']
+
+function StepperSteps({ step, onJump }) {
+  return (
+    <ol className="stepper-steps">
+      {STEP_NAMES.map((name, i) => {
+        if (i === step) {
+          return (
+            <li key={name} aria-current="step" className="stepper-steps__item stepper-steps__item--active">
+              <span className="stepper-steps__dot" aria-hidden="true" />
+              {name}
+            </li>
+          )
+        }
+        if (i < step) {
+          return (
+            <li key={name} className="stepper-steps__item">
+              <button type="button" className="stepper-steps__link" onClick={() => onJump(i)}>
+                <span className="stepper-steps__dot stepper-steps__dot--done" aria-hidden="true" />
+                {name}
+              </button>
+            </li>
+          )
+        }
+        return (
+          <li key={name} className="stepper-steps__item stepper-steps__item--todo" aria-disabled="true">
+            <span className="stepper-steps__dot" aria-hidden="true" />
+            {name}
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
+
 function ScoreStep({ meta, value, onSelect }) {
+  const { Icon } = meta
   return (
     <fieldset className="score-step">
-      <legend>{meta.question}</legend>
+      <legend><h2 className="score-step__question">{meta.question}</h2></legend>
       <div role="radiogroup" aria-label={meta.question} className="score-options">
         {SCORES.map((score, i) => (
           <label key={score} className="score-option">
@@ -43,9 +85,7 @@ function ScoreStep({ meta, value, onSelect }) {
               checked={Number(value) === score}
               onChange={() => onSelect(score)}
             />
-            <span className="score-option__btn" aria-hidden="true">
-              {score}
-            </span>
+            <Icon score={score} />
             <span className="score-option__caption">{meta.captions[i]}</span>
           </label>
         ))}
@@ -142,53 +182,48 @@ export default function CheckInForm({ onSubmit, saving }) {
         if (isDetailsStep) onSubmit()
       }}
     >
-      <div
-        className="stepper-progress"
-        role="progressbar"
-        aria-valuenow={step + 1}
-        aria-valuemin={1}
-        aria-valuemax={TOTAL_STEPS}
-        aria-label="Check-in progress"
-      >
-        <div
-          className="stepper-progress__bar"
-          style={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
-        />
+      <div className="stepper-side">
+        <p className="stepper-side__title">Check-In</p>
+        <p className="stepper-progress__label">
+          Step {step + 1} of {TOTAL_STEPS}
+        </p>
+        <nav aria-label="Check-in steps">
+          <StepperSteps step={step} onJump={setStep} />
+        </nav>
       </div>
-      <p className="stepper-progress__label">
-        Step {step + 1} of {TOTAL_STEPS}
-      </p>
 
-      {!isDetailsStep && (
-        <ScoreStep
-          meta={currentMeta}
-          value={draft[currentMeta.key]}
-          onSelect={(v) => {
-            setDraft({ [currentMeta.key]: v })
-            goNext()
-          }}
-        />
-      )}
-
-      {isDetailsStep && (
-        <DetailsStep draft={draft} setDraft={setDraft} onEditAnswers={() => setStep(0)} />
-      )}
-
-      <div className="stepper-nav">
-        {step > 0 && (
-          <button type="button" className="stepper-nav__back" onClick={goBack}>
-            Back
-          </button>
+      <div className="stepper-main">
+        {!isDetailsStep && (
+          <ScoreStep
+            meta={currentMeta}
+            value={draft[currentMeta.key]}
+            onSelect={(v) => {
+              setDraft({ [currentMeta.key]: v })
+              goNext()
+            }}
+          />
         )}
-        {!isDetailsStep ? (
-          <button type="button" className="stepper-nav__next" onClick={goNext}>
-            Next
-          </button>
-        ) : (
-          <button type="submit" className="stepper-nav__submit" disabled={saving}>
-            {saving ? 'Saving…' : 'Save check-in'}
-          </button>
+
+        {isDetailsStep && (
+          <DetailsStep draft={draft} setDraft={setDraft} onEditAnswers={() => setStep(0)} />
         )}
+
+        <div className="stepper-nav">
+          {step > 0 && (
+            <button type="button" className="stepper-nav__back" onClick={goBack}>
+              Back
+            </button>
+          )}
+          {!isDetailsStep ? (
+            <button type="button" className="stepper-nav__next" onClick={goNext}>
+              Next <span aria-hidden="true">→</span>
+            </button>
+          ) : (
+            <button type="submit" className="stepper-nav__submit" disabled={saving}>
+              {saving ? 'Saving…' : 'Save check-in'}
+            </button>
+          )}
+        </div>
       </div>
     </form>
   )
