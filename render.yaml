@@ -1,0 +1,45 @@
+# Steady-Ahh Render Blueprint (Phase 5 — validation on free instances).
+# Dashboard: New > Blueprint > connect this repo. Secrets (sync: false) are
+# entered once in the dashboard; the runbook is docs/deploy-render.md.
+services:
+  - type: web
+    name: steady-ahh-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    preDeployCommand: npm run db:migrate --workspace=server
+    startCommand: npm start --workspace=server
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: CLIENT_ORIGIN
+        sync: false # set to the static-site URL after first deploy (exact origin, no '*')
+      - key: DATABASE_URL
+        sync: false # Neon Postgres connection string (persistent during validation)
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: AI_ANALYSIS_RATE_LIMIT
+        value: 5
+
+  - type: web
+    name: steady-ahh-client
+    runtime: static
+    plan: free
+    buildCommand: npm ci && npm run build --workspace=client
+    staticPublishPath: client/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false # set to https://<api-service>.onrender.com/api, then redeploy
+      - key: VITE_CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: VITE_FEEDBACK_URL
+        sync: false # tester feedback form URL; empty hides the dashboard link
