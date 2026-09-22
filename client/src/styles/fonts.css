@@ -1,0 +1,63 @@
+/* Elegant font family — self-hosted OpenType, display swap to avoid invisible text.
+   Display: Melodrama (expressive serif). Body/UI: Satoshi (geometric sans).
+   One file may serve a weight range (Satoshi-Medium covers 500-700) so bold
+   UI renders the true Medium cut instead of a faux-heavy Black. Zodiak,
+   Supreme, and all italics ship on disk but stay unwired (unused). */
+
+/* Display — Melodrama */
+@font-face {
+  font-family: 'Melodrama';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/elegant/Melodrama-Regular (2).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Melodrama';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/elegant/Melodrama-Medium (1).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Melodrama';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/elegant/Melodrama-Semibold (1).otf') format('opentype');
+}
+
+/* Body/UI — Satoshi */
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('../fonts/elegant/Satoshi-Light (2).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/elegant/Satoshi-Regular (2).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url('../fonts/elegant/Satoshi-Medium (2).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('../fonts/elegant/Satoshi-Black (2).otf') format('opentype');
+}

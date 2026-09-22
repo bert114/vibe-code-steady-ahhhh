@@ -1,41 +1,26 @@
 :root {
-  --color-bg: #fbfbfa;
-  --color-bg-warm: #f7f6f3;
-  --color-surface: #ffffff;
-  --color-surface-soft: #f9f9f8;
-  --color-ink: #111111;
-  --color-text: #2f3437;
-  --color-text-muted: #787774;
-  --color-accent: #111111;
-  --color-accent-strong: #333333;
-  --color-accent-soft: #f7f6f3;
-  --color-border: #eaeaea;
-  --color-danger: #9f2f2d;
+  color-scheme: dark;
 
-  --pastel-red-bg: #fdebec;
-  --pastel-red-tx: #9f2f2d;
-  --pastel-blue-bg: #e1f3fe;
-  --pastel-blue-tx: #1f6c9f;
-  --pastel-green-bg: #edf3ec;
-  --pastel-green-tx: #346538;
-  --pastel-yellow-bg: #fbf3db;
-  --pastel-yellow-tx: #956400;
+  --bg-dark: oklch(0.1 0.005 264);
+  --bg: oklch(0.15 0.005 264);
+  --bg-light: oklch(0.2 0.005 264);
+  --text: oklch(0.96 0.01 264);
+  --text-muted: oklch(0.76 0.01 264);
+  --highlight: oklch(0.5 0.01 264);
+  --border: oklch(0.4 0.01 264);
+  --border-muted: oklch(0.3 0.01 264);
+  --primary: oklch(0.76 0.1 264);
+  --secondary: oklch(0.76 0.1 84);
+  --danger: oklch(0.7 0.05 30);
+  --warning: oklch(0.7 0.05 100);
+  --success: oklch(0.7 0.05 160);
+  --info: oklch(0.7 0.05 260);
 
-  --font-sans: 'SF Pro Display', 'Geist Sans', 'Helvetica Neue', 'Switzer', system-ui, sans-serif;
-  --font-display: 'Newsreader', 'Instrument Serif', 'Lyon Text', Georgia, serif;
-  --font-mono: 'Geist Mono', 'SF Mono', 'JetBrains Mono', ui-monospace, monospace;
-
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2.5rem;
-
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 12px;
-  --radius-pill: 9999px;
-
-  --shadow-sm: 0 0 0 rgba(0, 0, 0, 0);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --inner-shadow-top-color: rgba(0, 0, 0, 0.25);
+  --inner-shadow-top-height: 24px;
+  --inner-shadow-top: linear-gradient(
+    to bottom,
+    var(--inner-shadow-top-color) 0%,
+    transparent 100%
+  );
 }

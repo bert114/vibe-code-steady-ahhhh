@@ -61,7 +61,7 @@ export default function EnergyBattery({ checkins }) {
             cy={CENTER}
             r={RADIUS}
             fill="none"
-            stroke="#EAEAEA"
+            stroke="var(--border-muted)"
             strokeWidth="12"
             strokeLinecap="round"
             strokeDasharray={`${TRACK_LEN} ${GAP_LEN}`}
@@ -88,8 +88,8 @@ export default function EnergyBattery({ checkins }) {
             dominantBaseline="central"
             fontSize="32"
             fontWeight="600"
-            fill="#111111"
-            fontFamily="var(--font-sans)"
+            fill="var(--text)"
+            fontFamily="'Satoshi', system-ui, -apple-system, 'Segoe UI', sans-serif"
             letterSpacing="-0.02em"
           >
             {latest ? `${percent}%` : '—'}

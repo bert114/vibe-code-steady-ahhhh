@@ -59,23 +59,23 @@ export default function RhythmChart({ checkins }) {
             x2={WIDTH - PAD_RIGHT}
             y1={toY(level)}
             y2={toY(level)}
-            stroke="#EAEAEA"
+            stroke="var(--border-muted)"
             strokeWidth="1"
           />
         ))}
-        <text x={2} y={toY(5) + 3} fontSize="8" fill="#787774" fontFamily="var(--font-mono)">
+        <text x={2} y={toY(5) + 3} fontSize="8" fill="var(--text-muted)" fontFamily="ui-monospace, SFMono-Regular, Consolas, monospace">
           5
         </text>
-        <text x={2} y={toY(1) + 3} fontSize="8" fill="#787774" fontFamily="var(--font-mono)">
+        <text x={2} y={toY(1) + 3} fontSize="8" fill="var(--text-muted)" fontFamily="ui-monospace, SFMono-Regular, Consolas, monospace">
           1
         </text>
-        <path d={seriesPath(energy)} fill="none" stroke="#787774" strokeWidth="1.25" strokeDasharray="4 3" />
-        <path d={seriesPath(mood)} fill="none" stroke="#111111" strokeWidth="1.5" />
+        <path d={seriesPath(energy)} fill="none" stroke="var(--text-muted)" strokeWidth="1.25" strokeDasharray="4 3" />
+        <path d={seriesPath(mood)} fill="none" stroke="var(--text)" strokeWidth="1.5" />
         {energy.map((p, i) => (
-          <circle key={`e-${ordered[i].id}`} cx={p.x} cy={p.y} r="2.5" fill="#787774" />
+          <circle key={`e-${ordered[i].id}`} cx={p.x} cy={p.y} r="2.5" fill="var(--text-muted)" />
         ))}
         {mood.map((p, i) => (
-          <circle key={`m-${ordered[i].id}`} cx={p.x} cy={p.y} r="3" fill="#111111" />
+          <circle key={`m-${ordered[i].id}`} cx={p.x} cy={p.y} r="3" fill="var(--text)" />
         ))}
         {drain.map((p) => (
           <circle
@@ -83,8 +83,8 @@ export default function RhythmChart({ checkins }) {
             cx={p.x}
             cy={p.y}
             r="3"
-            fill={p.high ? '#9F2F2D' : 'transparent'}
-            stroke={p.high ? '#FDEBEC' : '#787774'}
+            fill={p.high ? 'var(--danger)' : 'transparent'}
+            stroke={p.high ? 'oklch(0.7 0.05 30 / 0.35)' : 'var(--text-muted)'}
             strokeWidth={p.high ? 3 : 1.25}
             data-high-drain={p.high ? 'true' : 'false'}
           />
