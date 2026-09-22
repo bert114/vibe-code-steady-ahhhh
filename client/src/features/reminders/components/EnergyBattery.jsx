@@ -62,7 +62,7 @@ export default function EnergyBattery({ checkins }) {
             r={RADIUS}
             fill="none"
             stroke="#EAEAEA"
-            strokeWidth="10"
+            strokeWidth="12"
             strokeLinecap="round"
             strokeDasharray={`${TRACK_LEN} ${GAP_LEN}`}
             transform={`rotate(${ROTATE} ${CENTER} ${CENTER})`}
@@ -72,9 +72,9 @@ export default function EnergyBattery({ checkins }) {
               cx={CENTER}
               cy={CENTER}
               r={RADIUS}
-              fill="none"
-              stroke={status.stroke}
-              strokeWidth="10"
+            fill="none"
+            stroke={status.stroke}
+            strokeWidth="12"
               strokeLinecap="round"
               strokeDasharray={fillDash}
               transform={`rotate(${ROTATE} ${CENTER} ${CENTER})`}
@@ -86,7 +86,7 @@ export default function EnergyBattery({ checkins }) {
             y={CENTER + 2}
             textAnchor="middle"
             dominantBaseline="central"
-            fontSize="30"
+            fontSize="32"
             fontWeight="600"
             fill="#111111"
             fontFamily="var(--font-sans)"

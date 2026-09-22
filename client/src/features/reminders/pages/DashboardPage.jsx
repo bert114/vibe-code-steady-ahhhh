@@ -47,7 +47,7 @@ function CurrentBattery({ checkins }) {
         aria-labelledby="battery-label"
       >
         <div className="battery-head">
-          <h2 id="battery-label" className="battery-title">
+          <h2 id="battery-label">
             Current Energy
           </h2>
         </div>
@@ -74,9 +74,9 @@ function CurrentBattery({ checkins }) {
       aria-labelledby="battery-label"
     >
       <div className="battery-head">
-        <p id="battery-label" className="battery-title">
+        <h2 id="battery-label">
           Current Energy
-        </p>
+        </h2>
         <p className="battery-updated">Updated {updated}</p>
       </div>
       <div className="battery-body">
