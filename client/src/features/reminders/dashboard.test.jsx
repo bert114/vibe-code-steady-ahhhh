@@ -83,6 +83,11 @@ describe('dashboard page', () => {
     expect(screen.getByText('Last 7 Days')).toBeInTheDocument()
     expect(screen.getByText('20%')).toBeInTheDocument()
     expect(screen.queryByText(/mood 2 · energy 1/)).not.toBeInTheDocument()
+    // Battery + overview share one 2-col row (no full-width dead space).
+    const duo = document.querySelector('.dashboard-page__duo')
+    expect(duo).not.toBeNull()
+    expect(duo.textContent).toMatch(/Current Energy/)
+    expect(duo.textContent).toMatch(/Energy Overview/)
   })
 
   it('marks a reminder as read and updates the unread count', async () => {

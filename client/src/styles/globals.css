@@ -172,7 +172,7 @@ main {
   padding: clamp(3.5rem, 7vw, 6.5rem) 0 6rem;
 }
 
-main > h1 + p,
+main>h1+p,
 .checkin-page__intro {
   max-width: 42rem;
   margin-bottom: 2.5rem;
@@ -180,12 +180,12 @@ main > h1 + p,
   font-size: 1.05rem;
 }
 
-main > section,
-main > .card {
+main>section,
+main>.card {
   margin-top: 1.25rem;
 }
 
-main > section {
+main>section {
   padding: 1.5rem 0;
 }
 
@@ -232,6 +232,20 @@ main > section {
   grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
   gap: 1rem;
   align-items: start;
+}
+
+.dashboard-page__duo {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.6fr);
+  gap: 1rem;
+  align-items: stretch;
+  margin-bottom: 1rem;
+}
+
+.dashboard-page__main {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
 }
 
 .dashboard-page__side {
@@ -358,7 +372,6 @@ main > section {
 
 /* Current battery — compact minimal card */
 .dashboard-panel--battery-compact {
-  margin-bottom: 1rem;
   padding: 1.25rem;
 }
 
@@ -373,8 +386,6 @@ main > section {
 .battery-title {
   margin: 0;
   color: var(--color-text-muted);
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -730,20 +741,20 @@ main > section {
   color: var(--pastel-green-tx);
 }
 
-section > p,
-article > p,
-main > p {
+section>p,
+article>p,
+main>p {
   max-width: 65ch;
   color: var(--color-text-muted);
 }
 
-section > ul,
-article > ul {
+section>ul,
+article>ul {
   padding-left: 1.2rem;
 }
 
-section > ul li,
-article > ul li {
+section>ul li,
+article>ul li {
   margin-bottom: 0.55rem;
 }
 
@@ -1059,6 +1070,7 @@ article > ul li {
 }
 
 @media (max-width: 760px) {
+
   .app-nav__inner,
   main {
     width: min(100% - 2rem, 1180px);
@@ -1104,6 +1116,10 @@ article > ul li {
     grid-template-columns: 1fr;
   }
 
+  .dashboard-page__duo {
+    grid-template-columns: 1fr;
+  }
+
   .score-options {
     grid-template-columns: repeat(5, minmax(54px, 1fr));
     gap: 0.4rem;
@@ -1125,6 +1141,7 @@ article > ul li {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
