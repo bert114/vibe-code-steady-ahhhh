@@ -23,11 +23,11 @@ describe('check-in page', () => {
     expect(screen.getAllByRole('radio')).toHaveLength(3)
     fireEvent.click(screen.getByRole('radio', { name: 'Great' }))
 
-    // Step 2 of 4: energy.
+    // Step 2 of 4: energy (default is Steady, so pick a different value to advance).
     expect(screen.getByText('Step 2 of 4')).toBeInTheDocument()
     expect(screen.getByRole('radiogroup', { name: /energy/i })).toBeInTheDocument()
     expect(screen.getAllByRole('radio')).toHaveLength(3)
-    fireEvent.click(screen.getByRole('radio', { name: 'Steady' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'Full tank' }))
 
     // Step 3 of 4: drain.
     expect(screen.getByText('Step 3 of 4')).toBeInTheDocument()
@@ -36,7 +36,7 @@ describe('check-in page', () => {
 
     // Step 4 of 4: a summary of the answers, optional details, and save.
     expect(screen.getByText('Step 4 of 4')).toBeInTheDocument()
-    expect(screen.getByText(/mood 5 · energy 3 · drain 5/i)).toBeInTheDocument()
+    expect(screen.getByText(/mood 5 · energy 5 · drain 5/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/emotions/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/anything else/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /save check-in/i })).toBeInTheDocument()
@@ -103,7 +103,7 @@ describe('check-in stepper redesign', () => {
     const current = document.querySelector('[aria-current="step"]')
     expect(current?.textContent).toMatch(/Mood/)
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Good' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'Great' }))
     expect(document.querySelector('[aria-current="step"]')?.textContent).toMatch(/Energy/)
   })
 
@@ -139,7 +139,7 @@ describe('check-in stepper redesign', () => {
   it('matches drain icons to drain captions, not mood faces', () => {
     const container = renderPage()
     fireEvent.click(screen.getByRole('radio', { name: 'Great' }))
-    fireEvent.click(screen.getByRole('radio', { name: 'Steady' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'Full tank' }))
     expect(screen.getByRole('radiogroup', { name: /draining/i })).toBeInTheDocument()
     const drops = container.querySelectorAll('.score-option__icon')
     expect(drops).toHaveLength(3)

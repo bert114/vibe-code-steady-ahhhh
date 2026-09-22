@@ -72,9 +72,9 @@ describe.skipIf(!HAS_DB)('dashboard summary (db)', () => {
     await resetUser(USER_B)
     await pool.query(
       `INSERT INTO checkins (user_id, occurred_at, mood_score, energy_score, drain_score, emotions, context_tags, note)
-       VALUES ($1, now(), 2, 1, 5, '{tired}', '{overtime}', ''),
-              ($1, now() - interval '1 day', 2, 2, 4, '{tired}', '{overtime}', ''),
-              ($1, now() - interval '2 days', 3, 1, 5, '{flat}', '{overtime}', '')`,
+       VALUES ($1, now(), 1, 1, 5, '{tired}', '{overtime}', ''),
+              ($1, now() - interval '1 day', 3, 1, 5, '{tired}', '{overtime}', ''),
+              ($1, now() - interval '2 days', 1, 1, 5, '{flat}', '{overtime}', '')`,
       [USER_A],
     )
     const { rows: runs } = await pool.query(
@@ -98,7 +98,7 @@ describe.skipIf(!HAS_DB)('dashboard summary (db)', () => {
       const res = await request(authedApp(USER_A)).get('/api/dashboard/summary')
       expect(res.status).toBe(200)
       expect(res.body.recentCheckins).toHaveLength(3)
-      expect(res.body.recentCheckins[0]).toMatchObject({ moodScore: 2, drainScore: 5 })
+      expect(res.body.recentCheckins[0]).toMatchObject({ moodScore: 1, drainScore: 5 })
       expect(res.body.latestInsight).toMatchObject({
         type: 'boundary',
         title: 'Overtime keeps draining you',

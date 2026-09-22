@@ -49,9 +49,9 @@ describe.skipIf(!HAS_DB)('insights signals (db)', () => {
     await pool.query('DELETE FROM checkins WHERE user_id IN ($1, $2)', [USER_A, USER_B])
     await pool.query(
       `INSERT INTO checkins (user_id, occurred_at, mood_score, energy_score, drain_score, emotions, context_tags, note)
-       VALUES ($1, now(), 2, 1, 5, '{tired}', '{overtime}', ''),
-              ($1, now() - interval '1 day', 2, 2, 4, '{tired}', '{overtime}', ''),
-              ($1, now() - interval '2 days', 3, 1, 5, '{flat}', '{overtime}', '')`,
+       VALUES ($1, now(), 1, 1, 5, '{tired}', '{overtime}', ''),
+              ($1, now() - interval '1 day', 3, 1, 5, '{tired}', '{overtime}', ''),
+              ($1, now() - interval '2 days', 1, 1, 5, '{flat}', '{overtime}', '')`,
       [USER_A],
     )
 

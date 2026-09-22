@@ -16,8 +16,8 @@ async function seed(userId) {
   await pool.query('INSERT INTO users (id) VALUES ($1) ON CONFLICT DO NOTHING', [userId])
   await pool.query(
     `INSERT INTO checkins (user_id, occurred_at, mood_score, energy_score, drain_score, emotions, context_tags, note)
-     VALUES ($1, now(), 2, 1, 5, '{tired}', '{overtime}', ''),
-            ($1, now() - interval '1 day', 2, 2, 4, '{tired}', '{overtime}', '')`,
+     VALUES ($1, now(), 1, 1, 5, '{tired}', '{overtime}', ''),
+            ($1, now() - interval '1 day', 3, 1, 5, '{tired}', '{overtime}', '')`,
     [userId],
   )
 }
