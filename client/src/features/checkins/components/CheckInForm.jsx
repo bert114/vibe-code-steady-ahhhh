@@ -4,30 +4,31 @@ import DrainIcon from './DrainIcon.jsx'
 import EnergyIcon from './EnergyIcon.jsx'
 import FaceIcon from './FaceIcon.jsx'
 
-const SCORES = [1, 2, 3, 4, 5]
+const SCORES = [1, 3, 5]
 
 // One question at a time, in plain language, with the scale explained in
 // words instead of asking the user to interpret a bare number.
+// Three options per step (ends + middle); the server accepts only {1, 3, 5}.
 const SCORE_STEPS = [
   {
     key: 'moodScore',
     name: 'moodScore',
     question: "How's your mood right now?",
-    captions: ['Rough', 'Low', 'Okay', 'Good', 'Great'],
+    captions: ['Rough', 'Okay', 'Great'],
     Icon: FaceIcon,
   },
   {
     key: 'energyScore',
     name: 'energyScore',
     question: "How's your energy?",
-    captions: ['Running on empty', 'Low', 'Steady', 'Energized', 'Full tank'],
+    captions: ['Running on empty', 'Steady', 'Full tank'],
     Icon: EnergyIcon,
   },
   {
     key: 'drainScore',
     name: 'drainScore',
     question: 'How draining has it been?',
-    captions: ['Light', 'Mild', 'Moderate', 'Heavy', 'Overwhelming'],
+    captions: ['Light', 'Moderate', 'Overwhelming'],
     Icon: DrainIcon,
   },
 ]

@@ -16,8 +16,8 @@ const USER_B = '22222222-2222-4222-8222-222222222222'
 
 const validBody = {
   mood_score: 3,
-  energy_score: 2,
-  drain_score: 4,
+  energy_score: 1,
+  drain_score: 5,
   emotions: ['tired'],
   context_tags: ['work'],
   note: 'Test note.',
@@ -48,10 +48,28 @@ describe('checkins boundaries (no db)', () => {
 
     const res = await request(app)
       .post('/echo')
-      .send({ mood_score: 99, energy_score: 2, drain_score: 2 })
+      .send({ mood_score: 99, energy_score: 2, drain_score: 4 })
     expect(res.status).toBe(400)
     expect(res.body.error.code).toBe('VALIDATION_ERROR')
     expect(res.body.error.details.length).toBeGreaterThan(0)
+  })
+
+  it('rejects off-allowlist scores with VALIDATION_ERROR before touching the db', async () => {
+    const app = express()
+    app.use(express.json())
+    app.post(
+      '/echo',
+      validate(createCheckinSchema, 'body'),
+      (req, res) => res.json(req.body),
+    )
+    app.use(notFound)
+    app.use(errorHandler)
+
+    const res = await request(app)
+      .post('/echo')
+      .send({ mood_score: 3, energy_score: 2, drain_score: 5 })
+    expect(res.status).toBe(400)
+    expect(res.body.error.code).toBe('VALIDATION_ERROR')
   })
 })
 
@@ -84,8 +102,8 @@ describe.skipIf(!HAS_DB)('checkins api (db)', () => {
       expect(created.status).toBe(201)
       expect(created.body).toMatchObject({
         moodScore: 3,
-        energyScore: 2,
-        drainScore: 4,
+        energyScore: 1,
+        drainScore: 5,
         emotions: ['tired'],
       })
       expect(created.body.id).toBeDefined()

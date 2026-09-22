@@ -9,8 +9,8 @@ import {
 describe('checkins validation', () => {
   const valid = {
     mood_score: 3,
-    energy_score: 2,
-    drain_score: 4,
+    energy_score: 1,
+    drain_score: 5,
   }
 
   it('accepts a minimal valid body and applies defaults', () => {
@@ -38,10 +38,13 @@ describe('checkins validation', () => {
     [{ ...valid, mood_score: 0 }, 'mood_score'],
     [{ ...valid, energy_score: 6 }, 'energy_score'],
     [{ ...valid, drain_score: 2.5 }, 'drain_score'],
+    [{ ...valid, mood_score: 2 }, 'mood_score'],
+    [{ ...valid, energy_score: 4 }, 'energy_score'],
+    [{ ...valid, drain_score: 2 }, 'drain_score'],
     [{ ...valid, mood_score: '3' }, 'mood_score'],
     [{ ...valid, note: 'x'.repeat(5001) }, 'note'],
     [{ ...valid, emotions: ['x'.repeat(41)] }, 'emotions'],
-    [{ energy_score: 2, drain_score: 2 }, 'mood_score'],
+    [{ energy_score: 1, drain_score: 5 }, 'mood_score'],
   ])('rejects invalid body (%s)', (body) => {
     expect(() => createCheckinSchema.parse(body)).toThrow()
   })

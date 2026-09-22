@@ -17,26 +17,26 @@ describe('check-in page', () => {
     expect(screen.getByRole('heading', { name: 'Check-In' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Previous check-ins' })).toBeInTheDocument()
 
-    // Step 1 of 4: mood — only that question's 5 options are on screen.
+    // Step 1 of 4: mood — only that question's 3 options are on screen.
     expect(screen.getByText('Step 1 of 4')).toBeInTheDocument()
     expect(screen.getByRole('radiogroup', { name: /mood/i })).toBeInTheDocument()
-    expect(screen.getAllByRole('radio')).toHaveLength(5)
-    fireEvent.click(screen.getByRole('radio', { name: 'Good' }))
+    expect(screen.getAllByRole('radio')).toHaveLength(3)
+    fireEvent.click(screen.getByRole('radio', { name: 'Great' }))
 
     // Step 2 of 4: energy.
     expect(screen.getByText('Step 2 of 4')).toBeInTheDocument()
     expect(screen.getByRole('radiogroup', { name: /energy/i })).toBeInTheDocument()
-    expect(screen.getAllByRole('radio')).toHaveLength(5)
-    fireEvent.click(screen.getByRole('radio', { name: 'Energized' }))
+    expect(screen.getAllByRole('radio')).toHaveLength(3)
+    fireEvent.click(screen.getByRole('radio', { name: 'Steady' }))
 
     // Step 3 of 4: drain.
     expect(screen.getByText('Step 3 of 4')).toBeInTheDocument()
     expect(screen.getByRole('radiogroup', { name: /draining/i })).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('radio', { name: 'Mild' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'Overwhelming' }))
 
     // Step 4 of 4: a summary of the answers, optional details, and save.
     expect(screen.getByText('Step 4 of 4')).toBeInTheDocument()
-    expect(screen.getByText(/mood 4 · energy 4 · drain 2/i)).toBeInTheDocument()
+    expect(screen.getByText(/mood 5 · energy 3 · drain 5/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/emotions/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/anything else/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /save check-in/i })).toBeInTheDocument()
@@ -49,12 +49,12 @@ describe('check-in page', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Good' })) // mood -> step 2
+    fireEvent.click(screen.getByRole('radio', { name: 'Great' })) // mood -> step 2
     expect(screen.getByText('Step 2 of 4')).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Back' }))
     expect(screen.getByText('Step 1 of 4')).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: 'Good' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: 'Great' })).toBeChecked()
   })
 
   it('lets "Next" accept the current default without picking a new value', () => {
@@ -84,7 +84,7 @@ describe('check-in stepper redesign', () => {
   it('shows stroked face icons instead of numbers, with captions as names', () => {
     const container = renderPage()
     const faces = container.querySelectorAll('.score-option__face')
-    expect(faces).toHaveLength(5)
+    expect(faces).toHaveLength(3)
     faces.forEach((svg) => {
       expect(svg.getAttribute('aria-hidden')).toBe('true')
       expect(svg.querySelector('circle')).not.toBeNull()
@@ -109,24 +109,24 @@ describe('check-in stepper redesign', () => {
 
   it('lets completed steps jump back via the step list', () => {
     renderPage()
-    fireEvent.click(screen.getByRole('radio', { name: 'Good' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'Great' }))
     expect(screen.getByText('Step 2 of 4')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /Mood/ }))
     expect(screen.getByText('Step 1 of 4')).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: 'Good' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: 'Great' })).toBeChecked()
   })
 
   it('matches energy icons to energy captions, not mood faces', () => {
     const container = renderPage()
     // Mood step: faces.
-    expect(container.querySelectorAll('.score-option__face')).toHaveLength(5)
+    expect(container.querySelectorAll('.score-option__face')).toHaveLength(3)
     expect(container.querySelector('.score-option__icon')).toBeNull()
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Good' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'Great' }))
     // Energy step: battery levels with energy captions.
     expect(screen.getByRole('radiogroup', { name: /energy/i })).toBeInTheDocument()
     const batteries = container.querySelectorAll('.score-option__icon')
-    expect(batteries).toHaveLength(5)
+    expect(batteries).toHaveLength(3)
     batteries.forEach((svg) => {
       expect(svg.getAttribute('aria-hidden')).toBe('true')
     })
@@ -138,11 +138,11 @@ describe('check-in stepper redesign', () => {
 
   it('matches drain icons to drain captions, not mood faces', () => {
     const container = renderPage()
-    fireEvent.click(screen.getByRole('radio', { name: 'Good' }))
-    fireEvent.click(screen.getByRole('radio', { name: 'Energized' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'Great' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'Steady' }))
     expect(screen.getByRole('radiogroup', { name: /draining/i })).toBeInTheDocument()
     const drops = container.querySelectorAll('.score-option__icon')
-    expect(drops).toHaveLength(5)
+    expect(drops).toHaveLength(3)
     drops.forEach((svg) => {
       expect(svg.getAttribute('aria-hidden')).toBe('true')
     })

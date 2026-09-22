@@ -967,7 +967,7 @@ article>ul li {
 
 .score-options {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.65rem;
 }
 
@@ -1290,7 +1290,7 @@ article>ul li {
   }
 
   .score-options {
-    grid-template-columns: repeat(5, minmax(54px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.4rem;
   }
 
