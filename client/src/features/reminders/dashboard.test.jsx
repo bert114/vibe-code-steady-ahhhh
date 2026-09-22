@@ -66,7 +66,7 @@ describe('dashboard page', () => {
   it('renders the summary sections from one payload', async () => {
     renderPage(() => Promise.resolve(jsonResponse(summaryPayload)))
 
-    expect(await screen.findByRole('heading', { name: 'Recent check-ins' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Energy Overview' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Latest insight' })).toBeInTheDocument()
     expect(screen.getByText('Overtime keeps draining you')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Noticing lately' })).toBeInTheDocument()
@@ -76,9 +76,13 @@ describe('dashboard page', () => {
     // Compact battery ring card: header + timestamp, no redundant copy.
     expect(screen.getByText('Current Energy')).toBeInTheDocument()
     expect(screen.getByText(/Updated Sep 18/)).toBeInTheDocument()
-    expect(screen.getByText('20%')).toBeInTheDocument()
     expect(screen.queryByText(/Energy 1 of 5/)).not.toBeInTheDocument()
     expect(screen.queryByText(/not a diagnosis/)).not.toBeInTheDocument()
+    // Energy Overview capsule card replaces the old rhythm list (KPI row removed).
+    expect(screen.queryByText('Current Level')).not.toBeInTheDocument()
+    expect(screen.getByText('Last 7 Days')).toBeInTheDocument()
+    expect(screen.getByText('20%')).toBeInTheDocument()
+    expect(screen.queryByText(/mood 2 · energy 1/)).not.toBeInTheDocument()
   })
 
   it('marks a reminder as read and updates the unread count', async () => {

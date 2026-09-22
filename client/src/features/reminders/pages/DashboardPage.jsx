@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import EnergyBattery from '../components/EnergyBattery.jsx'
+import EnergyOverview from '../components/EnergyOverview.jsx'
 import { latestCheckin } from '../components/energyBattery.helpers.js'
 import FeedbackLink from '../components/FeedbackLink.jsx'
-import RhythmChart from '../components/RhythmChart.jsx'
 import SignalsPanel from '../components/SignalsPanel.jsx'
 import { useReveal } from '../hooks/useReveal.js'
 import { useDashboardStore } from '../store.js'
@@ -76,25 +76,11 @@ function CurrentBattery({ checkins }) {
   )
 }
 
-function RecentCheckins({ checkins }) {
-  if (checkins.length === 0) {
+function RecentEnergy({ checkins }) {
+  if (!checkins || checkins.length === 0) {
     return <p className="dashboard-panel__empty">No check-ins yet. Your recent history will appear here.</p>
   }
-  return (
-    <>
-      <RhythmChart checkins={checkins} />
-      <ul className="checkin-list">
-        {checkins.map((c) => (
-          <li key={c.id}>
-            <time dateTime={c.occurredAt}>{new Date(c.occurredAt).toLocaleString()}</time>
-            <span className="checkin-list__scores">
-              mood {c.moodScore} · energy {c.energyScore} · drain {c.drainScore}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </>
-  )
+  return <EnergyOverview checkins={checkins} />
 }
 
 function LatestInsight({ insight }) {
@@ -183,13 +169,12 @@ export default function DashboardPage() {
             <CurrentBattery checkins={summary.recentCheckins} />
             <div className="dashboard-page__grid">
             <section
-              className="dashboard-panel reveal"
+              className="dashboard-panel dashboard-panel--overview reveal"
               style={{ '--index': 2 }}
               aria-labelledby="recent-heading"
             >
-              <p className="dashboard-panel__label">Your recent rhythm</p>
-              <h2 id="recent-heading">Recent check-ins</h2>
-              <RecentCheckins checkins={summary.recentCheckins} />
+              <h2 id="recent-heading">Energy Overview</h2>
+              <RecentEnergy checkins={summary.recentCheckins} />
               <div className="dashboard-actions">
                 <Link className="dashboard-cta" to="/check-in">
                   Record a check-in <ArrowIcon />

@@ -448,6 +448,159 @@ main > section {
   height: 14px;
 }
 
+/* Energy Overview — full-width 7-day capsule chart card */
+.dashboard-panel--overview {
+  padding: 1.5rem;
+  border-radius: 16px;
+}
+
+.dashboard-panel--overview h2 {
+  margin-bottom: 1.25rem;
+}
+
+.overview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.overview-range {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid #eaeaea;
+  border-radius: 9999px;
+  background: var(--color-bg-warm);
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.overview-range__icon {
+  width: 12px;
+  height: 12px;
+}
+
+.overview-chart {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.capsule-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.15rem 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.capsule-col:hover,
+.capsule-col:focus-visible {
+  background: var(--color-bg-warm);
+}
+
+.capsule-track {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  max-width: 44px;
+  height: clamp(140px, 22vw, 200px);
+  overflow: hidden;
+  border-radius: 9999px;
+  background: #efefed;
+}
+
+.capsule-fill {
+  display: block;
+  width: 100%;
+  min-height: 12px;
+  border-radius: inherit;
+  background: #d9d9d6;
+}
+
+.capsule-fill--active {
+  background: #111111;
+}
+
+.capsule-fill--empty {
+  min-height: 0;
+  background: transparent;
+}
+
+.capsule-label {
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 400;
+}
+
+.capsule-label--active {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+.capsule-tip {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+  display: grid;
+  gap: 0.1rem;
+  min-width: max-content;
+  padding: 0.5rem 0.65rem 0.65rem;
+  border-radius: 8px;
+  background: #111111;
+  color: #ffffff;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
+  z-index: 2;
+}
+
+.capsule-tip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #111111;
+}
+
+.capsule-col:hover .capsule-tip,
+.capsule-col:focus-visible .capsule-tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.capsule-tip__date {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.capsule-tip__value {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -1026,10 +1179,26 @@ article > ul li {
   .dashboard-panel--battery-compact {
     padding: 1rem;
   }
+
+  .dashboard-panel--overview {
+    padding: 1rem;
+  }
+
+  .overview-chart {
+    gap: 0.25rem;
+  }
+
+  .capsule-track {
+    height: 120px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .battery-ring__fill {
+    transition: none;
+  }
+
+  .capsule-tip {
     transition: none;
   }
 }
