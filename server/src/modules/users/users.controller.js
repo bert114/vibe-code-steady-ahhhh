@@ -19,3 +19,13 @@ export async function deleteMe(req, res, next) {
     next(err)
   }
 }
+
+export async function exportMe(req, res, next) {
+  try {
+    const data = await service.exportUserData(req.user.id)
+    res.json({ data })
+  } catch (err) {
+    next(err)
+  }
+}
+

@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { requireUser } from '../../middleware/auth.js'
-import { deleteMe } from './users.controller.js'
+import { deleteMe, exportMe } from './users.controller.js'
 
 export const usersRouter = Router()
 
@@ -8,3 +8,5 @@ export const usersRouter = Router()
 // to every user-owned row (check-ins, insights, reminders, analysis runs).
 usersRouter.use(requireUser)
 usersRouter.delete('/me', deleteMe)
+usersRouter.get('/export', exportMe)
+

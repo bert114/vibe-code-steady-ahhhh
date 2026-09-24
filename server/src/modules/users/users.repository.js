@@ -37,3 +37,30 @@ export async function deleteUser(userId) {
   const { rowCount } = await pool.query('DELETE FROM users WHERE id = $1', [userId])
   return rowCount > 0
 }
+
+export async function exportUserData(userId) {
+  const [checkinsRes, insightsRes, remindersRes] = await Promise.all([
+    pool.query(
+      `SELECT id, occurred_at, mood_score, energy_score, drain_score, emotions, context_tags, note, created_at
+       FROM checkins WHERE user_id = $1 ORDER BY occurred_at DESC`,
+      [userId],
+    ),
+    pool.query(
+      `SELECT id, insight_type, title, summary, evidence, confidence, suggestions, created_at
+       FROM insights WHERE user_id = $1 ORDER BY created_at DESC`,
+      [userId],
+    ),
+    pool.query(
+      `SELECT id, kind, message, read_at, created_at
+       FROM reminders WHERE user_id = $1 ORDER BY created_at DESC`,
+      [userId],
+    ),
+  ])
+
+  return {
+    checkins: checkinsRes.rows,
+    insights: insightsRes.rows,
+    reminders: remindersRes.rows,
+  }
+}
+

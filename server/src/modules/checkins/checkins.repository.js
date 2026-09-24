@@ -46,3 +46,12 @@ export async function findCheckinById(userId, id) {
   )
   return rows[0] ?? null
 }
+
+export async function deleteCheckinById(userId, id) {
+  const { rowCount } = await pool.query(
+    `DELETE FROM checkins WHERE id = $1 AND user_id = $2`,
+    [id, userId],
+  )
+  return (rowCount ?? 0) > 0
+}
+

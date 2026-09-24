@@ -1,26 +1,10 @@
 import { useEffect } from 'react'
 import CheckInForm from '../components/CheckInForm.jsx'
+import CheckInHistoryList from '../components/CheckInHistoryList.jsx'
 import { useCheckinsStore } from '../store.js'
 
-function HistoryList({ checkins }) {
-  if (checkins.length === 0) {
-    return <p className="checkin-history__empty">No check-ins yet. Your history will appear here.</p>
-  }
-  return (
-    <ul className="checkin-history__list">
-      {checkins.map((c) => (
-        <li key={c.id}>
-          <time dateTime={c.occurredAt}>{new Date(c.occurredAt).toLocaleString()}</time>
-          {' — '}mood {c.moodScore}, energy {c.energyScore}, drain {c.drainScore}
-          {c.emotions?.length > 0 && ` · ${c.emotions.join(', ')}`}
-        </li>
-      ))}
-    </ul>
-  )
-}
-
 export default function CheckInPage() {
-  const { checkins, status, saveDraft, loadHistory, resetDraft } = useCheckinsStore()
+  const { checkins, status, saveDraft, loadHistory, resetDraft, removeCheckin } = useCheckinsStore()
   const saving = status === 'saving'
 
   useEffect(() => {
@@ -41,8 +25,9 @@ export default function CheckInPage() {
 
       <section aria-labelledby="history-heading" className="checkin-history">
         <h2 id="history-heading">Previous check-ins</h2>
-        <HistoryList checkins={checkins} />
+        <CheckInHistoryList checkins={checkins} onDelete={removeCheckin} />
       </section>
     </main>
   )
 }
+

@@ -33,3 +33,8 @@ export async function getCheckins(userId, paging) {
 export async function getCheckinById(userId, id) {
   return toApi(await repository.findCheckinById(userId, id))
 }
+
+export async function removeCheckin(userId, id) {
+  return repository.deleteCheckinById(userId, id)
+}
+

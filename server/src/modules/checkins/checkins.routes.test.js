@@ -123,6 +123,20 @@ describe.skipIf(!HAS_DB)('checkins api (db)', () => {
     const ownRead = await request(authedApp(USER_A)).get(`/api/check-ins/${created.body.id}`)
     expect(ownRead.status).toBe(200)
     expect(ownRead.body.id).toBe(created.body.id)
+
+    // User isolation on delete: B cannot delete A's checkin
+    const crossDelete = await request(authedApp(USER_B)).delete(`/api/check-ins/${created.body.id}`)
+    expect(crossDelete.status).toBe(404)
+    expect(crossDelete.body.error.code).toBe('CHECKIN_NOT_FOUND')
+
+    // Owner can delete their checkin
+    const ownDelete = await request(authedApp(USER_A)).delete(`/api/check-ins/${created.body.id}`)
+    expect(ownDelete.status).toBe(200)
+    expect(ownDelete.body.data).toEqual({ id: created.body.id, deleted: true })
+
+    // Subsequent read returns 404
+    const afterDelete = await request(authedApp(USER_A)).get(`/api/check-ins/${created.body.id}`)
+    expect(afterDelete.status).toBe(404)
     } finally {
       await pool.query('DELETE FROM checkins WHERE user_id IN ($1, $2)', [USER_A, USER_B])
     }

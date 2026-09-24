@@ -42,8 +42,20 @@ export const useCheckinsStore = create((set, get) => ({
       useToastStore.getState().success("Saved. Thank you for checking in.");
       return saved;
     } catch (err) {
-      console.log(err.message);
       set({ status: "failed", error: err.message });
+      throw err;
+    }
+  },
+
+  removeCheckin: async (id) => {
+    try {
+      await deleteCheckin(id);
+      set((s) => ({
+        checkins: s.checkins.filter((c) => c.id !== id),
+      }));
+      useToastStore.getState().success("Check-in removed.");
+    } catch (err) {
+      useToastStore.getState().error(err.message || "Failed to remove check-in.");
       throw err;
     }
   },

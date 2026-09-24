@@ -5,3 +5,8 @@ import { request } from '../../lib/api/request.js'
 export function deleteMyAccount() {
   return request('/users/me', { method: 'DELETE' })
 }
+
+export function exportMyData() {
+  return request('/users/export')
+}
+

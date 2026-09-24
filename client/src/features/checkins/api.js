@@ -13,3 +13,8 @@ export function listCheckins({ limit = 30, offset = 0 } = {}) {
 export function getCheckin(id) {
   return request(`/check-ins/${id}`)
 }
+
+export function deleteCheckin(id) {
+  return request(`/check-ins/${id}`, { method: 'DELETE' })
+}
+

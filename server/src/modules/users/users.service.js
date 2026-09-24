@@ -21,3 +21,12 @@ export async function resolveUserId(clerkSub) {
 export async function deleteUser(userId) {
   return repository.deleteUser(userId)
 }
+
+export async function exportUserData(userId) {
+  const data = await repository.exportUserData(userId)
+  return {
+    ...data,
+    exportedAt: new Date().toISOString(),
+  }
+}
+

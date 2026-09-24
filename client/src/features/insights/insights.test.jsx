@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import ToastStack from '../../components/ui/Toast.jsx'
@@ -69,4 +69,58 @@ describe('insights page', () => {
     const items = screen.getAllByRole('listitem').map((li) => li.textContent ?? '')
     expect(items.join(' ')).not.toMatch(/you must|toxic|diagnos/i)
   })
+
+  it('filters insights by category tabs', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            insights: [
+              {
+                id: 'b1',
+                type: 'boundary',
+                title: 'Boundary pressure at work',
+                summary: 'Frequent overtime.',
+                evidence: ['Late meetings 3 times.'],
+                confidence: 'medium',
+                suggestions: ['Consider protecting finish times.'],
+              },
+              {
+                id: 'o1',
+                type: 'burnout',
+                title: 'Consecutive draining days',
+                summary: 'Energy is depleted.',
+                evidence: ['Energy scored low 4 days in a row.'],
+                confidence: 'high',
+                suggestions: ['Take an uninterrupted rest window.'],
+              },
+            ],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      ),
+    )
+    render(
+      <MemoryRouter>
+        <InsightsPage />
+      </MemoryRouter>,
+    )
+
+    // Both appear on All Patterns
+    expect(await screen.findByText('Boundary pressure at work')).toBeInTheDocument()
+    expect(screen.getByText('Consecutive draining days')).toBeInTheDocument()
+
+    // Switch to Boundaries tab
+    const boundariesTab = screen.getByRole('tab', { name: 'Boundaries' })
+    fireEvent.click(boundariesTab)
+    expect(screen.getByText('Boundary pressure at work')).toBeInTheDocument()
+    expect(screen.queryByText('Consecutive draining days')).not.toBeInTheDocument()
+
+    // Switch to Burnout Signals tab
+    const burnoutTab = screen.getByRole('tab', { name: 'Burnout Signals' })
+    fireEvent.click(burnoutTab)
+    expect(screen.queryByText('Boundary pressure at work')).not.toBeInTheDocument()
+    expect(screen.getByText('Consecutive draining days')).toBeInTheDocument()
+  })
 })
+

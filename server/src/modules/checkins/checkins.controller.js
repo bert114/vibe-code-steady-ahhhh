@@ -7,7 +7,6 @@ export async function postCheckin(req, res, next) {
     const checkin = await service.createCheckin(req.user.id, req.body);
     res.status(201).json(checkin);
   } catch (err) {
-    console.log(err);
     next(err);
   }
 }
@@ -38,3 +37,22 @@ export async function getCheckinById(req, res, next) {
     next(err);
   }
 }
+
+export async function deleteCheckin(req, res, next) {
+  try {
+    const deleted = await service.removeCheckin(req.user.id, req.params.id);
+    if (!deleted) {
+      return res.status(404).json({
+        error: {
+          code: "CHECKIN_NOT_FOUND",
+          message: "That check-in was not found.",
+          details: [],
+        },
+      });
+    }
+    res.status(200).json({ data: { id: req.params.id, deleted: true } });
+  } catch (err) {
+    next(err);
+  }
+}
+

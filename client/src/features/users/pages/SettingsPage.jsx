@@ -2,7 +2,51 @@ import { useClerk } from '@clerk/clerk-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { clerkEnabled } from '../../../app/auth.jsx'
-import { deleteMyAccount } from '../api.js'
+import { useToastStore } from '../../../components/ui/toastStore.js'
+import { deleteMyAccount, exportMyData } from '../api.js'
+
+function ExportData() {
+  const [exporting, setExporting] = useState(false)
+
+  async function handleExport() {
+    setExporting(true)
+    try {
+      const res = await exportMyData()
+      const dataStr = JSON.stringify(res.data, null, 2)
+      const dataBlob = new Blob([dataStr], { type: 'application/json' })
+      const url = URL.createObjectURL(dataBlob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `steady-ahh-export-${new Date().toISOString().slice(0, 10)}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      useToastStore.getState().success('Your data export has downloaded.')
+    } catch {
+      // Failure surfaced as an error toast by request helper
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  return (
+    <div>
+      <p>
+        Download a complete, machine-readable JSON copy of all your check-ins, personal insights,
+        and reminders for offline safekeeping.
+      </p>
+      <button
+        type="button"
+        className="btn-secondary"
+        onClick={handleExport}
+        disabled={exporting}
+      >
+        {exporting ? 'Preparing export…' : 'Export my data (JSON)'}
+      </button>
+    </div>
+  )
+}
 
 function ClerkSignOut({ onSignedOut }) {
   const { signOut } = useClerk()
@@ -78,6 +122,11 @@ export default function SettingsPage() {
         </p>
       </section>
 
+      <section className="settings-section" aria-labelledby="export-heading">
+        <h2 id="export-heading">Export your data</h2>
+        <ExportData />
+      </section>
+
       <section className="settings-section" aria-labelledby="ai-use-heading">
         <h2 id="ai-use-heading">How AI uses your data</h2>
         <p>
@@ -110,3 +159,4 @@ export default function SettingsPage() {
     </main>
   )
 }
+

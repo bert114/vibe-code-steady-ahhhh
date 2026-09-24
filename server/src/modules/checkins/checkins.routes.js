@@ -2,6 +2,7 @@ import { Router } from "express";
 import { requireUser } from "../../middleware/auth.js";
 import { validate } from "../../middleware/validate.js";
 import {
+  deleteCheckin,
   getCheckinById,
   getCheckins,
   postCheckin,
@@ -20,3 +21,5 @@ checkinsRouter.use(requireUser);
 checkinsRouter.post("/", validate(createCheckinSchema, "body"), postCheckin);
 checkinsRouter.get("/", validate(listCheckinsSchema, "query"), getCheckins);
 checkinsRouter.get("/:id", validate(checkinIdSchema, "params"), getCheckinById);
+checkinsRouter.delete("/:id", validate(checkinIdSchema, "params"), deleteCheckin);
+

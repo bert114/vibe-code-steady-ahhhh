@@ -2,6 +2,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import SignInPage from '../features/auth/pages/SignInPage.jsx'
 import SignUpPage from '../features/auth/pages/SignUpPage.jsx'
 import CheckInPage from '../features/checkins/pages/CheckInPage.jsx'
+import HomePage from '../features/home/pages/HomePage.jsx'
 import InsightsPage from '../features/insights/pages/InsightsPage.jsx'
 import DashboardPage from '../features/reminders/pages/DashboardPage.jsx'
 import SettingsPage from '../features/users/pages/SettingsPage.jsx'
@@ -39,13 +40,11 @@ export default function AppRouter() {
             path="/"
             element={
               <Shell>
-                <Placeholder
-                  title="Steady-Ahh"
-                  hint="A calm space to check in with yourself."
-                />
+                <HomePage />
               </Shell>
             }
           />
+
           <Route
             path="/dashboard"
             element={

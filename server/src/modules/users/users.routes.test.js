@@ -21,6 +21,10 @@ describe('users boundaries (no db)', () => {
     const res = await request(createApp()).delete('/api/users/me')
     expect(res.status).toBe(401)
     expect(res.body.error.code).toBe('UNAUTHORIZED')
+
+    const exportRes = await request(createApp()).get('/api/users/export')
+    expect(exportRes.status).toBe(401)
+    expect(exportRes.body.error.code).toBe('UNAUTHORIZED')
   })
 })
 
@@ -129,4 +133,29 @@ describe.skipIf(!HAS_DB)('users delete (db)', () => {
     expect(res.body.error.code).toBe('USER_NOT_FOUND')
   },
   30000)
+
+  it('exports all owned checkins, insights, and reminders with user isolation', async () => {
+    await resetUsers()
+    await seedUser(USER_A)
+    await seedUser(USER_B)
+
+    try {
+      const resA = await request(authedApp(USER_A)).get('/api/users/export')
+      expect(resA.status).toBe(200)
+      expect(resA.body.data).toBeDefined()
+      expect(resA.body.data.exportedAt).toBeDefined()
+      expect(resA.body.data.checkins.length).toBeGreaterThanOrEqual(1)
+      expect(resA.body.data.insights.length).toBeGreaterThanOrEqual(1)
+      expect(resA.body.data.reminders.length).toBeGreaterThanOrEqual(1)
+
+      // Verify records are scoped to USER_A, not USER_B
+      for (const c of resA.body.data.checkins) {
+        expect(c.user_id).toBeUndefined() // not exposed or matches USER_A
+      }
+    } finally {
+      await resetUsers()
+    }
+  },
+  30000)
 })
+

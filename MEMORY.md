@@ -38,7 +38,6 @@ Update this after major decisions, completed phases, or bugs that future agents 
 - [x] AI Insights (002 migration, provider adapter + prompt + Zod schema, analyze service with fallback, rate-limited routes, Insights page, 9-case eval fixtures, 43 tests — fallback + 429 verified live 2026-09-18; real model call deferred pending Cloudflare creds)
 - [x] Phase 4 Boundary + Dashboard (reminders module GET/PATCH + read_at idempotency, GET /api/dashboard/summary, Observed/Reflection prompt rule + boundary insight cards, dashboard UI with optimistic mark-read, no migration needed; client 9 + server 45 tests green 2026-09-19)
 - [x] Phase 5 Validation Readiness (Clerk Hobby auth: 003 auth_identities, injectable verifier, Bearer-per-call client, prod boot guards; DELETE /api/users/me cascade + /settings privacy copy; render.yaml + deploy/tester runbooks; Playwright 5 journeys on scratch ports; feedback-link default external form; client 18 + server 52 + e2e 5 green 2026-09-19; no AI provider — fallback honest)
-- [ ] Core data model
-- [ ] Auth
-- [ ] Core MVP flow
-- [ ] Launch checks
+- [x] Phase 6 Dashboard & UX Refresh (Dashboard layout overhaul, energy battery & 7-capsule energy overview, 3-point check-in scale, toast notification stack & store)
+- [x] Phase 7 Experience Polish, Timeline History & Data Sovereignty (Calm hero landing at `/`, interactive check-in timeline with note expander and scoped `DELETE /api/check-ins/:id`, elevated `/insights` with category tabs and dual-callout cards, data sovereignty export `GET /api/users/export` in `/settings`; client 52 tests green 2026-09-24)
+
