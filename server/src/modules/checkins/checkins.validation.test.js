@@ -3,6 +3,7 @@ import {
   checkinIdSchema,
   createCheckinSchema,
   listCheckinsSchema,
+  trendsQuerySchema,
 } from './checkins.validation.js'
 
 // Pure schema tests — no database needed.
@@ -60,5 +61,16 @@ describe('checkins validation', () => {
       checkinIdSchema.parse({ id: '550e8400-e29b-41d4-a716-446655440000' }),
     ).not.toThrow()
     expect(() => checkinIdSchema.parse({ id: 'not-a-uuid' })).toThrow()
+  })
+
+  it('defaults trends windowDays to 30 and coerces strings', () => {
+    expect(trendsQuerySchema.parse({})).toEqual({ windowDays: 30 })
+    expect(trendsQuerySchema.parse({ windowDays: '7' }).windowDays).toBe(7)
+    expect(trendsQuerySchema.parse({ windowDays: '90' }).windowDays).toBe(90)
+  })
+
+  it('rejects a windowDays outside the fixed allowlist', () => {
+    expect(() => trendsQuerySchema.parse({ windowDays: 14 })).toThrow()
+    expect(() => trendsQuerySchema.parse({ windowDays: 0 })).toThrow()
   })
 })

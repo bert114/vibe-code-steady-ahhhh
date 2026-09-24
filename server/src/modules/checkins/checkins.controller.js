@@ -38,6 +38,14 @@ export async function getCheckinById(req, res, next) {
   }
 }
 
+export async function getTrends(req, res, next) {
+  try {
+    res.json(await service.getTrends(req.user.id, req.query));
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function deleteCheckin(req, res, next) {
   try {
     const deleted = await service.removeCheckin(req.user.id, req.params.id);

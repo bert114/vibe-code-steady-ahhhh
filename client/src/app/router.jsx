@@ -5,6 +5,7 @@ import CheckInPage from '../features/checkins/pages/CheckInPage.jsx'
 import HomePage from '../features/home/pages/HomePage.jsx'
 import InsightsPage from '../features/insights/pages/InsightsPage.jsx'
 import DashboardPage from '../features/reminders/pages/DashboardPage.jsx'
+import TrendsPage from '../features/trends/pages/TrendsPage.jsx'
 import SettingsPage from '../features/users/pages/SettingsPage.jsx'
 import AppShell from './AppShell.jsx'
 import { AuthProvider, RequireAuth, clerkEnabled } from './auth.jsx'
@@ -50,6 +51,14 @@ export default function AppRouter() {
             element={
               <Shell needsAuth>
                 <DashboardPage />
+              </Shell>
+            }
+          />
+          <Route
+            path="/trends"
+            element={
+              <Shell needsAuth>
+                <TrendsPage />
               </Shell>
             }
           />

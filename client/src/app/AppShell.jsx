@@ -1,12 +1,13 @@
 import { Link, NavLink } from 'react-router-dom'
 import ToastStack from '../components/ui/Toast.jsx'
 
-// Persistent chrome for the whole app: a slim top bar with the four
-// destinations a signed-in person needs, so no page is ever a dead end.
+// Persistent chrome for the whole app: a slim top bar with the destinations
+// a signed-in person needs, so no page is ever a dead end.
 // Presentation only — no data fetching, no store access.
 const LINKS = [
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/check-in', label: 'Check-In' },
+  { to: '/trends', label: 'Trends' },
   { to: '/insights', label: 'Insights' },
   { to: '/settings', label: 'Settings' },
 ]

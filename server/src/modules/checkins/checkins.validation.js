@@ -31,3 +31,15 @@ export const listCheckinsSchema = z.object({
 export const checkinIdSchema = z.object({
   id: z.string().uuid(),
 })
+
+// Fixed set of windows the client can request — keeps the query fast and
+// the trend chart's x-axis predictable (no arbitrary day counts to render).
+export const trendsQuerySchema = z.object({
+  windowDays: z.coerce
+    .number()
+    .int()
+    .refine((v) => [7, 30, 90].includes(v), {
+      message: 'windowDays must be one of 7, 30, or 90.',
+    })
+    .default(30),
+})

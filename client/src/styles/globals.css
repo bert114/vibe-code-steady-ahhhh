@@ -2151,4 +2151,81 @@ article>ul li {
   color: var(--text-muted);
   max-width: 50ch;
   margin: 0;
-}
+}
+
+/* Trends page */
+.trends-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.trends-page__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.trends-page__lead {
+  font-size: 0.98rem;
+  color: var(--text-muted);
+  max-width: 60ch;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.trends-page__chart {
+  padding: 1.5rem;
+  border-radius: 24px;
+  background: var(--bg-light);
+  border: 1px solid var(--border-muted);
+}
+
+.trends-page__tags h2 {
+  font-family: 'Melodrama', serif;
+  font-size: 1.15rem;
+  margin: 0 0 0.35rem;
+  color: var(--text);
+}
+
+.trends-page__tags-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0 0 0.9rem;
+}
+
+.trends-page__tags-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+/* Trend chart */
+.trend-chart {
+  margin: 0;
+}
+
+.trend-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.trend-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.trend-chart__empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+

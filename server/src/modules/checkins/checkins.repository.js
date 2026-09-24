@@ -55,3 +55,39 @@ export async function deleteCheckinById(userId, id) {
   return (rowCount ?? 0) > 0
 }
 
+// One row per calendar day with at least one check-in, oldest first —
+// day-bucketed so a window covering many check-ins still renders as a
+// legible trend rather than one point per row.
+export async function getDailyAverages(userId, sinceDate) {
+  const { rows } = await pool.query(
+    `SELECT
+       date_trunc('day', occurred_at) AS day,
+       AVG(mood_score)::float AS avg_mood,
+       AVG(energy_score)::float AS avg_energy,
+       AVG(drain_score)::float AS avg_drain,
+       COUNT(*)::int AS checkins
+     FROM checkins
+     WHERE user_id = $1 AND occurred_at >= $2
+     GROUP BY day
+     ORDER BY day ASC`,
+    [userId, sinceDate],
+  )
+  return rows
+}
+
+// Most frequent context tags on high-drain check-ins (drain_score = 5) in
+// the window — a lightweight signal for "what tends to be draining lately",
+// separate from the deterministic pattern engine's own rules.
+export async function getTopDrainingTags(userId, sinceDate, limit) {
+  const { rows } = await pool.query(
+    `SELECT tag, COUNT(*)::int AS count
+     FROM checkins, unnest(context_tags) AS tag
+     WHERE user_id = $1 AND occurred_at >= $2 AND drain_score = 5
+     GROUP BY tag
+     ORDER BY count DESC, tag ASC
+     LIMIT $3`,
+    [userId, sinceDate, limit],
+  )
+  return rows
+}
+

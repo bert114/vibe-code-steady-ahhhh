@@ -18,3 +18,7 @@ export function deleteCheckin(id) {
   return request(`/check-ins/${id}`, { method: 'DELETE' })
 }
 
+export function getTrends({ windowDays = 30 } = {}) {
+  return request(`/check-ins/trends?windowDays=${windowDays}`)
+}
+
