@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import CheckInForm from './components/CheckInForm.jsx'
 import CheckInPage from './pages/CheckInPage.jsx'
 
 // The check-in flow is a stepper: one question at a time, advancing
@@ -68,6 +69,40 @@ describe('check-in page', () => {
     expect(screen.getByRole('radio', { name: 'Okay' })).toBeChecked()
     fireEvent.click(screen.getByRole('button', { name: 'Next' }))
     expect(screen.getByText('Step 2 of 4')).toBeInTheDocument()
+  })
+
+  it('does not auto-save when pressing Enter in Step 4 text fields; only explicit Save submits', () => {
+    const onSubmit = vi.fn()
+    const { container } = render(<CheckInForm onSubmit={onSubmit} saving={false} />)
+
+    // Next through 1-3 on defaults to reach Step 4.
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(screen.getByText('Step 4 of 4')).toBeInTheDocument()
+
+    // Focus is moved off the nav slot so a lingering Next keypress/click
+    // can't bleed into Save.
+    const saveButton = screen.getByRole('button', { name: /save check-in/i })
+    expect(document.activeElement).not.toBe(saveButton)
+    expect(saveButton).toHaveAttribute('type', 'button')
+
+    const emotions = screen.getByLabelText(/emotions/i)
+    const context = screen.getByLabelText(/what was going on/i)
+
+    // Enter in text fields is swallowed: no submit, still on Step 4.
+    expect(fireEvent.keyDown(emotions, { key: 'Enter', code: 'Enter', charCode: 13 })).toBe(false)
+    expect(fireEvent.keyDown(context, { key: 'Enter', code: 'Enter', charCode: 13 })).toBe(false)
+    expect(onSubmit).not.toHaveBeenCalled()
+
+    // Showing Step 4 never submits through the form itself (no submitter).
+    fireEvent.submit(container.querySelector('form'))
+    expect(onSubmit).not.toHaveBeenCalled()
+    expect(screen.getByText('Step 4 of 4')).toBeInTheDocument()
+
+    // Explicit Save still submits once.
+    fireEvent.click(saveButton)
+    expect(onSubmit).toHaveBeenCalledTimes(1)
   })
 })
 

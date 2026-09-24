@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import DrainIcon from './DrainIcon.jsx'
+import EnergyIcon from './EnergyIcon.jsx'
+import FaceIcon from './FaceIcon.jsx'
 
 function scoreLabel(type, val) {
   const num = Number(val)
@@ -28,6 +31,10 @@ function HistoryCard({ checkin, onDelete }) {
   const mood = scoreLabel('mood', checkin.moodScore)
   const energy = scoreLabel('energy', checkin.energyScore)
   const drain = scoreLabel('drain', checkin.drainScore)
+
+  const hasEmotions = checkin.emotions && checkin.emotions.length > 0
+  const hasContextTags = checkin.contextTags && checkin.contextTags.length > 0
+  const isLongNote = checkin.note && checkin.note.length > 120
 
   const dateStr = new Date(checkin.occurredAt).toLocaleDateString(undefined, {
     month: 'short',
@@ -93,29 +100,28 @@ function HistoryCard({ checkin, onDelete }) {
       </header>
 
       <div className="history-card__scores">
-        <span className={`badge ${mood.cls}`}>Mood: {mood.text}</span>
-        <span className={`badge ${energy.cls}`}>Energy: {energy.text}</span>
-        <span className={`badge ${drain.cls}`}>Drain: {drain.text}</span>
+        <div className="history-card__score-box" aria-label={`Mood: ${mood.text}`}>
+          <span className={`history-card__score-icon ${mood.cls}`}>
+            <FaceIcon score={checkin.moodScore} />
+          </span>
+          <span className="history-card__score-sub">{mood.text}</span>
+        </div>
+        <div className="history-card__score-box" aria-label={`Energy: ${energy.text}`}>
+          <span className={`history-card__score-icon ${energy.cls}`}>
+            <EnergyIcon score={checkin.energyScore} />
+          </span>
+          <span className="history-card__score-sub">{energy.text}</span>
+        </div>
+        <div className="history-card__score-box" aria-label={`Drain: ${drain.text}`}>
+          <span className={`history-card__score-icon ${drain.cls}`}>
+            <DrainIcon score={checkin.drainScore} />
+          </span>
+          <span className="history-card__score-sub">{drain.text}</span>
+        </div>
       </div>
 
-      {((checkin.emotions && checkin.emotions.length > 0) ||
-        (checkin.contextTags && checkin.contextTags.length > 0)) && (
-        <div className="history-card__tags">
-          {checkin.emotions?.map((e, idx) => (
-            <span key={`emo-${idx}`} className="chip chip--emotion">
-              {e}
-            </span>
-          ))}
-          {checkin.contextTags?.map((tag, idx) => (
-            <span key={`tag-${idx}`} className="chip chip--context">
-              #{tag}
-            </span>
-          ))}
-        </div>
-      )}
-
       {checkin.note && (
-        <div className="history-card__note-section">
+        <div className="history-card__note-lines">
           {expanded ? (
             <p className="history-card__note">{checkin.note}</p>
           ) : (
@@ -125,15 +131,40 @@ function HistoryCard({ checkin, onDelete }) {
                 : checkin.note}
             </p>
           )}
-          {checkin.note.length > 120 && (
-            <button
-              type="button"
-              className="btn-link history-card__expand-btn"
-              onClick={() => setExpanded(!expanded)}
-              aria-expanded={expanded}
-            >
-              {expanded ? 'Show less' : 'Read full note'}
-            </button>
+        </div>
+      )}
+
+      {(hasEmotions || hasContextTags || isLongNote) && (
+        <div className="history-card__optionals">
+          {hasEmotions && (
+            <div className="history-card__optional-box">
+              {checkin.emotions.map((e, idx) => (
+                <span key={`emo-${idx}`} className="chip chip--emotion">
+                  {e}
+                </span>
+              ))}
+            </div>
+          )}
+          {hasContextTags && (
+            <div className="history-card__optional-box">
+              {checkin.contextTags.map((tag, idx) => (
+                <span key={`tag-${idx}`} className="chip chip--context">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+          {isLongNote && (
+            <div className="history-card__optional-box history-card__optional-box--action">
+              <button
+                type="button"
+                className="btn-link history-card__expand-btn"
+                onClick={() => setExpanded(!expanded)}
+                aria-expanded={expanded}
+              >
+                {expanded ? 'Show less' : 'Read full note'}
+              </button>
+            </div>
           )}
         </div>
       )}

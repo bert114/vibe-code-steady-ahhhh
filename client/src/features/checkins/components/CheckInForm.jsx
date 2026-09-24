@@ -95,10 +95,14 @@ function ScoreStep({ meta, value, onSelect }) {
   )
 }
 
-function DetailsStep({ draft, setDraft, onEditAnswers }) {
+function preventImplicitSubmit(event) {
+  if (event.key === 'Enter') event.preventDefault()
+}
+
+function DetailsStep({ draft, setDraft, onEditAnswers, summaryRef }) {
   return (
     <div className="checkin-details">
-      <p className="checkin-summary">
+      <p className="checkin-summary" ref={summaryRef} tabIndex={-1}>
         <span>
           Mood {draft.moodScore} · Energy {draft.energyScore} · Drain {draft.drainScore}
         </span>
@@ -115,6 +119,7 @@ function DetailsStep({ draft, setDraft, onEditAnswers }) {
           type="text"
           value={draft.emotions}
           onChange={(e) => setDraft({ emotions: e.target.value })}
+          onKeyDown={preventImplicitSubmit}
           placeholder="e.g. tired, hopeful"
           autoComplete="off"
         />
@@ -127,6 +132,7 @@ function DetailsStep({ draft, setDraft, onEditAnswers }) {
           type="text"
           value={draft.contextTags}
           onChange={(e) => setDraft({ contextTags: e.target.value })}
+          onKeyDown={preventImplicitSubmit}
           placeholder="e.g. work, family dinner"
           autoComplete="off"
         />
@@ -154,6 +160,7 @@ export default function CheckInForm({ onSubmit, saving }) {
   const { draft, setDraft, status } = useCheckinsStore()
   const [step, setStep] = useState(0)
   const prevStatusRef = useRef(status)
+  const detailsSummaryRef = useRef(null)
 
   // A successful save clears the draft back to defaults — start the next
   // check-in from the first question instead of leaving the wizard parked
@@ -166,6 +173,14 @@ export default function CheckInForm({ onSubmit, saving }) {
   }, [status])
 
   const isDetailsStep = step === SCORE_STEPS.length
+
+  // When Step 4 mounts, move focus off the nav slot (where Next just
+  // unmounted and Save mounts in the same spot) so a lingering Enter,
+  // Space, or double-click intended as "Next" can't bleed into Save.
+  useEffect(() => {
+    if (isDetailsStep) detailsSummaryRef.current?.focus()
+  }, [isDetailsStep])
+
   const currentMeta = SCORE_STEPS[step]
 
   function goNext() {
@@ -178,9 +193,11 @@ export default function CheckInForm({ onSubmit, saving }) {
   return (
     <form
       className="checkin-stepper"
+      // No submit button exists in this form on purpose: Step 4 saves only
+      // through an explicit Save click, never through implicit submission
+      // (Enter in a field, repeated Next-keypress bleed, double-click).
       onSubmit={(e) => {
         e.preventDefault()
-        if (isDetailsStep) onSubmit()
       }}
     >
       <div className="stepper-side">
@@ -206,7 +223,12 @@ export default function CheckInForm({ onSubmit, saving }) {
         )}
 
         {isDetailsStep && (
-          <DetailsStep draft={draft} setDraft={setDraft} onEditAnswers={() => setStep(0)} />
+          <DetailsStep
+            draft={draft}
+            setDraft={setDraft}
+            onEditAnswers={() => setStep(0)}
+            summaryRef={detailsSummaryRef}
+          />
         )}
 
         <div className="stepper-nav">
@@ -220,7 +242,7 @@ export default function CheckInForm({ onSubmit, saving }) {
               Next <span aria-hidden="true">→</span>
             </button>
           ) : (
-            <button type="submit" className="stepper-nav__submit" disabled={saving}>
+            <button type="button" className="stepper-nav__submit" onClick={onSubmit} disabled={saving}>
               {saving ? 'Saving…' : 'Save check-in'}
             </button>
           )}
