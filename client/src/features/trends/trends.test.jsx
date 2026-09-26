@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import TrendsPage from './pages/TrendsPage.jsx'
@@ -19,7 +19,7 @@ function jsonResponse(body) {
 }
 
 describe('trends page', () => {
-  it('renders the window tabs and an empty state with no check-ins', async () => {
+  it('renders the time-range dropdown and an empty state with no check-ins', async () => {
     vi.stubGlobal('fetch', () =>
       jsonResponse({ windowDays: 30, days: [], totalCheckins: 0, topDrainingTags: [] }),
     )
@@ -29,8 +29,11 @@ describe('trends page', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByRole('heading', { name: 'Trends' })).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: '30 days' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('heading', { name: 'Overview' })).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Time range' })).toHaveValue('30')
+    expect(screen.getByRole('option', { name: 'Week' })).toHaveValue('7')
+    expect(screen.getByRole('option', { name: 'Month' })).toHaveValue('30')
+    expect(screen.queryByRole('option', { name: '90 days' })).not.toBeInTheDocument()
     expect(await screen.findByText('No check-ins in this window')).toBeInTheDocument()
   })
 
@@ -87,7 +90,7 @@ describe('trends page', () => {
     expect(screen.getByRole('img', { name: 'Drain trend: falling' })).toBeInTheDocument()
   })
 
-  it('re-fetches with the newly selected window when a tab is clicked', async () => {
+  it('re-fetches with the newly selected window when the range changes', async () => {
     const fetchSpy = vi.fn(() =>
       jsonResponse({ windowDays: 7, days: [], totalCheckins: 0, topDrainingTags: [] }),
     )
@@ -99,12 +102,11 @@ describe('trends page', () => {
     )
 
     await screen.findByText('No check-ins in this window')
-    fireEvent.click(screen.getByRole('tab', { name: '7 days' }))
+    const range = screen.getByRole('combobox', { name: 'Time range' })
+    fireEvent.change(range, { target: { value: '7' } })
 
-    expect(await screen.findByRole('tab', { name: '7 days' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    )
+    expect(range).toHaveValue('7')
+    await waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(2))
     const lastCall = fetchSpy.mock.calls[fetchSpy.mock.calls.length - 1]
     expect(lastCall[0]).toMatch(/windowDays=7/)
   })

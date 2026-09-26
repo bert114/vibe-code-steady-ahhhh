@@ -7,7 +7,7 @@ import QuickCheckInDialog from '../features/checkins/components/QuickCheckInDial
 const LINKS = [
   { to: '/dashboard', label: 'Dashboard', icon: 'grid' },
   { to: '/check-in', label: 'Check-In', icon: 'checkin' },
-  { to: '/trends', label: 'Patterns', icon: 'trend' },
+  { to: '/trends', label: 'Overview', icon: 'trend' },
   { to: '/insights', label: 'Reflections', icon: 'spark' },
   { to: '/settings', label: 'Settings', icon: 'settings' },
 ]

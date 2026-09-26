@@ -2464,12 +2464,78 @@ article>ul li {
   gap: 0.75rem;
 }
 
+.trends-page__heading-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.trends-page__heading-row h1 {
+  margin: 0;
+}
+
+.trends-page__range {
+  display: grid;
+  flex: none;
+  gap: 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.trends-page__select-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.trends-page__select-wrap select {
+  min-width: 8rem;
+  min-height: 2.65rem;
+  appearance: none;
+  padding: 0.55rem 2.3rem 0.55rem 0.8rem;
+  border: 1px solid var(--border-muted);
+  border-radius: 8px;
+  background: var(--bg-light);
+  color: var(--text);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trends-page__select-wrap svg {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
 .trends-page__lead {
   font-size: 0.98rem;
   color: var(--text-muted);
   max-width: 60ch;
   line-height: 1.5;
   margin: 0;
+}
+
+@media (max-width: 560px) {
+  .trends-page__heading-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+  }
+
+  .trends-page__range {
+    align-self: flex-end;
+  }
 }
 
 .trends-page__chart {
@@ -2719,4 +2785,4 @@ article>ul li {
     margin-top: 0;
   }
 }
-
+

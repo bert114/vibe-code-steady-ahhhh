@@ -5,9 +5,8 @@ import TrendChart from '../components/TrendChart.jsx'
 import { useTrendsStore } from '../store.js'
 
 const WINDOWS = [
-  { value: 7, label: '7 days' },
-  { value: 30, label: '30 days' },
-  { value: 90, label: '90 days' },
+  { value: 7, label: 'Week' },
+  { value: 30, label: 'Month' },
 ]
 
 function TopDrainingTags({ tags }) {
@@ -43,27 +42,28 @@ export default function TrendsPage() {
   return (
     <main className="trends-page">
       <div className="trends-page__header">
-        <p className="page-eyebrow">Patterns over time</p>
-        <h1>Trends</h1>
+        <div className="trends-page__heading-row">
+          <h1>Overview</h1>
+          <label className="trends-page__range">
+            <span>Time range</span>
+            <span className="trends-page__select-wrap">
+              <select
+                aria-label="Time range"
+                value={windowDays}
+                onChange={(event) => setWindowDays(Number(event.target.value))}
+              >
+                {WINDOWS.map((window) => (
+                  <option key={window.value} value={window.value}>{window.label}</option>
+                ))}
+              </select>
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg>
+            </span>
+          </label>
+        </div>
         <p className="trends-page__lead">
           A longer view of your mood, energy and drain than the dashboard's recent snapshot —
           zoom out to notice what a single day can't show.
         </p>
-
-        <div className="insights-tabs" role="tablist" aria-label="Trend window">
-          {WINDOWS.map((w) => (
-            <button
-              key={w.value}
-              type="button"
-              role="tab"
-              aria-selected={windowDays === w.value}
-              className={`insights-tab ${windowDays === w.value ? 'insights-tab--active' : ''}`}
-              onClick={() => setWindowDays(w.value)}
-            >
-              {w.label}
-            </button>
-          ))}
-        </div>
       </div>
 
       {busy && <p>Looking across your check-ins…</p>}
