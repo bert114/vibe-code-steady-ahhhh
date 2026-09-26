@@ -13,10 +13,14 @@ describe('home page', () => {
 
     // Hero title & lead
     expect(
-      screen.getByRole('heading', { name: /Notice your patterns. Honor your energy./i }),
+      screen.getByRole('heading', { name: /Make sense of what.*weighing on you/i }),
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/Steady-Ahh helps you understand where your energy goes/i),
+      screen.getByRole('img', { name: /person-led homepage photograph/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Illustrative example · synthetic entries/i)).toBeInTheDocument()
+    expect(
+      screen.getByText(/Record how you feel, notice what tends to drain you/i),
     ).toBeInTheDocument()
 
     // Action buttons

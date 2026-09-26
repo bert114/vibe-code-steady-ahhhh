@@ -15,6 +15,7 @@ Update this after major decisions, completed phases, or bugs that future agents 
 
 ## Decisions
 
+- 2026-09-26 Homepage direction: closer to the supplied person-led blue hero reference; the portrait is currently an accessible placeholder, and the synthetic field record now supports the hero below it. Hero and nav span the available viewport width; lower content stays capped at 1120px. Check-in and process links remain the main actions; do not add social proof or clinical claims.
 - 2026-09-18 Doc contract finalized in `docs/`; repo is specs-only — no application code exists yet. Build to the TechDesign plan.
 - 2026-09-18 Renamed `docs/PRD-Steady-Ahh-MVP.md.md` → `docs/PRD-Steady-Ahh-MVP.md` so `npx vibeworkflow` auto-detection works.
 - 2026-09-18 Ran `npx vibeworkflow --tools claude,codex` (v0.3.0): installed vibe skills (`.agents/skills/` + `.claude/skills/`), `.claude/agents/`, `.codex/config.toml`, `agent_docs/`, `MEMORY.md`, `REVIEW-CHECKLIST.md`, `vibe.project.json`. Existing `AGENTS.md` was preserved and hard-wired to the repo rules.

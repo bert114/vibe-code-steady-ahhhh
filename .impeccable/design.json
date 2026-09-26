@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-26T06:20:43Z",
+  "title": "Design System: Steady-Ahh",
+  "extensions": {
+    "colorMeta": {
+      "homepage-blue": { "role": "primary", "displayName": "Homepage Blue", "canonical": "#47718a", "tonalRamp": ["#000d21", "#00293e", "#1d475e", "#3d677f", "#5e88a2", "#80acc7", "#a3d0ec", "#c8f6ff"] },
+      "homepage-blue-deep": { "role": "primary", "displayName": "Homepage Blue Deep", "canonical": "#3c6379", "tonalRamp": ["#000d1f", "#00293c", "#20475c", "#40677d", "#6088a0", "#82abc4", "#a6d0e9", "#caf6ff"] },
+      "homepage-blue-light": { "role": "primary", "displayName": "Homepage Blue Light", "canonical": "#e5f0f3", "tonalRamp": ["#060d0e", "#1e2729", "#3b4446", "#5a6366", "#7a8487", "#9da7aa", "#c1cbce", "#e6f1f4"] },
+      "homepage-paper": { "role": "neutral", "displayName": "Homepage Paper", "canonical": "#edf3f3", "tonalRamp": ["#080c0c", "#222626", "#3e4343", "#5d6262", "#7e8384", "#a1a6a6", "#c5caca", "#eaf0f0"] },
+      "record-paper": { "role": "neutral", "displayName": "Record Paper", "canonical": "#fbfaf5", "tonalRamp": ["#0c0b08", "#262521", "#43423e", "#62615d", "#83827e", "#a6a5a0", "#cac9c4", "#efeeea"] },
+      "deep-ink": { "role": "primary", "displayName": "Deep Ink", "canonical": "#253b46", "tonalRamp": ["#000d17", "#122832", "#2f4651", "#4e6571", "#6e8693", "#90a9b7", "#b4cedb", "#d9f3ff"] },
+      "muted-ink": { "role": "primary", "displayName": "Muted Ink", "canonical": "#50636b", "tonalRamp": ["#010d13", "#17282f", "#33454d", "#52656d", "#72868e", "#94a9b2", "#b8cdd6", "#ddf3fc"] },
+      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "#cbd7d8", "tonalRamp": ["#050d0e", "#1e2728", "#3a4445", "#596464", "#7a8586", "#9ca8a9", "#c0cccd", "#e5f1f2"] },
+      "button-ink": { "role": "primary", "displayName": "Button Ink", "canonical": "#243d4a", "tonalRamp": ["#000d18", "#0f2835", "#2d4653", "#4b6574", "#6c8796", "#8eaab9", "#b1cede", "#d6f4ff"] },
+      "white": { "role": "neutral", "displayName": "White", "canonical": "#ffffff", "tonalRamp": ["#0b0b0b", "#252525", "#424242", "#616161", "#828282", "#a5a5a5", "#c9c9c9", "#eeeeee"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Quiet display", "purpose": "Light-weight homepage promise." },
+      "body": { "displayName": "Clear body", "purpose": "Plain-language explanations and record details." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "landing-control", "value": "160ms ease", "purpose": "Subtle hover state changes for landing actions." }
+    ],
+    "breakpoints": [
+      { "name": "tablet", "value": "900px" },
+      { "name": "mobile", "value": "650px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Hero Primary Action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Filled action on the blue homepage hero.",
+      "html": "<a class=\"ds-hero-primary\" href=\"/check-in\">Take a 30-second check-in</a>",
+      "css": ".ds-hero-primary { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0.7rem 1rem; border: 1px solid transparent; border-radius: 12px; background: #fff; color: #243d4a; font: 600 0.92rem/1.3 'Steady Sans', system-ui, sans-serif; text-decoration: none; transition: background-color 160ms ease; } .ds-hero-primary:hover { background: #e5f0f3; } .ds-hero-primary:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }"
+    },
+    {
+      "name": "Hero Secondary Action",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined secondary action linking to the homepage process section.",
+      "html": "<a class=\"ds-hero-secondary\" href=\"#how-it-works\">See how it works</a>",
+      "css": ".ds-hero-secondary { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0.7rem 1rem; border: 1px solid rgba(255,255,255,.72); border-radius: 12px; background: transparent; color: #fff; font: 600 0.92rem/1.3 'Steady Sans', system-ui, sans-serif; text-decoration: none; transition: background-color 160ms ease; } .ds-hero-secondary:hover { background: rgba(255,255,255,.12); } .ds-hero-secondary:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }"
+    },
+    {
+      "name": "Landing Navigation",
+      "kind": "nav",
+      "description": "Brand, process anchor, and check-in action on the framed blue hero.",
+      "html": "<nav class=\"ds-landing-nav\"><strong>Steady-Ahh</strong><a href=\"#how-it-works\">How it works</a><a href=\"/check-in\">Start a check-in</a></nav>",
+      "css": ".ds-landing-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.5rem; border-radius: 18px 18px 0 0; background: #47718a; color: #fff; font: 400 0.9rem/1.4 'Steady Sans', system-ui, sans-serif; } .ds-landing-nav a { color: #e5f0f3; text-underline-offset: 4px; } .ds-landing-nav a:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }"
+    },
+    {
+      "name": "Hero Image Placeholder",
+      "kind": "custom",
+      "description": "A temporary, clearly labeled portrait area occupying the right side of the framed blue hero.",
+      "html": "<div class=\"ds-hero-image-placeholder\" role=\"img\" aria-label=\"Placeholder for the person-led homepage photograph\">Person-led image placeholder</div>",
+      "css": ".ds-hero-image-placeholder { display: grid; min-height: 19rem; place-items: center; padding: 1.5rem; border: 1px dashed rgba(255,255,255,.62); border-radius: 14px; background: rgba(229,240,243,.11); color: rgba(255,255,255,.88); text-align: center; }"
+    },
+    {
+      "name": "Synthetic Field Record",
+      "kind": "card",
+      "refersTo": "record-sheet",
+      "description": "One light sheet below the hero demonstrates a synthetic check-in, observed evidence, and optional reflection.",
+      "html": "<article class=\"ds-field-record\"><small>Synthetic example</small><h2>Thursday, 7:40 pm</h2><p>Feeling: Drained · Energy: 2 / 5</p><hr><strong>Observed</strong><p>Several recent check-ins mention feeling drained after agreeing to plans.</p><strong>Reflection</strong><p>Notice whether you say yes when you would rather rest.</p></article>",
+      "css": ".ds-field-record { padding: 1.5rem; border-radius: 14px; background: #fbfaf5; color: #253b46; font: 400 0.9rem/1.5 'Steady Sans', system-ui, sans-serif; } .ds-field-record small { color: #50636b; } .ds-field-record h2 { margin: 1rem 0 .5rem; font-size: 1.25rem; font-weight: 500; } .ds-field-record hr { margin: 1rem 0; border: 0; border-top: 1px solid #cbd7d8; } .ds-field-record strong { display: block; margin-top: .65rem; color: #365d70; font-size: .72rem; letter-spacing: .04em; text-transform: uppercase; } .ds-field-record p { margin: .2rem 0 0; }"
+    },
+    {
+      "name": "Process Row",
+      "kind": "custom",
+      "description": "An airy explanatory row pairs a step title with plain-language detail, without repeating sample data.",
+      "html": "<div class=\"ds-process-row\"><h3>Pattern Recognition</h3><p>Simple rules look for recurring situations and changes in energy.</p></div>",
+      "css": ".ds-process-row { display: grid; grid-template-columns: minmax(13rem,.55fr) minmax(0,1fr); gap: 3rem; align-items: baseline; padding: 1.35rem 0; border-bottom: 1px solid #cbd7d8; color: #253b46; font: 400 .95rem/1.65 'Steady Sans', system-ui, sans-serif; } .ds-process-row h3 { margin: 0; font-size: 1.05rem; font-weight: 700; } .ds-process-row p { max-width: 60ch; margin: 0; color: #50636b; } @media (max-width: 650px) { .ds-process-row { grid-template-columns: 1fr; gap: .5rem; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A Quiet Moment",
+    "overview": "The homepage follows the reference’s human-centered composition: an open blue frame, restrained navigation, and a large portrait area balanced by spacious editorial copy. A person-led image gives the first screen a warm, human focus. A clearly synthetic paper record appears below the hero to show how a check-in can lead to evidence and optional reflection. The current portrait area is an intentional placeholder. This direction applies to the public landing page. The check-in, dashboard, insights, and settings screens retain their existing application styling. Product commitments remain calm first, evidence before explanation, user choice, and privacy.",
+    "keyCharacteristics": ["A thin, rounded blue frame around the opening scene.", "A portrait-led hero with open space for readable copy.", "Check-in evidence presented after the hero, separate from the welcome.", "Plain language and visible user choice."],
+    "rules": [
+      { "name": "The Evidence Contrast Rule", "body": "Keep the record sheet light against the blue hero so the sample remains easy to scan and its labels remain legible.", "section": "colors" },
+      { "name": "The Plain Voice Rule", "body": "Let concise, direct wording carry warmth; avoid clinical certainty and performative intimacy.", "section": "typography" }
+    ],
+    "dos": ["Do keep the check-in route and ‘See how it works’ action easy to find.", "Do distinguish recorded feelings, repeated evidence, and optional reflection.", "Do keep privacy controls and the non-diagnostic boundary visible in plain language.", "Do preserve comfortable reading widths, keyboard focus, and reduced-motion support."],
+    "donts": ["Don't present a pattern as a diagnosis or a certainty.", "Don't use urgency, streaks, guilt, or pressure to drive check-ins.", "Don't invent social proof, expert endorsement, or unsupported product claims.", "Don't crowd the hero with decorative wellness imagery or competing calls to action."]
+  }
+}
