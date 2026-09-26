@@ -26,6 +26,8 @@ Desktop-first web application with responsive mobile support. Routes: `/`, `/das
 
 Must ship: Daily Check-In (mood/energy/drain 1–5, emotion and context tags, note up to 5000 chars); burnout/pattern signal detection; Personal Insights; Boundary Awareness phrased as Observed/Reflection. Not in MVP: AI Chat Companion, social/community features, advanced integrations.
 
+Quick Check-In: users should be able to begin a check-in from the app shell without leaving the page they are viewing. The entry point is confirmed; its exact interaction and minimum fields remain open. The full Daily Check-In remains the canonical complete check-in flow.
+
 Constraints: $0 free-tier only (Render sleeps after idle, Neon compute sleeps — accepted for validation); JavaScript only, no TypeScript, no class constructors, no ORM (`pg` + parameterized SQL, migrations tracked in Git); AI called only from Express, never from the client; rate-limit `POST /api/insights/analyze`; single error contract `{ error: { code, message, details } }`, no stack traces to users; never log raw check-in notes, AI prompts, or full AI output — only IDs, statuses, timing, safe error codes; every database query scoped by `req.user.id`; development auth bypass fails closed in production; real authentication (Clerk) required before external beta.
 
 Explicitly undecided: boundary-pressure check-in question (default: not asked); provisional burnout-signal thresholds; whether optional free-text notes always go to AI or only with explicit consent; AI provider standing (Groq live key vs honest-fallback status conflict) — record as open, do not invent.

@@ -47,6 +47,20 @@ export const useCheckinsStore = create((set, get) => ({
     }
   },
 
+  saveQuickCheckIn: async (draft) => {
+    const saved = await createCheckin({
+      mood_score: Number(draft.moodScore),
+      energy_score: Number(draft.energyScore),
+      drain_score: Number(draft.drainScore),
+      emotions: splitTags(draft.emotions),
+      context_tags: splitTags(draft.contextTags),
+      note: draft.note.trim(),
+    });
+    set((s) => ({ checkins: [saved, ...s.checkins] }));
+    useToastStore.getState().success('Saved. Thank you for checking in.');
+    return saved;
+  },
+
   removeCheckin: async (id) => {
     try {
       await deleteCheckin(id);
