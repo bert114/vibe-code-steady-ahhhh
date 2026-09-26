@@ -58,6 +58,35 @@ describe('trends page', () => {
     expect(screen.getByText('2×')).toBeInTheDocument()
   })
 
+  it('renders the At a glance summary from the same trend payload', async () => {
+    vi.stubGlobal('fetch', () =>
+      jsonResponse({
+        windowDays: 30,
+        days: [
+          { date: '2026-09-01T00:00:00.000Z', avgMood: 3, avgEnergy: 3, avgDrain: 5, checkins: 2 },
+          { date: '2026-09-02T00:00:00.000Z', avgMood: 5, avgEnergy: 5, avgDrain: 1, checkins: 1 },
+        ],
+        totalCheckins: 3,
+        topDrainingTags: [{ tag: 'work', count: 2 }],
+      }),
+    )
+    render(
+      <MemoryRouter>
+        <TrendsPage />
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByRole('heading', { name: 'At a glance' })).toBeInTheDocument()
+    expect(screen.getByText('3 check-ins logged')).toBeInTheDocument()
+    // Weighted means: (3*2 + 5) / 3 = 3.7 for all three metrics.
+    expect(screen.getByText('Above your middle ground')).toBeInTheDocument()
+    expect(screen.getByText('Following the same rhythm as mood')).toBeInTheDocument()
+    expect(screen.getByText('Work shows up most often here')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Mood trend: rising' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Energy trend: rising' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Drain trend: falling' })).toBeInTheDocument()
+  })
+
   it('re-fetches with the newly selected window when a tab is clicked', async () => {
     const fetchSpy = vi.fn(() =>
       jsonResponse({ windowDays: 7, days: [], totalCheckins: 0, topDrainingTags: [] }),

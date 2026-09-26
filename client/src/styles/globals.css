@@ -1668,32 +1668,29 @@ article>ul li {
 }
 
 .home-hero {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 3.5rem 1.5rem;
-  border-radius: 28px;
+  padding: clamp(1.75rem, 4vw, 3rem);
+  border-radius: 16px;
   background: radial-gradient(
-    circle at 50% 20%,
+    circle at 18% 8%,
     color-mix(in oklch, var(--primary) 12%, transparent) 0%,
     transparent 70%
   ), var(--bg-light);
   border: 1px solid var(--border-muted);
-  box-shadow: var(--shadow-card);
 }
 
-.home-hero__badge {
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--primary);
-  background: color-mix(in oklch, var(--primary) 14%, transparent);
-  padding: 0.35rem 0.9rem;
-  border-radius: 9999px;
-  border: 1px solid color-mix(in oklch, var(--primary) 30%, transparent);
+.home-hero__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(1.75rem, 4vw, 3rem);
+  align-items: center;
+}
+
+.home-hero__thesis {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding-top: 0.5rem;
 }
 
 .home-hero__title {
@@ -1701,6 +1698,7 @@ article>ul li {
   font-size: clamp(2rem, 5vw, 3.25rem);
   font-weight: 500;
   line-height: 1.15;
+  letter-spacing: -0.03em;
   color: var(--text);
   max-width: 22ch;
   margin: 0;
@@ -1715,7 +1713,6 @@ article>ul li {
   margin-top: 0.35rem;
 }
 
-
 .home-hero__lead {
   font-size: 1.05rem;
   line-height: 1.6;
@@ -1728,7 +1725,6 @@ article>ul li {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: center;
   margin-top: 0.5rem;
 }
 
@@ -1740,74 +1736,257 @@ article>ul li {
 .home-hero__auth-hint {
   font-size: 0.85rem;
   color: var(--text-muted);
-  margin-top: 0.5rem;
+  margin: 0;
 }
 
-.home-pillars {
+.home-hero__auth-hint .btn-link {
+  text-underline-offset: 3px;
+}
+
+/* Evidence ledger — the mechanism, demonstrated with synthetic entries */
+.home-ledger {
+  border-radius: 14px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-muted);
+  padding: 1.4rem 1.4rem 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
 }
 
-.home-pillars__title {
+.home-ledger__title {
+  margin: 0;
+  color: var(--text);
   font-family: 'Melodrama', serif;
-  font-size: 1.75rem;
+  font-size: 1.25rem;
   font-weight: 500;
-  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.home-ledger__block {
+  border-top: 1px solid var(--border-muted);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  animation: ledger-rise 600ms var(--ease-out) both;
+}
+
+.home-ledger__block:nth-of-type(2) {
+  animation-delay: 120ms;
+}
+
+.home-ledger__block:nth-of-type(3) {
+  animation-delay: 240ms;
+}
+
+.home-ledger__caption {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.home-ledger__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.home-ledger__note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.home-ledger__evidence {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-ledger__count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.1rem;
+  margin-right: 0.55rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 8px;
+  background: color-mix(in oklch, var(--primary) 14%, transparent);
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-ledger__block--insight {
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--primary) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--primary) 28%, transparent);
+  padding: 1rem 1.1rem;
+}
+
+.home-ledger__observed,
+.home-ledger__reflection {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
   color: var(--text);
 }
 
-.home-pillars__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
+.home-ledger__reflection {
+  color: var(--text-muted);
 }
 
-.pillar-card {
-  padding: 1.75rem;
-  border-radius: 20px;
-  background: var(--bg-light);
-  border: 1px solid var(--border-muted);
-  box-shadow: var(--shadow-card);
+.home-ledger__confidence {
+  margin: 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-muted);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.home-ledger__footnote {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+}
+
+@keyframes ledger-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.home-path {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  transition: transform 180ms var(--ease-out), border-color 180ms var(--ease-out);
+  gap: 1.75rem;
 }
 
-.pillar-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--highlight);
+.home-path__title {
+  font-family: 'Melodrama', serif;
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0;
 }
 
-.pillar-card__icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+.home-path__list {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-path__step {
+  display: grid;
+  grid-template-columns: 2.5rem 2.5rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border-muted);
+}
+
+.home-path__step:last-child {
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.home-path__index {
+  color: var(--primary);
+  font-family: 'Melodrama', serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-path__glyph {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 12px;
   background: color-mix(in oklch, var(--primary) 12%, transparent);
   color: var(--primary);
-  margin-bottom: 0.25rem;
 }
 
-.pillar-card h3 {
+.home-path__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.home-path__text h3 {
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--text);
   margin: 0;
 }
 
-.pillar-card p {
-  font-size: 0.9rem;
-  line-height: 1.55;
+.home-path__text > p {
+  font-size: 0.92rem;
+  line-height: 1.6;
   color: var(--text-muted);
   margin: 0;
+  max-width: 65ch;
+}
+
+.home-path__proof {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.home-path__proof--measures {
+  font-variant-numeric: tabular-nums;
+}
+
+.home-path__measure {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-muted);
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-path__observed {
+  color: var(--text);
+}
+
+.home-path__reflection {
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .home-sovereignty {
-  border-radius: 24px;
+  border-radius: 16px;
   background: color-mix(in oklch, var(--bg-light) 60%, transparent);
   border: 1px solid var(--border-muted);
   padding: 2.25rem 2rem;
@@ -1834,8 +2013,44 @@ article>ul li {
   margin: 0;
 }
 
+.home-sovereignty__assurances {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.home-sovereignty__assurances li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.home-sovereignty__assurances li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--success);
+  flex: none;
+}
+
 .home-sovereignty__links {
-  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--primary) 45%, transparent);
+  color: var(--text);
 }
 
 /* Interactive Check-In History Timeline */
@@ -2307,5 +2522,201 @@ article>ul li {
 .trend-chart__empty {
   color: var(--text-muted);
   font-size: 0.9rem;
+}
+
+/* Trends — At a glance */
+.glance {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.glance__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.glance__header h2 {
+  margin: 0;
+  color: var(--text);
+  font-family: 'Melodrama', serif;
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.glance__count {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.glance__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.glance-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+  padding: 1.5rem;
+  border: 1px solid var(--border-muted);
+  border-radius: 16px;
+  background: var(--bg-light);
+  transition: border-color 160ms var(--ease-out);
+}
+
+.glance-card:hover {
+  border-color: var(--border);
+}
+
+.glance-card__tile {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.glance-card__tile--mood {
+  background: color-mix(in oklch, var(--danger) 16%, transparent);
+  color: var(--danger);
+}
+
+.glance-card__tile--energy {
+  background: color-mix(in oklch, var(--success) 16%, transparent);
+  color: var(--success);
+}
+
+.glance-card__tile--drain {
+  background: color-mix(in oklch, var(--warning) 16%, transparent);
+  color: var(--warning);
+}
+
+.glance-card__label {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.glance-card__measure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.glance-card__value {
+  margin: 0;
+  color: var(--text);
+  font-family: 'Melodrama', serif;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.glance-card__scale {
+  color: var(--text-muted);
+  font-family: 'Satoshi', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.glance-card__trend {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 9999px;
+}
+
+.glance-card__trend--flat {
+  background: color-mix(in oklch, var(--info) 16%, transparent);
+  color: var(--info);
+}
+
+.glance-card__trend--good {
+  background: color-mix(in oklch, var(--success) 16%, transparent);
+  color: var(--success);
+}
+
+.glance-card__trend--bad {
+  background: color-mix(in oklch, var(--danger) 16%, transparent);
+  color: var(--danger);
+}
+
+.glance-card__line {
+  margin: auto 0 0;
+  padding-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+/* Home landing responsive — trailing block: home base styles sit above the
+   earlier media queries, so these overrides must come last to win. */
+@media (max-width: 900px) {
+  .home-hero__split {
+    grid-template-columns: 1fr;
+  }
+
+  .home-hero__thesis {
+    padding-top: 0;
+  }
+
+  .home-hero__actions {
+    width: 100%;
+  }
+
+  .home-hero__actions .btn-primary,
+  .home-hero__actions .btn-secondary {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+
+  .home-sovereignty {
+    padding: 1.75rem 1.25rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .home-path__step {
+    grid-template-columns: 1.75rem 2.25rem minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .home-ledger {
+    padding: 1.15rem 1rem 1rem;
+  }
+}
+
+/* Trends glance responsive — trailing so it wins over the base rules above. */
+@media (max-width: 760px) {
+  .glance__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .glance-card {
+    padding: 1.25rem;
+  }
+
+  .glance-card__line {
+    margin-top: 0;
+  }
 }
 

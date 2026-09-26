@@ -16,7 +16,27 @@ function linkClassName({ isActive }) {
   return isActive ? 'app-nav__link is-active' : 'app-nav__link'
 }
 
-export default function AppShell({ children }) {
+export default function AppShell({ children, variant = 'app' }) {
+  if (variant === 'landing') {
+    return (
+      <div className="app-shell app-shell--landing">
+        <header className="app-nav app-nav--landing">
+          <div className="app-nav__inner">
+            <Link to="/" className="app-nav__brand">
+              Steady-Ahh
+            </Link>
+            <nav className="landing-nav" aria-label="Primary">
+              <a href="#how-it-works" className="landing-nav__link">How it works</a>
+              <Link to="/check-in" className="landing-nav__start">Start a check-in</Link>
+            </nav>
+          </div>
+        </header>
+        {children}
+        <ToastStack />
+      </div>
+    )
+  }
+
   return (
     <div className="app-shell">
       <header className="app-nav">

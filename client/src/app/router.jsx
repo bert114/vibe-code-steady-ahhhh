@@ -24,8 +24,8 @@ function Placeholder({ title, hint }) {
 
 // Every page gets the same nav shell so no screen is a dead end; protected
 // pages additionally require a signed-in user.
-function Shell({ children, needsAuth }) {
-  const content = <AppShell>{children}</AppShell>
+function Shell({ children, needsAuth, landing = false }) {
+  const content = <AppShell variant={landing ? 'landing' : 'app'}>{children}</AppShell>
   return needsAuth ? <RequireAuth>{content}</RequireAuth> : content
 }
 
@@ -40,7 +40,7 @@ export default function AppRouter() {
           <Route
             path="/"
             element={
-              <Shell>
+              <Shell landing>
                 <HomePage />
               </Shell>
             }

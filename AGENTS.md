@@ -1,4 +1,4 @@
-# AGENTS.md — Steady-Ahh
+    # AGENTS.md — Steady-Ahh
 
 > **How to fill this in:** write only what an agent could NOT work out by
 > reading the repo. Skip the directory tree (`ls` shows it), the dependency list

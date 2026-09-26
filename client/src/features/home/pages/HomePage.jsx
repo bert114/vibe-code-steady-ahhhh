@@ -1,109 +1,129 @@
 import { Link } from 'react-router-dom'
 import { clerkEnabled } from '../../../app/auth.jsx'
+import './HomePage.css'
 
-function BatteryIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" stroke="currentColor" strokeWidth="2">
-      <rect x="2" y="7" width="16" height="10" rx="2" ry="2" />
-      <line x1="22" y1="11" x2="22" y2="13" />
-      <line x1="6" y1="11" x2="10" y2="11" />
-    </svg>
-  )
-}
+const STEPS = [
+  {
+    title: 'Daily Energy Check-In',
+    body: 'Check in with how you feel in seconds. A simple scale helps you register mood and drain without overthinking.',
+    example: <><span>Evening</span><span>drained</span><span>energy 2/5</span></>,
+    label: 'Illustrative check-in',
+  },
+  {
+    title: 'Pattern Recognition',
+    body: 'Rule-based evidence brings recurring draining days and energy dips into view before any interpretation.',
+    example: <><span>3 draining evenings / 7 days</span><span>low energy ×2 after late plans</span></>,
+    label: 'Illustrative pattern evidence',
+  },
+  {
+    title: 'Boundary Awareness',
+    body: 'A reflection can help you notice where you may be overextending yourself. You decide what, if anything, to do next.',
+    example: <><span>Observed: drained after agreeing to plans.</span><span>Reflection: notice when you say yes but mean rest.</span></>,
+    label: 'Illustrative observation and reflection',
+  },
+]
 
-function SignalIcon() {
+function FieldRecord() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" stroke="currentColor" strokeWidth="2">
-      <path d="M3 18v-2a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  )
-}
+    <aside className="field-record" aria-label="Illustrative example of a check-in and pattern insight">
+      <div className="field-record__topline">
+        <p className="field-record__label">An evening, made legible</p>
+        <p className="field-record__sample">Illustrative example · synthetic entries</p>
+      </div>
 
-function ShieldIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" stroke="currentColor" strokeWidth="2">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    </svg>
+      <section className="field-record__entry" aria-labelledby="record-entry-title">
+        <p className="field-record__section-label">Tonight&apos;s check-in</p>
+        <h2 id="record-entry-title">Thursday, 7:40 pm</h2>
+        <dl className="field-record__readings">
+          <div><dt>Feeling</dt><dd>Drained</dd></div>
+          <div><dt>Energy</dt><dd>2 <span>/ 5</span></dd></div>
+        </dl>
+        <p className="field-record__note">“Said yes to plans I dreaded.”</p>
+      </section>
+
+      <section className="field-record__evidence" aria-labelledby="record-evidence-title">
+        <p className="field-record__section-label" id="record-evidence-title">What the rules observe</p>
+        <ul>
+          <li><strong>3</strong><span>draining evenings in 7 days</span></li>
+          <li><strong>×2</strong><span>low energy after late plans</span></li>
+          <li><strong>×3</strong><span>context tag “obligation”</span></li>
+        </ul>
+      </section>
+
+      <section className="field-record__reflection" aria-label="Example insight">
+        <p><strong>Observed</strong> Several recent check-ins mention feeling drained after agreeing to plans.</p>
+        <p><strong>Reflection</strong> Notice whether you say yes when you would rather rest.</p>
+        <p className="field-record__confidence">Confidence: medium · based on 4 check-ins</p>
+      </section>
+    </aside>
   )
 }
 
 export default function HomePage() {
   return (
-    <main className="home-page">
-      <section className="home-hero">
-        <div className="home-hero__badge">A quiet space for emotional clarity</div>
-        <h1 className="home-hero__title">
-          Steady-Ahh
-          <span className="home-hero__subtitle">Notice your patterns. Honor your energy.</span>
-        </h1>
-        <p className="home-hero__lead">
-          Steady-Ahh helps you understand where your energy goes, notice recurring emotional drains before burnout sets in, and reflect on personal boundaries with gentle, non-judgmental awareness.
-        </p>
-
-        <div className="home-hero__actions">
-          <Link to="/check-in" className="btn-primary home-hero__btn-main">
-            Take a 30-second check-in
-          </Link>
-          <Link to="/dashboard" className="btn-secondary">
-            Open dashboard
-          </Link>
-        </div>
-
-        {clerkEnabled && (
-          <p className="home-hero__auth-hint">
-            Already have an account? <Link to="/sign-in" className="btn-link">Sign in</Link> or{' '}
-            <Link to="/sign-up" className="btn-link">create a private account</Link>.
+    <main className="landing-page">
+      <section className="landing-hero" aria-labelledby="landing-title">
+        <div className="landing-hero__copy">
+          <h1 className="landing-hero__title" id="landing-title">
+            Steady-Ahh
+            <span>Notice your patterns. Honor your energy.</span>
+          </h1>
+          <p className="landing-hero__lead">
+            Steady-Ahh helps you understand where your energy goes. A 30-second check-in becomes
+            objective evidence of draining patterns, explained calmly with boundary reflections
+            you decide on. Pattern awareness, never medical diagnosis.
           </p>
-        )}
-      </section>
-
-      <section className="home-pillars" aria-labelledby="pillars-heading">
-        <h2 id="pillars-heading" className="home-pillars__title">Designed for quiet reflection</h2>
-        <div className="home-pillars__grid">
-          <article className="pillar-card">
-            <div className="pillar-card__icon" aria-hidden="true">
-              <BatteryIcon />
-            </div>
-            <h3>Daily Energy Check-In</h3>
-            <p>
-              Check in with how you feel in seconds. A simplified 3-point scale and battery metaphor help you register mood and drain without overthinking.
-            </p>
-          </article>
-
-          <article className="pillar-card">
-            <div className="pillar-card__icon" aria-hidden="true">
-              <SignalIcon />
-            </div>
-            <h3>Pattern Recognition</h3>
-            <p>
-              Rule-based evidence detects consecutive draining days and energy dips. We show you the objective observations before any interpretation.
-            </p>
-          </article>
-
-          <article className="pillar-card">
-            <div className="pillar-card__icon" aria-hidden="true">
-              <ShieldIcon />
-            </div>
-            <h3>Boundary Awareness</h3>
-            <p>
-              Reflective prompts help you spot situations where you may be overextending yourself, giving you the clarity to decide what boundaries to protect.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section className="home-sovereignty" aria-labelledby="privacy-heading">
-        <div className="home-sovereignty__inner">
-          <h2 id="privacy-heading">Your reflections belong only to you</h2>
-          <p>
-            No invasive profiling, no medical diagnosis, and no unsolicited advice. You can view your complete timeline, export your data anytime as JSON, or erase your history whenever you choose.
-          </p>
-          <div className="home-sovereignty__links">
-            <Link to="/settings" className="btn-ghost btn-sm">
-              Review privacy & settings
-            </Link>
+          <div className="landing-hero__actions">
+            <a className="landing-button landing-button--primary" href="#how-it-works">See how it works</a>
+            <Link to="/check-in" className="landing-button landing-button--secondary">Take a 30-second check-in</Link>
           </div>
+          <p className="landing-hero__auth-hint">
+            {clerkEnabled ? (
+              <>Already have an account? <Link to="/sign-in">Sign in</Link> or{' '}
+                <Link to="/sign-up">create a private account</Link>.</>
+            ) : (
+              <>Returning? <Link to="/dashboard">Open dashboard</Link>.</>
+            )}
+          </p>
+        </div>
+        <FieldRecord />
+      </section>
+
+      <section className="landing-process" id="how-it-works" aria-labelledby="process-title">
+        <div className="landing-section-heading">
+          <h2 id="process-title">How Steady-Ahh works</h2>
+          <p>A small record can make recurring patterns easier to see.</p>
+        </div>
+        <ol className="landing-process__list">
+          {STEPS.map((step) => (
+            <li className="landing-process__row" key={step.title}>
+              <div className="landing-process__description">
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+              <p className="landing-process__example" aria-label={step.label}>{step.example}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="landing-privacy" aria-labelledby="privacy-title">
+        <div className="landing-privacy__copy">
+          <h2 id="privacy-title">Your reflections belong only to you</h2>
+          <p>
+            No invasive profiling, no medical diagnosis, and no unsolicited advice. You can view
+            your complete timeline, export your data anytime as JSON, or erase your history
+            whenever you choose.
+          </p>
+        </div>
+        <ul className="landing-privacy__assurances" aria-label="Privacy assurances">
+          <li>Export anytime</li>
+          <li>Erase anytime</li>
+          <li>Never a diagnosis</li>
+        </ul>
+        <div className="landing-privacy__actions">
+          <Link to="/settings" className="landing-button landing-button--secondary">Review privacy &amp; settings</Link>
+          <Link to="/check-in" className="landing-button landing-button--primary">Start with tonight&apos;s check-in</Link>
         </div>
       </section>
     </main>

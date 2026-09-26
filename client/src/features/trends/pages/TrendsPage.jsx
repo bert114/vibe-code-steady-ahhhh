@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import AtAGlance from '../components/AtAGlance.jsx'
 import TrendChart from '../components/TrendChart.jsx'
 import { useTrendsStore } from '../store.js'
 
@@ -79,6 +80,7 @@ export default function TrendsPage() {
 
       {!busy && data && data.days.length > 0 && (
         <>
+          <AtAGlance data={data} />
           <section className="trends-page__chart" aria-labelledby="trend-chart-heading">
             <h2 id="trend-chart-heading" className="visually-hidden">
               Mood and energy over time
