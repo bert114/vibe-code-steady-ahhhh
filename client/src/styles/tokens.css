@@ -19,6 +19,27 @@
   --success: oklch(0.7 0.05 160);
   --info: oklch(0.7 0.05 260);
 
+  /* Editorial workspace surfaces used by the check-in experience. */
+  --surface-ink: #080809;
+  --surface-panel: #111214;
+  --surface-raised: #17191d;
+  --line-subtle: #2b2d32;
+  --text-soft: #eceef2;
+  --text-faint: #9da1aa;
+  --accent-pale: #dce6ff;
+  --accent-soft: #9eb9ff;
+
+  /* Light blue field-log palette used only by the check-in route. */
+  --checkin-blue: #47718a;
+  --checkin-blue-deep: #3e657c;
+  --checkin-blue-light: #e5f0f3;
+  --checkin-paper: #edf3f3;
+  --checkin-record: #fbfaf5;
+  --checkin-ink: #253b46;
+  --checkin-muted: #50636b;
+  --checkin-rule: #cbd7d8;
+  --checkin-white: #ffffff;
+
   --primary100: #e6ecfc;
 
   --inner-shadow-top-color: rgba(0, 0, 0, 0.25);

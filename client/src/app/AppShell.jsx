@@ -187,7 +187,7 @@ export default function AppShell({ children, variant = 'app' }) {
   }
 
   return (
-    <div className={`app-shell app-shell--workspace${sidebarCollapsed ? ' is-collapsed' : ''}`}>
+    <div className={`app-shell app-shell--workspace${sidebarCollapsed ? ' is-collapsed' : ''}${location.pathname === '/check-in' ? ' is-checkin' : ''}`}>
       <aside className="workspace-sidebar" aria-label="Main sidebar">
         <div className="workspace-sidebar__head">
           <Link to="/dashboard" className="workspace-brand" aria-label="Steady-Ahh dashboard">

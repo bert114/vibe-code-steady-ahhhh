@@ -926,24 +926,39 @@ article>ul li {
 
 /* Check-in */
 .checkin-page {
-  max-width: 900px;
+  max-width: 1060px;
+  padding-top: clamp(2.7rem, 5vw, 4.6rem) !important;
+}
+
+.checkin-page > h1 {
+  max-width: none;
+  margin-bottom: 0.55rem;
+  color: var(--text-soft);
+  font-size: clamp(2.55rem, 5vw, 3.75rem);
+  letter-spacing: -0.045em;
 }
 
 .checkin-card {
   max-width: 100%;
   margin: 0;
-  padding: clamp(1.4rem, 4vw, 2.5rem);
-  background: var(--bg);
-  box-shadow: inset 0 var(--inner-shadow-top-height) var(--inner-shadow-top-height) calc(var(--inner-shadow-top-height) * -1) var(--inner-shadow-top-color);
+  padding: clamp(1.35rem, 3.4vw, 2.35rem);
+  border-color: var(--line-subtle);
+  border-radius: 11px;
+  background: var(--surface-panel);
+  box-shadow: none;
 }
 
 .checkin-history {
   max-width: 100%;
-  margin-top: 3rem !important;
+  margin-top: 3.8rem !important;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line-subtle);
 }
 
 .checkin-history h2 {
-  font-size: 1.15rem;
+  margin-bottom: 0.8rem;
+  color: var(--text-soft);
+  font-size: clamp(1.45rem, 2.5vw, 1.8rem);
 }
 
 .checkin-history__list {
@@ -961,32 +976,23 @@ article>ul li {
 
 .checkin-stepper {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 2rem;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 2.25rem;
   align-items: start;
 }
 
 .stepper-side {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.7rem;
   align-content: start;
-  padding-right: 1.5rem;
-  border-right: 1px solid var(--border-muted);
-}
-
-.stepper-side__title {
-  margin: 0;
-  color: var(--text);
-  font-family: 'Satoshi', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  padding-right: 1.75rem;
+  border-right: 1px solid var(--line-subtle);
 }
 
 .stepper-main {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.65rem;
   min-width: 0;
 }
 
@@ -1002,44 +1008,57 @@ article>ul li {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.5rem 0.6rem;
-  border-radius: 8px;
-  color: var(--text-muted);
-  font-size: 0.88rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 7px;
+  color: var(--text-faint);
+  font-size: 0.82rem;
   font-weight: 400;
 }
 
 .stepper-steps__item--active {
-  background: color-mix(in oklch, var(--primary) 14%, transparent);
-  color: var(--text);
+  background: color-mix(in srgb, var(--accent-soft) 11%, var(--surface-raised));
+  color: var(--accent-pale);
   font-weight: 700;
 }
 
 .stepper-steps__item--todo {
-  opacity: 0.7;
+  color: color-mix(in srgb, var(--text-faint) 72%, transparent);
 }
 
-.stepper-steps__dot {
-  width: 8px;
-  height: 8px;
+.stepper-steps__number {
+  display: inline-grid;
+  width: 1.35rem;
+  height: 1.35rem;
   flex: none;
-  border-radius: 9999px;
-  background: var(--border);
+  place-items: center;
+  border: 1px solid var(--line-subtle);
+  border-radius: 50%;
+  color: inherit;
+  font-size: 0.66rem;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 1;
 }
 
-.stepper-steps__item--active .stepper-steps__dot {
-  background: var(--primary);
-  box-shadow: 0 0 0 4px color-mix(in oklch, var(--primary) 25%, transparent);
+.stepper-steps__item--active .stepper-steps__number {
+  border-color: var(--accent-soft);
+  background: var(--accent-soft);
+  color: var(--surface-ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-soft) 18%, transparent);
 }
 
-.stepper-steps__dot--done {
-  background: var(--primary);
+.stepper-steps__number--done {
+  border-color: var(--accent-soft);
+  background: var(--accent-soft);
+  color: var(--surface-ink);
 }
 
 .stepper-steps__link {
   display: flex;
   align-items: center;
   gap: 0.65rem;
+  width: 100%;
   padding: 0;
   border: 0;
   background: transparent;
@@ -1049,13 +1068,15 @@ article>ul li {
 }
 
 .stepper-steps__link:hover {
-  color: var(--text);
+  color: var(--text-soft);
 }
 
 .stepper-progress__label {
   margin: 0;
-  color: var(--text-muted);
-  font-size: 0.8rem;
+  color: var(--text-faint);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .score-step {
@@ -1065,44 +1086,45 @@ article>ul li {
 }
 
 .score-step legend {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.1rem;
   padding: 0;
 }
 
 .score-step legend h2 {
   margin: 0;
+  color: var(--text-soft);
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
 }
 
 .score-options {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.65rem;
+  gap: 0.55rem;
 }
 
 .score-option {
   display: flex;
-  min-height: 128px;
+  min-height: 132px;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.8rem;
-  border: 1px solid var(--border);
-  border-radius: 17px;
-  background: var(--bg-light);
+  padding: 0.75rem;
+  border: 1px solid var(--line-subtle);
+  border-radius: 10px;
+  background: var(--surface-raised);
   cursor: pointer;
-  transition: border-color 160ms var(--ease-out), background 160ms var(--ease-out), transform 160ms var(--ease-out);
+  transition: border-color 160ms var(--ease-out), background 160ms var(--ease-out), color 160ms var(--ease-out);
 }
 
 .score-option:hover {
-  border-color: var(--primary);
-  transform: translateY(-2px);
+  border-color: var(--accent-soft);
 }
 
 .score-option:has(input:checked) {
-  border-color: var(--primary);
-  background: color-mix(in oklch, var(--primary) 14%, transparent);
-  box-shadow: 0 0 0 4px color-mix(in oklch, var(--primary) 25%, transparent);
+  border-color: var(--accent-soft);
+  background: color-mix(in oklch, var(--accent-soft) 11%, var(--surface-raised));
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--accent-soft) 24%, transparent);
 }
 
 .score-option input {
@@ -1117,24 +1139,23 @@ article>ul li {
 .score-option__icon {
   width: 3rem;
   height: 3rem;
-  color: var(--text-muted);
-  transition: color 160ms var(--ease-out), transform 160ms var(--ease-out);
+  color: var(--text-faint);
+  transition: color 160ms var(--ease-out);
 }
 
 .score-option:hover .score-option__face,
 .score-option:hover .score-option__icon {
-  color: var(--text);
-  transform: translateY(-2px);
+  color: var(--text-soft);
 }
 
 .score-option:has(input:checked) .score-option__face,
 .score-option:has(input:checked) .score-option__icon {
-  color: var(--primary);
+  color: var(--accent-soft);
 }
 
 .score-option__caption {
-  color: var(--text-muted);
-  font-size: 0.72rem;
+  color: var(--text-faint);
+  font-size: 0.7rem;
   font-weight: 400;
   line-height: 1.2;
 }
@@ -1144,11 +1165,13 @@ article>ul li {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem;
-  border-radius: 15px;
-  background: color-mix(in oklch, var(--primary) 14%, transparent);
-  color: var(--text);
-  font-weight: 700;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line-subtle);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  color: var(--text-soft);
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
 .checkin-details__hint {
@@ -1165,27 +1188,27 @@ article>ul li {
 }
 
 .field label {
-  color: var(--text);
-  font-size: 0.86rem;
+  color: var(--text-soft);
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
 .field input,
 .field textarea {
   width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  background: color-mix(in oklch, var(--bg-light) 78%, transparent);
-  color: var(--text);
-  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--line-subtle);
+  border-radius: 7px;
+  background: var(--surface-ink);
+  color: var(--text-soft);
+  padding: 0.75rem 0.85rem;
   outline: none;
   transition: border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
 }
 
 .field input:focus,
 .field textarea:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px color-mix(in oklch, var(--primary) 25%, transparent);
+  border-color: var(--accent-soft);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent-soft) 20%, transparent);
 }
 
 .stepper-nav {
@@ -1193,20 +1216,21 @@ article>ul li {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding-top: 0.5rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--line-subtle);
 }
 
 .stepper-nav__back,
 .link-button {
   border: 0;
   background: transparent;
-  color: var(--text-muted);
+  color: var(--text-faint);
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .link-button {
-  color: var(--primary);
+  color: var(--accent-soft);
   text-decoration: underline;
 }
 
@@ -1214,11 +1238,12 @@ article>ul li {
 .stepper-nav__submit {
   margin-left: auto;
   border: 0;
-  border-radius: 6px;
-  background: var(--primary);
-  color: var(--bg-dark);
-  padding: 0.75rem 1.25rem;
-  font-size: 0.92rem;
+  min-height: 2.65rem;
+  border-radius: 7px;
+  background: var(--accent-pale);
+  color: #15171d;
+  padding: 0.65rem 1.15rem;
+  font-size: 0.82rem;
   font-weight: 700;
   box-shadow: none;
   transition: transform 160ms var(--ease-out), filter 160ms var(--ease-out);
@@ -1226,8 +1251,7 @@ article>ul li {
 
 .stepper-nav__next:hover,
 .stepper-nav__submit:hover {
-  filter: brightness(1.08);
-  transform: translateY(-1px);
+  background: #f3f6ff;
 }
 
 .stepper-nav__next:active,
@@ -1460,6 +1484,14 @@ article>ul li {
   .checkin-summary {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .checkin-history {
+    padding-top: 2rem;
+  }
+
+  .history-card__score-box {
+    padding-inline: 0.25rem;
   }
 
   .dashboard-page__side {
@@ -2062,20 +2094,18 @@ article>ul li {
 }
 
 .history-card {
-  padding: 1.25rem 1.4rem;
-  border-radius: 18px;
-  background: var(--bg-light);
-  border: 1px solid var(--border-muted);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 4px rgba(0, 0, 0, 0.4),
-    0 12px 28px rgba(0, 0, 0, 0.35);
+  padding: 1.1rem 1.2rem;
+  border-radius: 10px;
+  background: var(--surface-panel);
+  border: 1px solid var(--line-subtle);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   transition: border-color 160ms var(--ease-out);
 }
 
 .history-card:hover {
-  border-color: var(--highlight);
+  border-color: var(--accent-soft);
 }
 
 .history-card__header {
@@ -2095,12 +2125,13 @@ article>ul li {
 .history-card__date {
   font-weight: 500;
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
 }
 
 .history-card__time {
   font-size: 0.78rem;
-  color: var(--text-muted);
+  color: var(--text-faint);
 }
 
 .history-card__actions {
@@ -2123,8 +2154,11 @@ article>ul li {
 .history-card__scores {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5rem;
-  margin-bottom: 2rem;
+  gap: 0;
+  margin: 0.2rem 0 1rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--line-subtle);
+  border-bottom: 1px solid var(--line-subtle);
 }
 
 .history-card__score-box {
@@ -2132,12 +2166,17 @@ article>ul li {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  padding: 0.65rem 0.5rem;
-  border-radius: 12px;
-  background: var(--bg-light);
-  border: 1px solid var(--border-muted);
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.35rem 0.5rem;
+  border-right: 1px solid var(--line-subtle);
+  border-radius: 0;
+  background: transparent;
   text-align: center;
+}
+
+.history-card__score-box:last-child {
+  border-right: 0;
 }
 
 .history-card__score-icon {
@@ -2152,11 +2191,11 @@ article>ul li {
 }
 
 .history-card__score-sub {
-  font-size: 0.7rem;
+  font-size: 0.64rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-faint);
   line-height: 1.4;
 }
 
@@ -2171,9 +2210,9 @@ article>ul li {
 
 .history-card__note,
 .history-card__note-preview {
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   line-height: 1.5;
-  color: var(--text-muted);
+  color: var(--text-faint);
   margin: 0;
   white-space: pre-wrap;
 }
@@ -2208,18 +2247,18 @@ article>ul li {
 }
 
 .checkin-history__empty-card {
-  padding: 2rem;
+  padding: 1.6rem;
   text-align: center;
-  background: var(--bg-light);
-  border-radius: 20px;
-  border: 1px dashed var(--border);
-  color: var(--text-muted);
+  background: var(--surface-panel);
+  border-radius: 10px;
+  border: 1px dashed var(--line-subtle);
+  color: var(--text-faint);
 }
 
 .checkin-history__empty-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text-soft);
   margin-bottom: 0.4rem;
 }
 
@@ -2783,6 +2822,144 @@ article>ul li {
 
   .glance-card__line {
     margin-top: 0;
+  }
+}
+
+/* Check-in page: match the open blue field and paper record from the brand world. */
+.app-shell--workspace.is-checkin .checkin-page {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.78fr) minmax(0, 1.55fr);
+  column-gap: clamp(2rem, 6vw, 6.5rem);
+  align-items: start;
+  max-width: none;
+  color: var(--checkin-white);
+}
+
+.app-shell--workspace.is-checkin .checkin-page > h1 {
+  grid-column: 1;
+  grid-row: 1;
+  margin-bottom: 0.85rem;
+  color: var(--checkin-white);
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: clamp(2.6rem, 5vw, 4.8rem);
+  font-weight: 300;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.app-shell--workspace.is-checkin .checkin-page__intro {
+  grid-column: 1;
+  grid-row: 2;
+  max-width: 27ch;
+  margin: 0;
+  color: color-mix(in srgb, var(--checkin-white) 82%, transparent);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.app-shell--workspace.is-checkin .checkin-card {
+  --surface-ink: var(--checkin-record);
+  --surface-panel: var(--checkin-paper);
+  --surface-raised: var(--checkin-white);
+  --line-subtle: var(--checkin-rule);
+  --text-soft: var(--checkin-ink);
+  --text-faint: var(--checkin-muted);
+  --accent-pale: var(--checkin-blue-deep);
+  --accent-soft: var(--checkin-blue-deep);
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  margin-top: 0.35rem;
+  padding: clamp(1.4rem, 3.2vw, 2.5rem);
+  border: 0;
+  border-radius: 14px;
+  background: var(--checkin-paper);
+  color: var(--checkin-ink);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-option {
+  border-color: var(--checkin-rule);
+  background: var(--checkin-white);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-option:hover {
+  border-color: var(--checkin-blue-deep);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-option:has(input:checked) {
+  border-color: var(--checkin-blue-deep);
+  background: var(--checkin-blue-light);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--checkin-blue-deep) 18%, transparent);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__next,
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__submit {
+  background: var(--checkin-blue-deep);
+  color: var(--checkin-white);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__next:hover,
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__submit:hover {
+  background: var(--checkin-blue);
+}
+
+.app-shell--workspace.is-checkin .checkin-history {
+  --surface-panel: var(--checkin-record);
+  --surface-raised: var(--checkin-paper);
+  --line-subtle: var(--checkin-rule);
+  --text-soft: var(--checkin-ink);
+  --text-faint: var(--checkin-muted);
+  --accent-soft: var(--checkin-blue-deep);
+  --accent-pale: var(--checkin-blue-deep);
+  grid-column: 1 / -1;
+  grid-row: 3;
+  margin-top: 3.5rem !important;
+  padding-top: 2.5rem;
+  border-color: color-mix(in srgb, var(--checkin-white) 42%, transparent);
+  color: var(--checkin-ink);
+}
+
+.app-shell--workspace.is-checkin .checkin-history h2 {
+  color: var(--checkin-white);
+}
+
+.app-shell--workspace.is-checkin .history-card,
+.app-shell--workspace.is-checkin .checkin-history__empty-card {
+  border-color: var(--checkin-rule);
+  background: var(--checkin-record);
+}
+
+.app-shell--workspace.is-checkin .history-card:hover {
+  border-color: var(--checkin-blue-deep);
+}
+
+.app-shell--workspace.is-checkin .history-card .btn-ghost,
+.app-shell--workspace.is-checkin .history-card .btn-link {
+  color: var(--checkin-blue-deep);
+}
+
+@media (max-width: 760px) {
+  .app-shell--workspace.is-checkin .checkin-page {
+    display: block;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-page > h1 {
+    max-width: none;
+    margin-bottom: 0.75rem;
+    font-size: clamp(2.65rem, 12vw, 3.5rem);
+    text-wrap: balance;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-page__intro {
+    max-width: 34ch;
+    margin-bottom: 2rem;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-card {
+    margin-top: 0;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-history {
+    margin-top: 2.7rem !important;
   }
 }
 

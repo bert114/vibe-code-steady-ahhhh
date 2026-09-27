@@ -45,25 +45,30 @@ function StepperSteps({ step, onJump }) {
         if (i === step) {
           return (
             <li key={name} aria-current="step" className="stepper-steps__item stepper-steps__item--active">
-              <span className="stepper-steps__dot" aria-hidden="true" />
-              {name}
+              <span className="stepper-steps__number" aria-hidden="true">{i + 1}</span>
+              <span>{name}</span>
             </li>
           )
         }
         if (i < step) {
           return (
             <li key={name} className="stepper-steps__item">
-              <button type="button" className="stepper-steps__link" onClick={() => onJump(i)}>
-                <span className="stepper-steps__dot stepper-steps__dot--done" aria-hidden="true" />
-                {name}
+              <button
+                type="button"
+                className="stepper-steps__link"
+                onClick={() => onJump(i)}
+                aria-label={`${name}, completed`}
+              >
+                <span className="stepper-steps__number stepper-steps__number--done" aria-hidden="true">{i + 1}</span>
+                <span>{name}</span>
               </button>
             </li>
           )
         }
         return (
           <li key={name} className="stepper-steps__item stepper-steps__item--todo" aria-disabled="true">
-            <span className="stepper-steps__dot" aria-hidden="true" />
-            {name}
+            <span className="stepper-steps__number" aria-hidden="true">{i + 1}</span>
+            <span>{name}</span>
           </li>
         )
       })}
@@ -99,12 +104,18 @@ function preventImplicitSubmit(event) {
   if (event.key === 'Enter') event.preventDefault()
 }
 
+function scoreCaption(key, value) {
+  const meta = SCORE_STEPS.find((step) => step.key === key)
+  const captionIndex = SCORES.indexOf(Number(value))
+  return meta?.captions[captionIndex] ?? String(value)
+}
+
 function DetailsStep({ draft, setDraft, onEditAnswers, summaryRef }) {
   return (
     <div className="checkin-details">
       <p className="checkin-summary" ref={summaryRef} tabIndex={-1}>
         <span>
-          Mood {draft.moodScore} · Energy {draft.energyScore} · Drain {draft.drainScore}
+          Mood: {scoreCaption('moodScore', draft.moodScore)} · Energy: {scoreCaption('energyScore', draft.energyScore)} · Drain: {scoreCaption('drainScore', draft.drainScore)}
         </span>
         <button type="button" className="link-button" onClick={onEditAnswers}>
           Edit answers
@@ -152,8 +163,8 @@ function DetailsStep({ draft, setDraft, onEditAnswers, summaryRef }) {
   )
 }
 
-// A short, one-decision-per-screen wizard: pick a score and the form moves
-// on by itself, so recording a check-in never feels like filling out a
+// A short, one-decision-per-screen wizard: choose one score, then explicitly
+// continue to the next question so the progress model stays predictable.
 // questionnaire. All state and submission logic still lives in the store —
 // this component only tracks which step is currently showing.
 export default function CheckInForm({ onSubmit, saving }) {
@@ -201,7 +212,6 @@ export default function CheckInForm({ onSubmit, saving }) {
       }}
     >
       <div className="stepper-side">
-        <p className="stepper-side__title">Check-In</p>
         <p className="stepper-progress__label">
           Step {step + 1} of {TOTAL_STEPS}
         </p>
@@ -215,10 +225,7 @@ export default function CheckInForm({ onSubmit, saving }) {
           <ScoreStep
             meta={currentMeta}
             value={draft[currentMeta.key]}
-            onSelect={(v) => {
-              setDraft({ [currentMeta.key]: v })
-              goNext()
-            }}
+            onSelect={(v) => setDraft({ [currentMeta.key]: v })}
           />
         )}
 
@@ -239,7 +246,7 @@ export default function CheckInForm({ onSubmit, saving }) {
           )}
           {!isDetailsStep ? (
             <button type="button" className="stepper-nav__next" onClick={goNext}>
-              Next <span aria-hidden="true">→</span>
+              Continue to {STEP_NAMES[step + 1].toLowerCase()} <span aria-hidden="true">→</span>
             </button>
           ) : (
             <button type="button" className="stepper-nav__submit" onClick={onSubmit} disabled={saving}>

@@ -15,9 +15,8 @@ export default function CheckInPage() {
 
   return (
     <main className="checkin-page">
-      <p className="page-eyebrow">A moment for yourself</p>
-      <h1>Check-In</h1>
-      <p className="checkin-page__intro">Answer one question at a time — it only takes a moment.</p>
+      <h1>Log a check-in</h1>
+      <p className="checkin-page__intro">Record your mood, energy, and what&apos;s been draining you. Add context before you save.</p>
 
       <div className="card checkin-card">
         <CheckInForm onSubmit={() => saveDraft().catch(() => {})} saving={saving} />

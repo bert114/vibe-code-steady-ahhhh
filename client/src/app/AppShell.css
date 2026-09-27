@@ -1,7 +1,7 @@
 .app-shell--workspace {
   --workspace-rail: 15.25rem;
   min-height: 100vh;
-  background: var(--bg-dark);
+  background: var(--surface-ink);
 }
 
 .workspace-sidebar {
@@ -12,8 +12,8 @@
   width: var(--workspace-rail);
   flex-direction: column;
   padding: 1.65rem 1.1rem 1.25rem;
-  border-right: 1px solid var(--border-muted);
-  background: var(--bg);
+  border-right: 1px solid var(--line-subtle);
+  background: var(--surface-ink);
 }
 
 .workspace-brand {
@@ -34,14 +34,14 @@
   height: 2rem;
   place-items: center;
   border-radius: 10px 10px 10px 3px;
-  background: color-mix(in oklch, var(--primary) 18%, var(--bg-light));
+  background: var(--surface-raised);
 }
 
 .workspace-brand__mark span {
   width: 0.65rem;
   height: 0.65rem;
   border-radius: 70% 30% 65% 35%;
-  background: var(--primary);
+  background: var(--accent-soft);
   transform: rotate(-38deg);
 }
 
@@ -90,10 +90,10 @@
 
 .workspace-sidebar__label {
   margin: 0 0 0.55rem 0.7rem;
-  color: var(--text-muted);
+  color: var(--text-faint);
   font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -101,11 +101,11 @@
   display: flex;
   min-height: 2.8rem;
   align-items: center;
-  gap: 0.8rem;
-  padding: 0.55rem 0.75rem;
-  border-radius: 9px;
-  color: var(--text-muted);
-  font-size: 0.9rem;
+  gap: 0.75rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 7px;
+  color: var(--text-faint);
+  font-size: 0.86rem;
   font-weight: 500;
   text-decoration: none;
   transition: color 160ms var(--ease-out), background 160ms var(--ease-out);
@@ -118,18 +118,18 @@
 }
 
 .workspace-nav__link:hover {
-  color: var(--text);
-  background: var(--bg-light);
+  color: var(--text-soft);
+  background: var(--surface-raised);
 }
 
 .workspace-nav__link.is-active {
-  color: var(--text);
-  background: color-mix(in oklch, var(--primary) 14%, var(--bg-light));
+  color: var(--accent-pale);
+  background: var(--surface-raised);
   font-weight: 650;
 }
 
 .workspace-nav__link.is-active svg {
-  color: var(--primary);
+  color: var(--accent-soft);
 }
 
 .workspace-sidebar__note {
@@ -138,7 +138,7 @@
   gap: 0.65rem;
   margin-top: auto;
   padding: 1rem 0.6rem 0.2rem;
-  border-top: 1px solid var(--border-muted);
+  border-top: 1px solid var(--line-subtle);
 }
 
 .workspace-sidebar__note-mark {
@@ -147,7 +147,7 @@
   flex: none;
   margin-top: 0.42rem;
   border-radius: 50%;
-  background: var(--primary);
+  background: var(--accent-soft);
 }
 
 .workspace-sidebar__note p {
@@ -169,13 +169,13 @@
   top: 0;
   z-index: 10;
   display: flex;
-  min-height: 4.5rem;
+  min-height: 4.25rem;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  padding: 0 2rem;
-  border-bottom: 1px solid var(--border-muted);
-  background: color-mix(in oklch, var(--bg-dark) 92%, transparent);
+  padding: 0 1.75rem;
+  border-bottom: 1px solid var(--line-subtle);
+  background: color-mix(in oklch, var(--surface-ink) 94%, transparent);
   backdrop-filter: blur(14px);
 }
 
@@ -187,9 +187,11 @@
 }
 
 .workspace-topbar__page {
-  color: var(--text-muted);
-  font-size: 0.88rem;
+  color: var(--text-faint);
+  font-size: 0.76rem;
   font-weight: 550;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .workspace-quick-action {
@@ -198,18 +200,18 @@
   align-items: center;
   gap: 0.45rem;
   padding: 0.45rem 0.85rem;
-  border: 1px solid color-mix(in oklch, var(--primary) 30%, var(--border-muted));
-  border-radius: 8px;
-  background: color-mix(in oklch, var(--primary) 13%, var(--bg));
-  color: var(--text);
+  border: 1px solid var(--line-subtle);
+  border-radius: 7px;
+  background: var(--surface-raised);
+  color: var(--text-soft);
   font-size: 0.82rem;
   font-weight: 650;
   transition: background 160ms var(--ease-out), border-color 160ms var(--ease-out);
 }
 
 .workspace-quick-action:hover {
-  border-color: color-mix(in oklch, var(--primary) 60%, var(--border-muted));
-  background: color-mix(in oklch, var(--primary) 20%, var(--bg));
+  border-color: var(--accent-soft);
+  background: color-mix(in oklch, var(--accent-soft) 12%, var(--surface-raised));
 }
 
 .workspace-quick-action svg {
@@ -234,15 +236,15 @@
   border: 1px solid transparent;
   border-radius: 9px;
   background: transparent;
-  color: var(--text-muted);
+  color: var(--text-faint);
   font-size: 0.82rem;
 }
 
 .workspace-profile__trigger:hover,
 .workspace-profile__trigger[aria-expanded='true'] {
-  border-color: var(--border-muted);
-  background: var(--bg);
-  color: var(--text);
+  border-color: var(--line-subtle);
+  background: var(--surface-raised);
+  color: var(--text-soft);
 }
 
 .workspace-profile__avatar {
@@ -250,9 +252,9 @@
   width: 1.9rem;
   height: 1.9rem;
   place-items: center;
-  border: 1px solid var(--border);
+  border: 1px solid var(--line-subtle);
   border-radius: 50%;
-  background: var(--bg-light);
+  background: var(--surface-raised);
 }
 
 .workspace-profile__avatar svg {
@@ -277,9 +279,9 @@
   z-index: 20;
   width: 15rem;
   padding: 1rem;
-  border: 1px solid var(--border-muted);
+  border: 1px solid var(--line-subtle);
   border-radius: 12px;
-  background: var(--bg-light);
+  background: var(--surface-panel);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
 }
 
@@ -818,5 +820,122 @@
     gap: 0.2rem;
     padding: 0.35rem 0.2rem;
     font-size: 0.72rem;
+  }
+}
+
+/* Check-in visual world: a quiet blue field with a paper record inside it. */
+.app-shell--workspace.is-checkin {
+  color-scheme: light;
+  background: var(--checkin-blue);
+}
+
+.app-shell--workspace.is-checkin .workspace-sidebar,
+.app-shell--workspace.is-checkin .workspace-main,
+.app-shell--workspace.is-checkin .workspace-topbar,
+.app-shell--workspace.is-checkin .workspace-drawer {
+  background: var(--checkin-blue);
+}
+
+.app-shell--workspace.is-checkin .workspace-sidebar,
+.app-shell--workspace.is-checkin .workspace-topbar {
+  border-color: color-mix(in srgb, var(--checkin-white) 32%, transparent);
+}
+
+.app-shell--workspace.is-checkin .workspace-brand,
+.app-shell--workspace.is-checkin .workspace-topbar__page,
+.app-shell--workspace.is-checkin .workspace-profile__trigger,
+.app-shell--workspace.is-checkin .workspace-sidebar__note p {
+  color: color-mix(in srgb, var(--checkin-white) 88%, transparent);
+}
+
+.app-shell--workspace.is-checkin .workspace-brand__mark {
+  background: color-mix(in srgb, var(--checkin-white) 18%, transparent);
+}
+
+.app-shell--workspace.is-checkin .workspace-brand__mark span,
+.app-shell--workspace.is-checkin .workspace-sidebar__note-mark {
+  background: var(--checkin-white);
+}
+
+.app-shell--workspace.is-checkin .workspace-sidebar__label,
+.app-shell--workspace.is-checkin .workspace-nav__link {
+  color: color-mix(in srgb, var(--checkin-white) 74%, transparent);
+}
+
+.app-shell--workspace.is-checkin .workspace-nav__link:hover,
+.app-shell--workspace.is-checkin .workspace-nav__link.is-active {
+  background: color-mix(in srgb, var(--checkin-white) 17%, transparent);
+  color: var(--checkin-white);
+}
+
+.app-shell--workspace.is-checkin .workspace-nav__link.is-active svg {
+  color: var(--checkin-white);
+}
+
+.app-shell--workspace.is-checkin .workspace-sidebar__note {
+  border-color: color-mix(in srgb, var(--checkin-white) 32%, transparent);
+}
+
+.app-shell--workspace.is-checkin .workspace-quick-action,
+.app-shell--workspace.is-checkin .workspace-profile__trigger {
+  border-color: color-mix(in srgb, var(--checkin-white) 30%, transparent);
+  background: color-mix(in srgb, var(--checkin-white) 13%, transparent);
+  color: var(--checkin-white);
+}
+
+.app-shell--workspace.is-checkin .workspace-quick-action:hover,
+.app-shell--workspace.is-checkin .workspace-profile__trigger:hover,
+.app-shell--workspace.is-checkin .workspace-profile__trigger[aria-expanded='true'] {
+  border-color: color-mix(in srgb, var(--checkin-white) 62%, transparent);
+  background: color-mix(in srgb, var(--checkin-white) 22%, transparent);
+}
+
+.app-shell--workspace.is-checkin .workspace-profile__avatar,
+.app-shell--workspace.is-checkin .workspace-menu-toggle {
+  border-color: color-mix(in srgb, var(--checkin-white) 34%, transparent);
+  background: color-mix(in srgb, var(--checkin-white) 13%, transparent);
+  color: var(--checkin-white);
+}
+
+.app-shell--workspace.is-checkin .workspace-profile__menu {
+  border-color: var(--checkin-rule);
+  background: var(--checkin-paper);
+  color: var(--checkin-ink);
+}
+
+.app-shell--workspace.is-checkin .workspace-profile__menu p {
+  color: var(--checkin-muted);
+}
+
+.app-shell--workspace.is-checkin .workspace-profile__menu a {
+  color: var(--checkin-blue-deep);
+}
+
+.app-shell--workspace.is-checkin .workspace-content {
+  background: var(--checkin-blue);
+}
+
+.app-shell--workspace.is-checkin .workspace-content > main {
+  width: min(calc(100% - 1rem), 1320px);
+  max-width: 1320px;
+  min-height: calc(100vh - 5.25rem);
+  margin: 0.5rem auto 1rem;
+  padding: clamp(2.5rem, 5vw, 4.75rem) clamp(1.25rem, 5vw, 5rem) 4rem;
+  border: 1px solid color-mix(in srgb, var(--checkin-white) 58%, transparent);
+  border-radius: 18px;
+  background: var(--checkin-blue);
+}
+
+@media (max-width: 760px) {
+  .app-shell--workspace.is-checkin .workspace-content > main {
+    width: calc(100% - 1rem);
+    min-height: calc(100vh - 4.5rem);
+    margin: 0.5rem auto;
+    padding: 2.5rem 1.1rem 3rem;
+  }
+
+  .app-shell--workspace.is-checkin .workspace-drawer {
+    border-color: color-mix(in srgb, var(--checkin-white) 32%, transparent);
+    box-shadow: 16px 0 45px color-mix(in srgb, var(--checkin-blue-deep) 40%, transparent);
   }
 }
