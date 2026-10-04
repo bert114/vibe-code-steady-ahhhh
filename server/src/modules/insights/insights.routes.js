@@ -1,12 +1,14 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { requireUser } from "../../middleware/auth.js";
+import { validate } from "../../middleware/validate.js";
 import {
-  getInsightByIdController,
+  getInsightByIdHandler,
   getInsights,
   getSignals,
   postAnalyze,
 } from "./insights.controller.js";
+import { insightIdSchema } from "./insights.validation.js";
 
 export const insightsRouter = Router();
 
@@ -14,7 +16,7 @@ insightsRouter.use(requireUser);
 // Signals are cheap local computation — no limit. Analysis spends AI quota.
 insightsRouter.get("/signals", getSignals);
 insightsRouter.get("/", getInsights);
-insightsRouter.get("/:id", getInsightByIdController);
+insightsRouter.get("/:id", validate(insightIdSchema, "params"), getInsightByIdHandler);
 
 const analyzeLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -31,3 +33,4 @@ const analyzeLimiter = rateLimit({
 });
 
 insightsRouter.post("/analyze", analyzeLimiter, postAnalyze);
+

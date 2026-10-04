@@ -3,6 +3,8 @@
 // provider. Throws ProviderError with a SAFE code — never the raw body,
 // which could echo user content into logs.
 
+import { env } from '../../config/env.js'
+
 export class ProviderError extends Error {
   constructor(code) {
     super(`AI provider failed: ${code}`)
@@ -12,13 +14,13 @@ export class ProviderError extends Error {
 }
 
 function timeoutMs() {
-  return Number(process.env.AI_PROVIDER_TIMEOUT_MS ?? 20000)
+  return env.AI_PROVIDER_TIMEOUT_MS
 }
 
 export async function runAnalysis({ system, user }) {
-  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
-  const apiToken = process.env.CLOUDFLARE_API_TOKEN
-  const model = process.env.CLOUDFLARE_AI_MODEL
+  const accountId = env.CLOUDFLARE_ACCOUNT_ID
+  const apiToken = env.CLOUDFLARE_API_TOKEN
+  const model = env.CLOUDFLARE_AI_MODEL
   if (!accountId || !apiToken || !model) {
     throw new ProviderError('AI_NOT_CONFIGURED')
   }

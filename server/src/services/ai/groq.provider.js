@@ -4,18 +4,19 @@
 // the runAnalysis() signature, not on this provider. Throws ProviderError
 // with a SAFE code — never the raw body, which could echo user content
 // into logs.
+import { env } from '../../config/env.js'
 import { ProviderError } from './cloudflare.provider.js'
 
 function timeoutMs() {
-  return Number(process.env.AI_PROVIDER_TIMEOUT_MS ?? 20000)
+  return env.AI_PROVIDER_TIMEOUT_MS
 }
 
 export function groqConfig() {
   return {
-    apiKey: process.env.GROQ_API_KEY ?? '',
+    apiKey: env.GROQ_API_KEY,
     // Verified current on Groq free tier 2026-09-19 (native structured
     // output, 131k context). llama-3.3-70b-versatile was deprecated June 2026.
-    model: process.env.GROQ_MODEL ?? 'openai/gpt-oss-120b',
+    model: env.GROQ_MODEL,
   }
 }
 

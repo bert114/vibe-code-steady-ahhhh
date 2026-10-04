@@ -2,6 +2,7 @@
 // Flow: load window -> pattern engine -> skip if nothing new -> provider ->
 // validate -> persist -> return. Any failure lands on the neutral fallback;
 // check-ins are never blocked and raw content never reaches logs.
+import { env } from '../../config/env.js'
 import { listCheckins } from '../../modules/checkins/checkins.repository.js'
 import { analyzeUserPatterns } from '../patterns/pattern.service.js'
 import { ProviderError, runAnalysis as cloudflareRun } from './cloudflare.provider.js'
@@ -15,8 +16,8 @@ export const FALLBACK_MESSAGE = 'Insights are temporarily unavailable.'
 
 function aiConfig() {
   return {
-    provider: process.env.AI_PROVIDER ?? 'cloudflare',
-    model: process.env.CLOUDFLARE_AI_MODEL ?? '',
+    provider: env.AI_PROVIDER,
+    model: env.CLOUDFLARE_AI_MODEL,
   }
 }
 
@@ -48,9 +49,8 @@ function fallbackResult(lastInsight, errorCode) {
 // deps.provider defaults to the configured provider; tests inject fakes with
 // the same async ({ system, user }) => string signature.
 function defaultProvider() {
-  const name = process.env.AI_PROVIDER ?? 'cloudflare'
-  if (name === 'groq') return groqRun
-  if (name === 'openai') return openaiRun
+  if (env.AI_PROVIDER === 'groq') return groqRun
+  if (env.AI_PROVIDER === 'openai') return openaiRun
   return cloudflareRun
 }
 

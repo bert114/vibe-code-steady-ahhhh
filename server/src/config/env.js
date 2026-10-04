@@ -4,15 +4,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-function required(name) {
-  const value = process.env[name];
-  if (!value) {
-    console.error(`[env] Missing required environment variable: ${name}`);
-    process.exit(1);
-  }
-  return value;
-}
-
 export const env = {
   NODE_ENV: process.env.NODE_ENV ?? "development",
   PORT: Number(process.env.PORT ?? 5000),
@@ -22,6 +13,24 @@ export const env = {
   DEV_USER_ID: process.env.DEV_USER_ID ?? "",
   CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY ?? "",
   CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY ?? "",
+
+  // AI provider
+  AI_PROVIDER: process.env.AI_PROVIDER ?? "cloudflare",
+  AI_PROVIDER_TIMEOUT_MS: Number(process.env.AI_PROVIDER_TIMEOUT_MS ?? 20000),
+  AI_ANALYSIS_RATE_LIMIT: Number(process.env.AI_ANALYSIS_RATE_LIMIT ?? 5),
+  CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID ?? "",
+  CLOUDFLARE_API_TOKEN: process.env.CLOUDFLARE_API_TOKEN ?? "",
+  CLOUDFLARE_AI_MODEL: process.env.CLOUDFLARE_AI_MODEL ?? "",
+  GROQ_API_KEY: process.env.GROQ_API_KEY ?? "",
+  GROQ_MODEL: process.env.GROQ_MODEL ?? "openai/gpt-oss-120b",
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
+  OPENAI_MODEL: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
+
+  // Pattern engine thresholds
+  BURNOUT_SIGNAL_WINDOW_DAYS: Number(process.env.BURNOUT_SIGNAL_WINDOW_DAYS ?? 7),
+  BURNOUT_SIGNAL_MIN_CHECKINS: Number(process.env.BURNOUT_SIGNAL_MIN_CHECKINS ?? 3),
+  LOW_ENERGY_MAX: Number(process.env.LOW_ENERGY_MAX ?? 2),
+  HIGH_DRAIN_MIN: Number(process.env.HIGH_DRAIN_MIN ?? 4),
 };
 
 // --- Mandatory dev-bypass safety rules (TechDesign) ---
@@ -46,4 +55,3 @@ if (env.NODE_ENV === "production" && !env.CLERK_SECRET_KEY) {
   process.exit(1);
 }
 
-export { required };
