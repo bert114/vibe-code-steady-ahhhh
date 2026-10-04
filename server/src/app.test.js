@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import request from 'supertest'
 import { createApp } from './app.js'
+import { env } from './config/env.js'
 import { requireUser } from './middleware/auth.js'
 
 const app = createApp()
@@ -40,5 +41,28 @@ describe('foundation', () => {
     })
     expect(res.statusCode).toBe(401)
     expect(res.body.error.code).toBe('UNAUTHORIZED')
+  })
+
+  // TEMP-OPEN-ACCESS: verifies the temporary dev default (OPEN_ACCESS=true)
+  // allows every request and attributes it server-side. TODO(REVERT) with flag.
+  it('TEMP-OPEN-ACCESS: requireUser allows without a session when open', () => {
+    const prev = env.OPEN_ACCESS
+    env.OPEN_ACCESS = true
+    try {
+      const req = {}
+      let nextCalled = false
+      const res = {
+        status() {
+          throw new Error('must not 401 when open')
+        },
+      }
+      requireUser(req, res, () => {
+        nextCalled = true
+      })
+      expect(nextCalled).toBe(true)
+      expect(req.user?.id).toBeTruthy()
+    } finally {
+      env.OPEN_ACCESS = prev
+    }
   })
 })

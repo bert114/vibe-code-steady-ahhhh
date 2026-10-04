@@ -26,6 +26,17 @@ export async function runAnalysis({ system, user }) {
     throw new ProviderError('AI_NOT_CONFIGURED')
   }
 
+  // Audit: what is sent externally (lengths/model only — never prompt text).
+  try {
+    if (process.env.AUDIT_ENABLED !== 'false') {
+      console.log(
+        `[audit] ${JSON.stringify({ audit: true, kind: 'ai-external-send', to: 'api.groq.com', model, systemChars: system?.length ?? 0, userChars: user?.length ?? 0 })}`,
+      )
+    }
+  } catch {
+    // Auditing must never break the provider call.
+  }
+
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), timeoutMs())
   let res

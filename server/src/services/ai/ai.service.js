@@ -120,6 +120,15 @@ export async function analyzeRecentCheckins(userId, deps = {}) {
     await repository.insertReminder(userId, stored[0]?.id ?? null, 'insight', reminder.message)
   }
   await repository.completeRun(run.id)
+  try {
+    if (process.env.AUDIT_ENABLED !== 'false') {
+      console.log(
+        `[audit] ${JSON.stringify({ audit: true, kind: 'ai-analyze-ok', runId: run.id, provider, stored: stored.length })}`,
+      )
+    }
+  } catch {
+    // Auditing must never break the analysis result.
+  }
   return { insights: stored, lastInsight: stored[0] ?? null, fallback: false, fresh: true }
 }
 

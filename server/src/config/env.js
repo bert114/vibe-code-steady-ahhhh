@@ -14,6 +14,15 @@ export const env = {
   CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY ?? "",
   CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY ?? "",
 
+  // TEMP-OPEN-ACCESS (revert before beta): when true, requireUser() allows
+  // every request without a session and attributes it to DEV_USER_ID.
+  // Default open for now; set OPEN_ACCESS=false to restore 401 enforcement.
+  // Never enable in production (startup guard below exits 1).
+  OPEN_ACCESS: process.env.OPEN_ACCESS !== "false",
+  // Per-request audit to console JSON (safe metadata only, never raw notes).
+  // Set AUDIT_ENABLED=false to silence (tests do this).
+  AUDIT_ENABLED: process.env.AUDIT_ENABLED !== "false",
+
   // AI provider
   AI_PROVIDER: process.env.AI_PROVIDER ?? "cloudflare",
   AI_PROVIDER_TIMEOUT_MS: Number(process.env.AI_PROVIDER_TIMEOUT_MS ?? 20000),
@@ -51,6 +60,14 @@ if (env.DEV_AUTH_BYPASS && !env.DEV_USER_ID) {
 if (env.NODE_ENV === "production" && !env.CLERK_SECRET_KEY) {
   console.error(
     "[env] FATAL: NODE_ENV=production requires CLERK_SECRET_KEY (real auth for beta).",
+  );
+  process.exit(1);
+}
+
+// --- TEMP-OPEN-ACCESS guards (remove together with the flag) ---
+if (env.OPEN_ACCESS && env.NODE_ENV === "production") {
+  console.error(
+    "[env] FATAL: OPEN_ACCESS=true is forbidden when NODE_ENV=production.",
   );
   process.exit(1);
 }

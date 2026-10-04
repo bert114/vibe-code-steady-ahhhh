@@ -63,4 +63,3 @@ export async function deleteCheckin(req, res, next) {
     next(err);
   }
 }
-

@@ -4,6 +4,7 @@ import express from 'express'
 import helmet from 'helmet'
 import { env } from './config/env.js'
 import { checkDatabase } from './db/pool.js'
+import { audit } from './middleware/audit.js'
 import { authResolver } from './middleware/auth.js'
 import { createClerkResolver } from './middleware/clerk.js'
 import { errorHandler, notFound } from './middleware/error.js'
@@ -22,6 +23,8 @@ export function createApp() {
   // Exact dev origin only — never widen to '*' for API traffic.
   app.use(cors({ origin: env.CLIENT_ORIGIN }))
   app.use(express.json({ limit: '100kb' }))
+  // TEMP audit: one safe JSON line per request (see middleware/audit.js).
+  app.use(audit)
   // Health stays outside auth entirely so load-balancer checks never depend
   // on Clerk or the dev bypass.
   app.get('/api/health', async (_req, res) => {
