@@ -20,18 +20,29 @@ export function createApp() {
   const app = express();
 
   app.use(helmet());
-  // Exact dev origin only — never widen to '*' for API traffic.
   app.use(cors({ origin: env.CLIENT_ORIGIN }));
   app.use(express.json({ limit: "100kb" }));
-  // TEMP audit: one safe JSON line per request (see middleware/audit.js).
   app.use(audit);
-  // Health stays outside auth entirely so load-balancer checks never depend
-  // on Clerk or the dev bypass.
+
   app.get("/api/health", async (_req, res) => {
     res.json({ status: "ok", db: await checkDatabase() });
   });
-  // Clerk session verification only when keys are configured (beta/prod).
-  // Local dev without keys keeps the previous behavior exactly.
+
+  app.get("/", (_req, res) => {
+    res.json({
+      name: "steady-ahh-api",
+      version: "0.1.0",
+      status: "ok",
+      message: "Steady-Ahh API is running",
+      links: {
+        health: "/api/health",
+        checkins: "/api/check-ins",
+        insights: "/api/insights",
+        dashboard: "/api/dashboard",
+      },
+    });
+  });
+
   if (env.CLERK_SECRET_KEY) {
     app.use(clerkMiddleware());
   }

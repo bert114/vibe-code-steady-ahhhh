@@ -50,10 +50,10 @@ The project should stay close to the user's existing PERN skills instead of movi
 | Database access  | `pg` + SQL migrations                 | Prisma               | Drizzle                              | Keeps PostgreSQL visible and avoids ORM abstraction for a learning-focused MVP.                                                                 |
 | API style        | REST                                  | GraphQL              | tRPC                                 | Simple route contracts fit four core features.                                                                                                  |
 | Styling          | CSS modules/plain CSS + design tokens | Tailwind CSS         | Component library                    | Keeps the UI lightweight and easy to understand.                                                                                                |
-| Frontend hosting | Cloudflare Pages                      | Vercel Hobby         | Render Static Site                   | Free static hosting with globally distributed assets; avoids putting frontend on the sleeping backend.                                          |
+| Frontend hosting | Render Static Site                    | Vercel Hobby         | Cloudflare Pages                     | Free static hosting via Render; same provider as backend simplifies CORS and deploy. SPA rewrite `/* → /index.html` in `render.yaml`.            |
 | Backend hosting  | Render Free Web Service               | Cloudflare Worker    | Other cloud runtime                  | Native support for Node/Express with a simple Git deployment path.                                                                              |
-| PostgreSQL       | Supabase Free Postgres                | Render Free Postgres | Self-hosted PostgreSQL               | Supabase gives a persistent free Postgres option; Render's free Postgres currently expires after 30 days.                                       |
-| Product AI       | Cloudflare Workers AI via REST        | Gemini API free tier | Local Ollama                         | Workers AI currently provides a free daily allocation and states customer content is not used to train/improve models without explicit consent. |
+| PostgreSQL       | Neon serverless Postgres              | Supabase Free Postgres | Render Free Postgres               | Neon gives persistent free Postgres with connection pooling, auto-scaling, and branches; no 30-day expiry.                                      |
+| Product AI       | Groq free tier (OpenAI-compatible)    | Cloudflare Workers AI | Gemini API free tier                | $0 with no card; ~30 req/min, hundreds–thousands req/day; no training on API data; prompts not retained. Called from Express via REST.          |
 | Testing          | Vitest + RTL + Supertest + Playwright | Jest + Cypress       | Vitest only                          | Covers client, API, and full user journeys without adding a large test stack.                                                                   |
 
 ---
@@ -68,15 +68,15 @@ graph TB
     C[React + Vite Client]
     S[Zustand Stores]
     API[Express REST API]
-    AUTH[Development Auth Resolver]
+    AUTH[Clerk Auth + Dev Bypass]
     M1[Check-In Module]
     M2[Insights Module]
     M3[Reminder Module]
     M4[User Module]
     RULES[Pattern & Boundary Rules]
     AI[AI Analysis Service]
-    CF[Cloudflare Workers AI]
-    DB[(Supabase PostgreSQL)]
+    GQ[Groq AI]
+    DB[(Neon PostgreSQL)]
 
     U --> C
     C --> S
@@ -92,7 +92,7 @@ graph TB
     M4 --> DB
     M2 --> RULES
     M2 --> AI
-    AI --> CF
+    AI --> GQ
     M2 --> DB
 ```
 
@@ -133,7 +133,7 @@ Candidate signals + structured evidence
    ↓
 AI analysis service
    ↓
-Cloudflare Workers AI
+Groq AI (OpenAI-compatible)
    ↓
 Structured JSON result
    ↓
@@ -184,18 +184,22 @@ Vite provides a development server with HMR and a production build command for o
 
 ### Database
 
-- PostgreSQL through Supabase Free Postgres
-- SQL migrations tracked in Git
-- No ORM in MVP
+- PostgreSQL through Neon serverless Postgres
+- SQL migrations tracked in Git (`server/src/db/migrations/`, applied via `npm run db:migrate --workspace=server`)
+- No ORM in MVP; access via `pg` with parameterized queries
+- Connection pooling, auto-scaling, and branching built-in
 
 ### AI
 
-- Cloudflare Workers AI through the REST API
-- Provider adapter so the AI provider can be changed later
-- JSON/structured output where supported
-- Server-side secret storage
+- Groq free tier through OpenAI-compatible chat completions API with structured JSON output
+- Provider adapter pattern (`server/src/services/ai/`) so the AI provider can be changed later
+- JSON/structured output via Zod schema validation
+- Server-side secret storage only (`GROQ_API_KEY`, `GROQ_MODEL` in server `.env`)
+- Model: `GROQ_MODEL` env-pinned (default `openai/gpt-oss-120b`)
+- Rate-limited at `AI_ANALYSIS_RATE_LIMIT` (default 5 req/hour per user)
+- Called only from Express; client never holds AI credentials
 
-Cloudflare's current Workers AI REST API supports calling models from an existing application using an account ID and API token. [Workers AI REST API](https://developers.cloudflare.com/workers-ai/get-started/rest-api/) — accessed September 18, 2026.
+Groq's free tier requires no credit card, provides ~30 req/min and hundreds–thousands req/day per model — far above 10–20 testers at the 5/hour per-user rate limit. Groq does not train on API data and does not retain prompts. [Groq API Docs](https://console.groq.com/docs) — accessed September 19, 2026.
 
 ### Testing
 
@@ -283,7 +287,7 @@ steady-ahh/
 │       ├── services/
 │       │   ├── ai/
 │       │   │   ├── ai.service.js
-│       │   │   ├── cloudflare.provider.js
+│       │   │   ├── groq.provider.js
 │       │   │   ├── prompt.js
 │       │   │   └── outputSchema.js
 │       │   └── patterns/
@@ -758,15 +762,26 @@ This bypass exists for development convenience and AI-assisted implementation; i
 NODE_ENV=development
 PORT=5000
 CLIENT_ORIGIN=http://localhost:5173
-DATABASE_URL=<supabase-postgresql-connection-string>
+DATABASE_URL=<neon-postgresql-connection-string>
 DEV_AUTH_BYPASS=true
 DEV_USER_ID=<development-user-uuid>
-AI_PROVIDER=cloudflare
-CLOUDFLARE_ACCOUNT_ID=<cloudflare-account-id>
-CLOUDFLARE_API_TOKEN=<server-only-token>
-CLOUDFLARE_AI_MODEL=<currently-free-workers-ai-model>
+# TEMP-OPEN-ACCESS (revert before beta): unset/true = every req allowed, no
+# auth, attributed to DEV_USER_ID. Set OPEN_ACCESS=false to restore 401s.
+# Refuses to boot when NODE_ENV=production.
+OPEN_ACCESS=true
+# Per-request safe audit to console JSON. Set AUDIT_ENABLED=false to silence.
+AUDIT_ENABLED=true
+AI_PROVIDER=groq
+# Groq free key (no card): console.groq.com → API Keys → Create API Key.
+# Shape: gsk_ + a long random string, e.g. GROQ_API_KEY=gsk_paste_yours_here
+# Never commit a real key — names and placeholders only in this file.
+GROQ_API_KEY=
+# Pinned model id; empty takes the code default (openai/gpt-oss-120b).
+GROQ_MODEL=
 AI_ANALYSIS_RATE_LIMIT=5
-AI_MAX_INPUT_CHARS=<configured-limit>
+AI_MAX_INPUT_CHARS=
+CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
 ```
 
 ### Client `.env`
@@ -774,13 +789,16 @@ AI_MAX_INPUT_CHARS=<configured-limit>
 ```text
 VITE_API_URL=http://localhost:5000/api
 VITE_DEV_AUTH_BYPASS=true
+VITE_CLERK_PUBLISHABLE_KEY=
+VITE_FEEDBACK_URL=
 ```
 
 Never place:
 
 ```text
 DATABASE_URL
-CLOUDFLARE_API_TOKEN
+GROQ_API_KEY
+CLERK_SECRET_KEY
 ```
 
 in the client environment.
@@ -958,9 +976,13 @@ The AI then turns this evidence into user-facing language.
 
 ### Authentication
 
-- Development: environment-controlled bypass.
-- External beta/production: real authentication required before real user data is collected.
-- Every API query must be scoped to the authenticated user.
+- **Development:** environment-controlled bypass (`NODE_ENV=development` + `DEV_AUTH_BYPASS=true` + `DEV_USER_ID`); optional `OPEN_ACCESS=true` allows unauthenticated requests attributed to `DEV_USER_ID`.
+- **External beta/production:** Clerk free Hobby (verified $0 to 50k MRU/app).
+  - Server: `@clerk/express` `clerkMiddleware()` + `getAuth()` on API (Bearer header for cross-origin static client).
+  - Client: `@clerk/clerk-react` provider + route gates.
+  - `auth_identities` table (migration 003) maps Clerk `sub` → internal UUID — no existing tables changed.
+- **Production boot guard:** server fails startup if `DEV_AUTH_BYPASS=true` while `NODE_ENV=production`, or if bypass enabled without valid `DEV_USER_ID`, or if `CLERK_SECRET_KEY` missing in production.
+- Every API query must be scoped to the authenticated user (`req.user.id`).
 
 ### Authorization
 
@@ -1071,6 +1093,14 @@ Confirm structured insight renders
   ↓
 Confirm reminder behavior when test data meets configured rule
 ```
+
+**E2E Architecture** (not part of `npm run test`):
+- Runs real dev stack on scratch ports: API `:5001` + client `:5174`
+- Dedicated E2E user: `e2e2e2e2-e2e2-4e2e-8e2e-e2e2e2e2e2e2` (created/removed by `e2e/global-setup|teardown.cjs`)
+- `CLIENT_ORIGIN` matched to E2E client (`http://localhost:5174`)
+- Needs `DATABASE_URL` (reads `server/.env`)
+- Intercept API calls by origin (`**/localhost:5001/api/**`) — bare `**/api/**` also aborts Vite's `/src/lib/api/*.js` modules
+- Configured in `e2e/playwright.config.cjs`
 
 ### AI Evaluation Set
 
@@ -1228,11 +1258,15 @@ dev: npm run dev
 
 test: npm run test
 
+test:e2e: npm run test:e2e
+
 typecheck: node -e "console.log('JavaScript project: no TypeScript typecheck configured')"
 
 lint: npm run lint
 
 build: npm run build
+
+db:migrate: npm run db:migrate --workspace=server
 ```
 
 Because the project intentionally uses JavaScript instead of TypeScript, `typecheck` is a no-op status command rather than a TypeScript compiler step.
@@ -1241,34 +1275,52 @@ Because the project intentionally uses JavaScript instead of TypeScript, `typech
 
 ## Deployment Plan
 
-### Frontend: Cloudflare Pages
+### Frontend: Render Static Site
 
-Use a static Vite build.
+Use a static Vite build deployed via `render.yaml`.
 
 - Repository: GitHub
-- Build command: `npm run build` from the client project/workspace
-- Output directory: `dist`
+- Service type: `web` with `runtime: static`
+- Build command: `npm run build --workspace=client`
+- Output directory: `client/dist`
+- SPA rewrite: `/* → /index.html` (configured in `render.yaml`)
 - Public environment variable: `VITE_API_URL`
+- Custom domain or `*.onrender.com` subdomain
 
-Cloudflare Pages serves static assets through its globally distributed network. Its Free plan currently allows 500 builds/month and up to 20,000 files per project. [Cloudflare Pages Limits](https://developers.cloudflare.com/pages/platform/limits/) — accessed September 18, 2026.
+Render Static Site serves static assets through its globally distributed network. Free plan currently allows 500 builds/month. [Render Static Sites](https://render.com/docs/static-sites) — accessed September 19, 2026.
 
 ### Backend: Render Free Web Service
 
-Deploy the Express server as a Render Web Service.
+Deploy the Express server as a Render Web Service via `render.yaml`.
+
+- Repository: GitHub
+- Service type: `web`
+- Build command: `npm install --workspace=server`
+- Start command: `npm run start --workspace=server`
+- Environment variables: all server `.env` keys (including `DATABASE_URL`, `GROQ_API_KEY`, `CLERK_SECRET_KEY`, `CLIENT_ORIGIN`)
+- Health check endpoint: `GET /api/health`
 
 Render supports Node.js/Express web services and deploys from a linked Git branch. Its Free web service plan currently spins down after 15 minutes without inbound traffic and can take about a minute to wake, so this is a known trade-off against the $0 budget. [Render Web Services](https://render.com/docs/web-services) and [Render Free](https://render.com/docs/free) — accessed September 18, 2026.
 
-### Database: Supabase Free Postgres
+### Database: Neon Serverless Postgres
 
-Use Supabase only for hosted PostgreSQL in MVP. Access PostgreSQL with `pg`; do not require the Supabase JavaScript client for core data access.
+Use Neon for hosted PostgreSQL in MVP. Access PostgreSQL with `pg`; do not require the Neon JavaScript client for core data access.
 
-The current Supabase Free plan lists a 500 MB database, two free projects, and project pausing after a week of inactivity. [Supabase Pricing](https://supabase.com/pricing) — accessed September 18, 2026.
+- Connection string in `DATABASE_URL` (server-only)
+- Connection pooling via PgBouncer (built into Neon connection string)
+- Auto-scaling and branching for dev/preview environments
+- Free tier: 512 MB storage, pauses after 1 week inactivity (can be resumed) [Neon Pricing](https://neon.tech/pricing) — accessed September 19, 2026.
+- Migrations applied via `npm run db:migrate --workspace=server` (runs SQL files from `server/src/db/migrations/`)
 
-### AI: Cloudflare Workers AI
+### AI: Groq Free Tier
 
-Keep the account ID and API token in Render's server environment. React never calls Workers AI directly.
+Keep the API key in Render's server environment. React never calls Groq directly.
 
-Current Cloudflare docs list 10,000 free Neurons/day on the Workers Free plan for Workers AI, and the platform's data-use documentation says customer content is not used to train models or improve Cloudflare/third-party services without explicit consent. [Workers AI Pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/) and [Workers AI Data Usage](https://developers.cloudflare.com/workers-ai/platform/data-usage/) — accessed September 18, 2026.
+- `GROQ_API_KEY` and `GROQ_MODEL` in server environment variables on Render
+- Called from Express via OpenAI-compatible REST endpoint
+- Free tier: no card required, ~30 req/min, hundreds–thousands req/day per model
+- Groq states customer content is not used to train models and prompts are not retained [Groq Privacy](https://groq.com/privacy/) — accessed September 19, 2026.
+- Dormant adapters exist for Cloudflare Workers AI (`cloudflare.provider.js`) and OpenAI (`openai.provider.js`) but are not wired.
 
 ---
 
@@ -1279,10 +1331,10 @@ Current Cloudflare docs list 10,000 free Neurons/day on the Workers Free plan fo
 | Service               | Plan            | Planned cost | Important caveat                                  |
 | --------------------- | --------------- | -----------: | ------------------------------------------------- |
 | GitHub                | Free            |           $0 | Repository/source-control limits apply.           |
-| Cloudflare Pages      | Free            |           $0 | Static site limits apply.                         |
+| Render Static Site    | Free            |           $0 | Static site limits apply (500 builds/month).      |
 | Render Express API    | Free            |           $0 | Sleeps when idle; intended for testing/hobby use. |
-| Supabase Postgres     | Free            |           $0 | 500 MB and inactivity pause limits apply.         |
-| Cloudflare Workers AI | Free allocation |   $0 planned | 10,000 Neurons/day; model access can change.      |
+| Neon Postgres         | Free            |           $0 | 512 MB and inactivity pause limits apply.         |
+| Groq Free Tier        | Free allocation |   $0 planned | ~30 req/min, hundreds–thousands req/day per model |
 | **Planned total**     |                 | **$0/month** | Verify current limits before launch.              |
 
 The free deployment is appropriate for a small validation cohort, not a guarantee of production-grade uptime or unlimited AI usage.
@@ -1409,7 +1461,7 @@ The system can identify configurable pattern signals without AI.
 ### Weeks 7–8: AI Insights
 
 - create provider adapter
-- configure Cloudflare Workers AI
+- configure Groq provider
 - define structured output schema
 - implement `/api/insights/analyze`
 - validate AI output
@@ -1509,7 +1561,7 @@ validation-ready
 
 **Impact:** first request after inactivity may be slower.
 
-**Workaround:** keep user-facing static assets on Cloudflare Pages and avoid unnecessary API requests during initial page load.
+**Workaround:** keep user-facing static assets on Render Static Site and avoid unnecessary API requests during initial page load.
 
 ### 2. Free AI Quota Is Finite
 
@@ -1607,23 +1659,21 @@ The technical implementation is successful when:
 - Express: https://github.com/expressjs/express#readme — accessed September 18, 2026
 - Node.js releases: https://nodejs.org/en/about/previous-releases — accessed September 18, 2026
 - PostgreSQL docs: https://www.postgresql.org/docs/ — accessed September 18, 2026
-- Supabase pricing: https://supabase.com/pricing — accessed September 18, 2026
+- Neon pricing: https://neon.tech/pricing — accessed September 19, 2026
 - Render free services: https://render.com/docs/free — accessed September 18, 2026
 - Render web services: https://render.com/docs/web-services — accessed September 18, 2026
-- Cloudflare Pages limits: https://developers.cloudflare.com/pages/platform/limits/ — accessed September 18, 2026
-- Cloudflare Workers AI pricing: https://developers.cloudflare.com/workers-ai/platform/pricing/ — accessed September 18, 2026
-- Cloudflare Workers AI data usage: https://developers.cloudflare.com/workers-ai/platform/data-usage/ — accessed September 18, 2026
-- Cloudflare Workers AI REST API: https://developers.cloudflare.com/workers-ai/get-started/rest-api/ — accessed September 18, 2026
-- Cloudflare Workers AI JSON Mode: https://developers.cloudflare.com/workers-ai/features/json-mode/ — accessed September 18, 2026
-- Gemini API pricing: https://ai.google.dev/gemini-api/docs/pricing — accessed September 18, 2026
+- Render static sites: https://render.com/docs/static-sites — accessed September 19, 2026
+- Groq API docs: https://console.groq.com/docs — accessed September 19, 2026
+- Groq privacy: https://groq.com/privacy/ — accessed September 19, 2026
+- Clerk pricing: https://clerk.com/pricing — accessed September 19, 2026
 - OWASP API Security Top 10: https://devguide.owasp.org/en/07-training-education/07-api-top-ten/ — accessed September 18, 2026
 
 ---
 
-_Version: 1.0_
-_Last Updated: September 18, 2026_
-_Next Review: October 18, 2026_
-_Technical Path: PERN + React/Vite + Express + PostgreSQL + Server-side Workers AI_
+_Version: 1.1_
+_Last Updated: September 19, 2026_
+_Next Review: October 19, 2026_
+_Technical Path: PERN + React/Vite + Express + PostgreSQL + Server-side Groq AI_
 _Planned Operating Cost: $0/month_
 
 ---
@@ -1638,7 +1688,7 @@ _Planned Operating Cost: $0/month_
 - Target platform: web
 - Budget: free only
 - Timeline: 3 months
-- Chosen stack: React + Vite + Zustand + CSS, Node.js + Express + REST + Zod + pg, Supabase PostgreSQL, Cloudflare Pages + Render, Cloudflare Workers AI
+- Chosen stack: React + Vite + Zustand + CSS, Node.js + Express + REST + Zod + pg, Neon PostgreSQL, Render Static Site + Render Web Service, Groq free tier
 - AI coding tool: Mix depending on complexity; AI builder/scaffolding for UI and AI assistance for implementation/debugging
 - Source files: research-Steady-Ahh.md → PRD-Steady-Ahh-MVP.md → TechDesign-Steady-Ahh-MVP.md
 
@@ -1652,18 +1702,20 @@ _Planned Operating Cost: $0/month_
   "stack": {
     "frontend": "React + Vite + Zustand + CSS",
     "backend": "Node.js 24 LTS + Express + REST + Zod",
-    "database": "PostgreSQL via Supabase Free",
-    "auth": "Development env bypass; real auth required before external beta",
+    "database": "PostgreSQL via Neon serverless",
+    "auth": "Development env bypass + Clerk free Hobby (beta/prod); auth_identities migration 003 maps Clerk sub → internal UUID",
     "styling": "CSS Modules/plain CSS + design tokens",
-    "deployment": "Cloudflare Pages + Render Web Service"
+    "deployment": "Render Static Site (client) + Render Web Service (API)"
   },
   "commands": {
     "setup": "npm install",
     "dev": "npm run dev",
     "test": "npm run test",
+    "test:e2e": "npm run test:e2e",
     "typecheck": "node -e \"console.log('JavaScript project: no TypeScript typecheck configured')\"",
     "lint": "npm run lint",
-    "build": "npm run build"
+    "build": "npm run build",
+    "db:migrate": "npm run db:migrate --workspace=server"
   },
   "aiScope": "in-app AI"
 }

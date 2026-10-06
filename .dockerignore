@@ -4,9 +4,6 @@
 node_modules/
 client/node_modules/
 server/node_modules/
-dist/
-client/dist/
-server/dist/
 build/
 coverage/
 playwright-report/
@@ -17,3 +14,7 @@ test-results/
 npm-debug.log*
 .git/
 .vite/
+
+# Allow dist folders for production Dockerfile COPY --from=builder
+!client/dist/
+!server/dist/

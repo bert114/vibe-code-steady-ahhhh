@@ -14,6 +14,23 @@ describe('foundation', () => {
     expect(['up', 'down', 'unconfigured']).toContain(res.body.db)
   })
 
+  it('GET / returns service descriptor', async () => {
+    const res = await request(app).get('/')
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({
+      name: 'steady-ahh-api',
+      version: '0.1.0',
+      status: 'ok',
+      message: expect.any(String),
+      links: {
+        health: '/api/health',
+        checkins: '/api/check-ins',
+        insights: '/api/insights',
+        dashboard: '/api/dashboard',
+      },
+    })
+  })
+
   it('unknown routes return the error contract (no stack traces)', async () => {
     const res = await request(app).get('/api/nope')
     expect(res.status).toBe(404)
