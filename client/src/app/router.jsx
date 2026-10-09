@@ -8,7 +8,7 @@ import DashboardPage from '../features/reminders/pages/DashboardPage.jsx'
 import TrendsPage from '../features/trends/pages/TrendsPage.jsx'
 import SettingsPage from '../features/users/pages/SettingsPage.jsx'
 import AppShell from './AppShell.jsx'
-import { AuthProvider, RequireAuth, clerkEnabled } from './auth.jsx'
+import { AuthProvider, RequireAuth } from './auth.jsx'
 
 function Placeholder({ title, hint }) {
   return (
@@ -86,12 +86,8 @@ export default function AppRouter() {
               </Shell>
             }
           />
-          {clerkEnabled && (
-            <>
-              <Route path="/sign-in" element={<SignInPage />} />
-              <Route path="/sign-up" element={<SignUpPage />} />
-            </>
-          )}
+          <Route path="/sign-in/*" element={<SignInPage />} />
+          <Route path="/sign-up/*" element={<SignUpPage />} />
           <Route
             path="*"
             element={

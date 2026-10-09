@@ -4,9 +4,12 @@ import { env } from "../config/env.js";
 // this sets no user — protected routes must then use real authentication,
 // which lands before the external beta.
 export function authResolver(req, _res, next) {
-  if (env.DEV_AUTH_BYPASS && env.NODE_ENV !== "production") {
+  if (!req.user?.id && env.DEV_AUTH_BYPASS && env.NODE_ENV !== "production") {
     // Server-side env value only. Never accept a user id from the client.
-    req.user = { id: env.DEV_USER_ID };
+    req.user = {
+      id: env.DEV_USER_ID,
+      role: process.env.DEV_USER_ROLE || "user",
+    };
   }
   next();
 }
@@ -25,6 +28,7 @@ export function requireUser(req, res, next) {
       // without server/.env still flows (FK needs a UUID-shaped id).
       req.user = {
         id: env.DEV_USER_ID || '00000000-0000-4000-8000-000000000000',
+        role: process.env.DEV_USER_ROLE || 'user',
         openAccess: true,
       };
     }
@@ -40,4 +44,33 @@ export function requireUser(req, res, next) {
     });
   }
   next();
+}
+
+// Enforces Role-Based Access Control (RBAC).
+// Expects an authenticated req.user with a role field.
+export function requireRole(...allowedRoles) {
+  return function roleGuard(req, res, next) {
+    if (!req.user?.id) {
+      return res.status(401).json({
+        error: {
+          code: "UNAUTHORIZED",
+          message: "Authentication is required.",
+          details: [],
+        },
+      });
+    }
+
+    const currentRole = req.user.role || "user";
+    if (!allowedRoles.includes(currentRole)) {
+      return res.status(403).json({
+        error: {
+          code: "FORBIDDEN",
+          message: "You do not have permission to access this resource.",
+          details: [],
+        },
+      });
+    }
+
+    next();
+  };
 }

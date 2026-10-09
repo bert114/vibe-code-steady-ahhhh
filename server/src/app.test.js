@@ -82,4 +82,13 @@ describe('foundation', () => {
       env.OPEN_ACCESS = prev
     }
   })
+
+  it('GET /api/admin/overview returns 401 when unauthenticated', async () => {
+    const res = await request(app).get('/api/admin/overview')
+    expect(res.status).toBe(401)
+    expect(res.body.error).toMatchObject({
+      code: 'UNAUTHORIZED',
+      message: 'Authentication is required.',
+    })
+  })
 })

@@ -5,17 +5,29 @@ import * as repository from './users.repository.js'
 // sight. A unique-violation race (two concurrent first requests) resolves by
 // re-reading the winner's row.
 export async function resolveUserId(clerkSub) {
-  const existing = await repository.findUserIdByClerkSub(clerkSub)
-  if (existing) return existing
+  const user = await resolveUser(clerkSub);
+  return user.id;
+}
+
+export async function resolveUser(clerkSub, defaultRole = 'user') {
+  const existing = await repository.findUserByClerkSub(clerkSub);
+  if (existing) {
+    return { id: existing.userId, role: existing.role };
+  }
   try {
-    return await repository.createUserForClerkSub(clerkSub)
+    const created = await repository.createUserForClerkSub(clerkSub, defaultRole);
+    return { id: created.userId, role: created.role };
   } catch (err) {
     if (err?.code === '23505') {
-      const winner = await repository.findUserIdByClerkSub(clerkSub)
-      if (winner) return winner
+      const winner = await repository.findUserByClerkSub(clerkSub);
+      if (winner) return { id: winner.userId, role: winner.role };
     }
-    throw err
+    throw err;
   }
+}
+
+export async function getUserProfile(userId) {
+  return repository.findUserById(userId);
 }
 
 export async function deleteUser(userId) {

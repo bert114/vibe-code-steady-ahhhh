@@ -1,6 +1,11 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ProviderError } from './cloudflare.provider.js'
 import { runAnalysis } from './openai.provider.js'
+
+beforeEach(() => {
+  delete process.env.OPENAI_API_KEY
+  delete process.env.OPENAI_MODEL
+})
 
 afterEach(() => {
   vi.unstubAllGlobals()

@@ -4,7 +4,7 @@
 // header) and maps the Clerk subject to the internal UUID user id.
 // getAuth is injectable so boundary tests never need real Clerk keys.
 import { getAuth } from '@clerk/express'
-import { resolveUserId } from '../modules/users/users.service.js'
+import { resolveUser } from '../modules/users/users.service.js'
 
 export function createClerkResolver({ getAuthFn = getAuth } = {}) {
   return async function clerkResolver(req, _res, next) {
@@ -17,7 +17,17 @@ export function createClerkResolver({ getAuthFn = getAuth } = {}) {
     }
     if (!auth?.isAuthenticated || !auth?.userId) return next()
     try {
-      req.user = { id: await resolveUserId(auth.userId), clerkSub: auth.userId }
+      const claimRole =
+        auth.sessionClaims?.metadata?.role ||
+        auth.sessionClaims?.role ||
+        auth.claims?.metadata?.role
+      const defaultRole = claimRole === 'admin' ? 'admin' : 'user'
+      const user = await resolveUser(auth.userId, defaultRole)
+      req.user = {
+        id: user.id,
+        clerkSub: auth.userId,
+        role: user.role || 'user',
+      }
     } catch {
       return next()
     }

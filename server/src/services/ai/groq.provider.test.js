@@ -1,6 +1,11 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ProviderError } from './cloudflare.provider.js'
 import { runAnalysis } from './groq.provider.js'
+
+beforeEach(() => {
+  delete process.env.GROQ_API_KEY
+  delete process.env.GROQ_MODEL
+})
 
 afterEach(() => {
   vi.unstubAllGlobals()

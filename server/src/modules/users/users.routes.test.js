@@ -158,5 +158,17 @@ describe.skipIf(!HAS_DB)('users delete (db)', () => {
     }
   },
   30000)
+
+  it('returns current user profile and role via GET /api/users/me', async () => {
+    await seedUser(USER_A)
+    try {
+      const res = await request(authedApp(USER_A)).get('/api/users/me')
+      expect(res.status).toBe(200)
+      expect(res.body.id).toBe(USER_A)
+      expect(res.body.role).toBe('user')
+    } finally {
+      await resetUsers()
+    }
+  }, 30000)
 })
 

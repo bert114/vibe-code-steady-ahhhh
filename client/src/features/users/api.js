@@ -2,6 +2,10 @@
 // features may use.
 import { request } from '../../lib/api/request.js'
 
+export function getMyProfile() {
+  return request('/users/me')
+}
+
 export function deleteMyAccount() {
   return request('/users/me', { method: 'DELETE' })
 }

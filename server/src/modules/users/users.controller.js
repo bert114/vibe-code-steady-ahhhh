@@ -2,6 +2,20 @@
 // No SQL here, no business rules here.
 import * as service from './users.service.js'
 
+export async function getMe(req, res, next) {
+  try {
+    const profile = await service.getUserProfile(req.user.id)
+    res.json({
+      id: req.user.id,
+      role: req.user.role || profile?.role || 'user',
+      clerkSub: req.user.clerkSub || null,
+      createdAt: profile?.created_at || null,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 export async function deleteMe(req, res, next) {
   try {
     const deleted = await service.deleteUser(req.user.id)

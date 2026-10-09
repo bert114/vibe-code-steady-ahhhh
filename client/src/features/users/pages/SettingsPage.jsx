@@ -1,9 +1,51 @@
 import { useClerk } from '@clerk/clerk-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { clerkEnabled } from '../../../app/auth.jsx'
+import { clerkEnabled, useClerkActive } from '../../../app/auth.jsx'
 import { useToastStore } from '../../../components/ui/toastStore.js'
-import { deleteMyAccount, exportMyData } from '../api.js'
+import { deleteMyAccount, exportMyData, getMyProfile } from '../api.js'
+
+function UserProfileInfo() {
+  const [profile, setProfile] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  async function loadProfile() {
+    setLoading(true)
+    try {
+      const res = await getMyProfile()
+      setProfile(res)
+    } catch {
+      // Network error handled by request helper
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (!profile) {
+    return (
+      <div style={{ marginTop: '0.75rem' }}>
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={loadProfile}
+          disabled={loading}
+          style={{ fontSize: '0.85rem', padding: '0.35rem 0.75rem' }}
+        >
+          {loading ? 'Loading details…' : 'View account & role details'}
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="profile-info-badge" style={{ marginTop: '0.75rem', fontSize: '0.9rem', color: 'var(--text-muted, #64748b)' }}>
+      <span>Account ID: <code>{profile.id}</code></span>
+      <span style={{ marginLeft: '1rem' }}>
+        Role: <strong style={{ textTransform: 'capitalize' }}>{profile.role || 'user'}</strong>
+      </span>
+    </div>
+  )
+}
 
 function ExportData() {
   const [exporting, setExporting] = useState(false)
@@ -95,6 +137,7 @@ function DeleteAccount({ onDeleted }) {
 
 export default function SettingsPage() {
   const [deleted, setDeleted] = useState(false)
+  const clerkActive = useClerkActive()
 
   if (deleted) {
     return (
@@ -120,6 +163,7 @@ export default function SettingsPage() {
           database and are only ever visible to your signed-in account — one account can
           never read or change another account&apos;s records.
         </p>
+        <UserProfileInfo />
       </section>
 
       <section className="settings-section" aria-labelledby="export-heading">
@@ -150,7 +194,7 @@ export default function SettingsPage() {
 
       <section className="settings-section settings-danger" aria-labelledby="delete-heading">
         <h2 id="delete-heading">Delete your account</h2>
-        {clerkEnabled ? (
+        {clerkEnabled && clerkActive ? (
           <ClerkSignOut onSignedOut={() => setDeleted(true)} />
         ) : (
           <DeleteAccount onDeleted={() => setDeleted(true)} />
