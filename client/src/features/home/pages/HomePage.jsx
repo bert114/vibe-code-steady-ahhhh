@@ -116,8 +116,7 @@ export default function HomePage() {
               A little room to check in with yourself
             </p>
             <h1 className="landing-hero__title" id="landing-title">
-              Make sense of what’s weighing on you. udshuhsudhushdu hsudhsud sud
-              uhduhsudhsu
+              Make sense of what’s weighing on you.
               <span>Notice patterns. Honor your energy.</span>
             </h1>
             <p className="landing-hero__trust">
