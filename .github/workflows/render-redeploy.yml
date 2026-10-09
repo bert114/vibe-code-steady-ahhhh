@@ -1,0 +1,30 @@
+name: render-redeploy
+
+# Redeploys both Render services (API + Static Site) on every push.
+# Secrets (never in repo): RENDER_DEPLOY_HOOK_API, RENDER_DEPLOY_HOOK_CLIENT
+# from Render Dashboard -> Service -> Settings -> Deploy Hook.
+# If Render auto-deploy is also ON, you'll get double deploys — turn it OFF
+# to let this workflow own deploys, or leave ON (harmless, wasteful on $0 tier).
+
+on:
+  push:
+    branches: [sm4]
+  workflow_dispatch: {}
+
+concurrency:
+  group: render-redeploy
+  cancel-in-progress: false
+
+jobs:
+  redeploy-both:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Redeploy API
+        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK" --max-time 30
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+      - name: Redeploy Client
+        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK_CLIENT" --max-time 30
+        env:
+          RENDER_DEPLOY_HOOK_CLIENT: ${{ secrets.RENDER_DEPLOY_HOOK_CLIENT }}
