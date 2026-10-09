@@ -1,0 +1,9 @@
+# Keep dev images lean and secret-free.
+node_modules
+npm-debug.log
+dist
+build
+coverage
+.env
+.env.*
+*.log

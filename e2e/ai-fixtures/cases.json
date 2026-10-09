@@ -1,0 +1,58 @@
+{
+  "cases": [
+    {
+      "name": "direct-pattern",
+      "description": "Obvious repeated drain with matching evidence.",
+      "providerOutput": "{\"insights\": [{\"type\": \"burnout\", \"title\": \"Draining evenings are adding up\", \"summary\": \"Your last few check-ins show high drain in the evenings. This might mean recovery time is squeezed.\", \"evidence\": [\"High drain in 3 of the last 4 check-ins\", \"Evenings mentioned twice\"], \"confidence\": \"medium\", \"suggestions\": [\"You could protect one evening this week and notice how it feels.\"]}], \"reminder\": {\"shouldShow\": true, \"message\": \"Be gentle with yourself this evening.\"}}",
+      "expect": "accepted"
+    },
+    {
+      "name": "indirect-pattern",
+      "description": "Subtle trend the model must hedge, not overstate.",
+      "providerOutput": "{\"insights\": [{\"type\": \"pattern\", \"title\": \"Energy seems lower on workdays\", \"summary\": \"Energy looks a little lower on days tagged work, though the evidence is thin and this could be coincidence.\", \"evidence\": [\"Lower energy on 2 work-tagged check-ins\"], \"confidence\": \"low\", \"suggestions\": []}], \"reminder\": null}",
+      "expect": "accepted"
+    },
+    {
+      "name": "insufficient-data",
+      "description": "Honest thin-evidence response.",
+      "providerOutput": "{\"insights\": [{\"type\": \"general\", \"title\": \"Too early to tell\", \"summary\": \"There are only a couple of check-ins so far, so nothing reliable stands out yet. Keep checking in.\", \"evidence\": [], \"confidence\": \"low\", \"suggestions\": []}], \"reminder\": null}",
+      "expect": "accepted"
+    },
+    {
+      "name": "conflicting-signals",
+      "description": "Mixed evidence held with uncertainty.",
+      "providerOutput": "{\"insights\": [{\"type\": \"pattern\", \"title\": \"A mixed week\", \"summary\": \"Some check-ins show high energy and others show drain, so no single trend stands out. Both can be true at once.\", \"evidence\": [\"Energy ranged from 2 to 5 across 4 check-ins\"], \"confidence\": \"low\", \"suggestions\": [\"You could note what differs between the lighter and heavier days.\"]}], \"reminder\": null}",
+      "expect": "accepted"
+    },
+    {
+      "name": "boundary-pressure",
+      "description": "Repeated draining context framed as observation with user agency.",
+      "providerOutput": "{\"insights\": [{\"type\": \"boundary\", \"title\": \"Saying yes when tired\", \"summary\": \"Several drained check-ins mention agreeing to plans. You might notice whether you are saying yes when you would rather rest — the call is always yours.\", \"evidence\": [\"Drain 4+ after plans mentioned twice\"], \"confidence\": \"medium\", \"suggestions\": [\"Pausing before answering invitations could be worth trying.\"]}], \"reminder\": {\"shouldShow\": true, \"message\": \"It is okay to say no to protect your energy.\"}}",
+      "expect": "accepted"
+    },
+    {
+      "name": "no-signal",
+      "description": "Steady state, no pattern claimed.",
+      "providerOutput": "{\"insights\": [{\"type\": \"general\", \"title\": \"Steady lately\", \"summary\": \"Recent check-ins look fairly steady, with nothing clearly repeating. That is useful information too.\", \"evidence\": [], \"confidence\": \"low\", \"suggestions\": []}], \"reminder\": null}",
+      "expect": "accepted"
+    },
+    {
+      "name": "malformed-ai-json",
+      "description": "Truncated output must be rejected, never stored.",
+      "providerOutput": "{\"insights\": [{\"type\": \"burnout\", \"title\": \"Unfinished",
+      "expect": "fallback"
+    },
+    {
+      "name": "schema-violation",
+      "description": "Valid JSON but wrong shape (bad enum, missing summary) must be rejected.",
+      "providerOutput": "{\"insights\": [{\"type\": \"diagnosis\", \"title\": \"Bad output\", \"confidence\": \"certain\", \"suggestions\": []}], \"reminder\": null}",
+      "expect": "fallback"
+    },
+    {
+      "name": "unsafe-language",
+      "description": "Even well-formed output with diagnosing/commanding language must be caught by the language screen.",
+      "providerOutput": "{\"insights\": [{\"type\": \"burnout\", \"title\": \"You are burned out\", \"summary\": \"You have clinical burnout and you must cancel all your plans immediately.\", \"evidence\": [\"Low scores\"], \"confidence\": \"high\", \"suggestions\": [\"Quit your commitments.\"]}], \"reminder\": {\"shouldShow\": true, \"message\": \"You must rest now.\"}}",
+      "expect": "accepted-with-language-flag"
+    }
+  ]
+}

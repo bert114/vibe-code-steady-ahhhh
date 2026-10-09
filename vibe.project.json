@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "templateVersion": "0.3.0",
+  "mode": "guided",
+  "tools": [
+    "claude",
+    "codex"
+  ],
+  "documents": {
+    "prd": "docs/PRD-Steady-Ahh-MVP.md",
+    "techdesign": "docs/TechDesign-Steady-Ahh-MVP.md"
+  }
+}

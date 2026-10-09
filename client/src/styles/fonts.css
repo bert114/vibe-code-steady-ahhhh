@@ -1,0 +1,76 @@
+/* Self-hosted brand and UI fonts, loaded with display swap to avoid invisible text. */
+
+/* Display — Melodrama */
+@font-face {
+  font-family: 'Melodrama';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/elegant/Melodrama-Regular (2).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Melodrama';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/elegant/Melodrama-Medium (1).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Melodrama';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/elegant/Melodrama-Semibold (1).otf') format('opentype');
+}
+
+/* Body/UI — Satoshi */
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('../fonts/elegant/Satoshi-Light (2).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/elegant/Satoshi-Regular (2).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url('../fonts/elegant/Satoshi-Medium (2).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('../fonts/elegant/Satoshi-Black (2).otf') format('opentype');
+}
+
+/* Steady Sans — the homepage’s existing Supreme-based brand face. */
+@font-face {
+  font-family: 'Steady Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/paragraph/Supreme-Regular%20(2)%20(2).otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Steady Sans';
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url('../fonts/paragraph/Supreme-Medium%20(2)%20(2).otf') format('opentype');
+}

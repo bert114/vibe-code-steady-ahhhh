@@ -1,0 +1,5 @@
+# Codex project config for Steady-Ahh
+# Keep sandbox and approval settings conservative. AGENTS.md is the source of truth.
+
+# Model intentionally left unset — no pinned model family for this project.
+# model =
