@@ -46,6 +46,14 @@ Client (`steady-ahh-client`, baked at build time — changing a value redeploys)
 1. Deploy with placeholder `CLIENT_ORIGIN` / `VITE_API_URL` (or the previous values).
 2. Copy the two `*.onrender.com` URLs from the dashboard.
 3. Set `CLIENT_ORIGIN` on the API and `VITE_API_URL` on the client; both services redeploy.
+4. SPA rewrite check (if sign-in lands on a 404): the static site must serve
+   `index.html` for every client route. Blueprint-created services get this
+   from `render.yaml` (`routes: source: /* → destination: /index.html`).
+   If the static site was created manually instead, add it by hand:
+   service → Redirects/Rewrites → Add Rule → Source `/*`, Destination
+   `/index.html`, Action **Rewrite**. Without it, `/` loads but any full-page
+   load of a deep link (notably Clerk's post-sign-up return to `/check-in`
+   with `?__clerk_handshake=…`) answers 404 at the CDN before the app boots.
 
 ## 4. Clerk dashboard (same session)
 

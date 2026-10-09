@@ -1562,6 +1562,23 @@ article>ul li {
   transform: translateY(-1px);
 }
 
+/* Auth gate loading state: shown while Clerk initializes or completes a
+   sign-in handshake (?__clerk_handshake=…). Keeps the return URL intact so
+   the handshake can finish instead of bouncing to sign-in mid-exchange. */
+.auth-loading {
+  display: grid;
+  min-height: 40vh;
+  place-items: center;
+  padding: 3rem 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.auth-loading p {
+  margin: 0;
+}
+
 .btn-secondary {
   background: var(--bg-light);
   color: var(--text);

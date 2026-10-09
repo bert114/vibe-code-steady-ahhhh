@@ -94,9 +94,9 @@ export default function AccountButton({
   id = "workspace-topbar-account",
   onNavigate,
 }) {
-  const { clerkActive } = useClerkActive();
+  const clerkActive = useClerkActive();
 
-  if (clerkEnabled) {
+  if (clerkEnabled && clerkActive) {
     return (
       <div className="workspace-topbar__account">
         <SignedIn>

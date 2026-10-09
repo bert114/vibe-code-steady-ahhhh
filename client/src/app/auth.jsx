@@ -1,17 +1,11 @@
-import {
-  ClerkProvider,
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-  useAuth,
-} from "@clerk/clerk-react";
+import { ClerkProvider, RedirectToSignIn, useAuth } from "@clerk/clerk-react";
 import { createContext, useContext, useEffect } from "react";
 import { clearTokenGetter, setTokenGetter } from "../lib/api/authToken.js";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? "";
 export const clerkEnabled = PUBLISHABLE_KEY !== "";
 
-const ClerkContext = createContext({ clerkActive: true });
+const ClerkContext = createContext({ clerkActive: false });
 
 export function useClerkActive() {
   return useContext(ClerkContext).clerkActive;
@@ -42,7 +36,12 @@ export function AuthProvider({ children }) {
     );
   }
   return (
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    <ClerkProvider
+      publishableKey={PUBLISHABLE_KEY}
+      afterSignOutUrl="/"
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+    >
       <ClerkContext.Provider value={{ clerkActive: true }}>
         <ClerkTokenSync />
         {children}
@@ -52,18 +51,32 @@ export function AuthProvider({ children }) {
 }
 
 // Gate for routes that need a signed-in user. Without Clerk keys this is a
-// passthrough (dev bypass); with Clerk it redirects strangers to sign-in.
+// passthrough (dev bypass); with Clerk it waits for the session to load and
+// then redirects strangers to sign-in.
 export function RequireAuth({ children }) {
   const clerkActive = useClerkActive();
   if (!clerkEnabled || !clerkActive) {
     return <>{children}</>;
   }
-  return (
-    <>
-      <SignedIn>{children}</SignedIn>
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
-    </>
-  );
+  return <ClerkGate>{children}</ClerkGate>;
+}
+
+// Runs only inside ClerkProvider. The isLoaded wait is load-bearing: after
+// an external auth redirect (sign-up, SSO) Clerk lands back on the return
+// URL with handshake query params (?__clerk_handshake=…) and needs a moment
+// to exchange them for a session. Redirecting while !isLoaded would drop
+// those params and the sign-in could never complete on that URL.
+function ClerkGate({ children }) {
+  const { isLoaded, isSignedIn } = useAuth();
+  if (!isLoaded) {
+    return (
+      <main className="auth-loading" role="status">
+        <p>Getting your space ready…</p>
+      </main>
+    );
+  }
+  if (!isSignedIn) {
+    return <RedirectToSignIn />;
+  }
+  return <>{children}</>;
 }
