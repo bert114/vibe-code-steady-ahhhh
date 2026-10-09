@@ -1,126 +1,141 @@
-import { neon } from "@neondatabase/serverless";
-import { env } from "../config/env.js";
+import dotenv from "dotenv";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 
-// Data access transport: Neon serverless HTTP driver, NOT `pg` TCP.
-// Why: this environment cannot open outbound Postgres TCP (5432/6543) —
-// verified live: `pg` connects time out while the SAME DATABASE_URL answers
-// over HTTPS. `dbQuery()` keeps the exact `pool.query(text, params)` ->
-// `{ rows, rowCount }` contract with numbered `$1` placeholders, so every
-// repository stays unchanged and every query stays parameterized (no SQL
-// string building anywhere).
-//
-// Timeouts are load-bearing: Neon free compute sleeps, so a hung database
-// must become a thrown error (status 503) that reaches Express
-// `errorHandler` and the client's `{ error: { code, message } }` contract
-// instead of a stuck "Saving…" with no fallback error.
-export const DB_QUERY_TIMEOUT_MS = Number(
-  process.env.DB_QUERY_TIMEOUT_MS ?? 15000,
-);
-
-const sql = env.DATABASE_URL ? neon(env.DATABASE_URL) : null;
-
-function unconfiguredError() {
-  const err = new Error("DATABASE_URL is not set.");
-  err.code = "DB_UNCONFIGURED";
-  err.status = 503;
-  return err;
+dotenv.config();
+if (!process.env.DATABASE_URL) {
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+  dotenv.config({ path: resolve(__dirname, "../../.env") });
 }
 
-export async function dbQuery(text, params = []) {
-  if (!sql) throw unconfiguredError();
-  let timer;
-  const timeout = new Promise((_, reject) => {
-    timer = setTimeout(() => {
-      const err = new Error(
-        `Database query timed out after ${DB_QUERY_TIMEOUT_MS}ms`,
-      );
-      err.code = "DB_TIMEOUT";
-      err.status = 503;
-      reject(err);
-    }, DB_QUERY_TIMEOUT_MS);
-    timer.unref?.();
-  });
+import pkg from "pg";
+import { Pool as NeonPool, neonConfig } from "@neondatabase/serverless";
+
+const { Pool: PgPool } = pkg;
+
+const isNeon = Boolean(process.env.DATABASE_URL?.includes("neon.tech"));
+
+// Neon serverless WebSocket configuration for environments without raw TCP 5432
+if (isNeon && typeof WebSocket !== "undefined") {
+  neonConfig.webSocketConstructor = WebSocket;
+}
+
+const Pool = isNeon ? NeonPool : PgPool;
+
+// The pool will automatically use the DATABASE_URL from your environment variables
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ...(isNeon ? {} : { ssl: { rejectUnauthorized: false } }),
+});
+
+// Log when a new client connects to the database
+pool.on("connect", () => {
+  console.log("🔄 New DB client connected to pool");
+});
+
+let lastDbError = null;
+
+/**
+ * Tests the database connection by running a simple query
+ * @returns {Promise<boolean>} True if connected, false otherwise
+ */
+export const testConnection = async () => {
   try {
-    // fullResults gives the pg-identical { rows, rowCount } shape.
-    const result = await Promise.race([
-      sql.query(text, params, { fullResults: true }),
-      timeout,
-    ]);
+    // We request a single client from the pool to test the connection
+    const client = await pool.connect();
+
+    // Execute a simple query to ensure the DB is responsive
+    const res = await client.query("SELECT NOW()");
+
+    console.log("✅ DB Connection successful! Server time:", res.rows[0].now);
+
+    // Crucial: Release the client back to the pool
+    client.release();
+    lastDbError = null;
+    return true;
+  } catch (err) {
+    console.error("❌ Database connection failed:", err.message);
+    lastDbError = {
+      code: err?.code ?? "DB_ERROR",
+      message: err.message,
+    };
+    return false;
+  }
+};
+
+/**
+ * Reusable query helper function
+ * @param {string} text - The SQL query string (e.g., 'SELECT * FROM users WHERE id = $1')
+ * @param {Array} params - The array of parameters to safely inject into the query
+ */
+export const query = (text, params) => {
+  return pool.query(text, params);
+};
+
+/**
+ * Database query helper returning standard { rows, rowCount } shape
+ * for repository backwards-compatibility.
+ */
+export async function dbQuery(text, params = []) {
+  if (!process.env.DATABASE_URL) {
+    const err = new Error("DATABASE_URL is not set.");
+    err.code = "DB_UNCONFIGURED";
+    err.status = 503;
+    throw err;
+  }
+
+  try {
+    const result = await pool.query(text, params);
     return {
       rows: result.rows,
       rowCount: result.rowCount ?? result.rows?.length ?? 0,
     };
   } catch (err) {
-    if (err?.code !== "DB_TIMEOUT") {
-      // Normalize failures so errorHandler returns 503 (not bare 500)
-      // with a safe code. Never attach connection strings or raw notes.
-      err.status = err?.status ?? 503;
-      err.code = err?.code ?? "DB_UNAVAILABLE";
-    }
+    err.status = err?.status ?? 503;
+    err.code = err?.code ?? "DB_UNAVAILABLE";
     throw err;
-  } finally {
-    clearTimeout(timer);
   }
 }
 
-// Non-interactive transaction over HTTP: [{ text, params }, ...] run
-// atomically. No result chaining inside (driver limitation) — generate any
-// needed ids (e.g. UUIDs) in JS before calling.
+/**
+ * Database transaction helper executing an array of queries atomically.
+ */
 export async function dbTransaction(queries) {
-  if (!sql) throw unconfiguredError();
-  let timer;
-  const timeout = new Promise((_, reject) => {
-    timer = setTimeout(() => {
-      const err = new Error(
-        `Database transaction timed out after ${DB_QUERY_TIMEOUT_MS}ms`,
-      );
-      err.code = "DB_TIMEOUT";
-      err.status = 503;
-      reject(err);
-    }, DB_QUERY_TIMEOUT_MS);
-    timer.unref?.();
-  });
+  if (!process.env.DATABASE_URL) {
+    const err = new Error("DATABASE_URL is not set.");
+    err.code = "DB_UNCONFIGURED";
+    err.status = 503;
+    throw err;
+  }
+
+  const client = await pool.connect();
   try {
-    return await Promise.race([
-      sql.transaction(queries.map((q) => sql.query(q.text, q.params ?? []))),
-      timeout,
-    ]);
-  } catch (err) {
-    if (err?.code !== "DB_TIMEOUT") {
-      err.status = err?.status ?? 503;
-      err.code = err?.code ?? "DB_UNAVAILABLE";
+    await client.query("BEGIN");
+    const results = [];
+    for (const q of queries) {
+      const res = await client.query(q.text, q.params ?? []);
+      results.push(res);
     }
+    await client.query("COMMIT");
+    return results;
+  } catch (err) {
+    await client.query("ROLLBACK");
+    err.status = err?.status ?? 503;
+    err.code = err?.code ?? "DB_UNAVAILABLE";
     throw err;
   } finally {
-    clearTimeout(timer);
+    client.release();
   }
 }
 
-// Last DB failure, safe fields only (code + message, never the connection
-// string or credentials). Lets /api/health report a SPECIFIC error in
-// non-production so you can debug without digging through server logs.
-let lastDbError = null;
 export function getLastDbError() {
   return lastDbError;
 }
 
 export async function checkDatabase() {
-  if (!env.DATABASE_URL) return "unconfigured";
-  try {
-    await dbQuery("SELECT 1");
-    lastDbError = null;
-    return "up";
-  } catch (err) {
-    // Specific code + message for debugging. pg/Neon messages carry
-    // host/user but never the password, so this is safe to log and
-    // (in dev) return.
-    lastDbError = {
-      code: err?.code ?? "UNKNOWN",
-      message: err?.message ?? String(err),
-    };
-    console.error(
-      `[db] health check failed code=${lastDbError.code} message=${lastDbError.message}`,
-    );
-    return "down";
-  }
+  if (!process.env.DATABASE_URL) return "unconfigured";
+  const ok = await testConnection();
+  return ok ? "up" : "down";
 }
+
+export default pool;
