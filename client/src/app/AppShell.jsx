@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import './AppShell.css'
 import ToastStack from '../components/ui/Toast.jsx'
 import QuickCheckInDialog from '../features/checkins/components/QuickCheckInDialog.jsx'
+import AccountButton from './AccountButton.jsx'
 
 const LINKS = [
   { to: '/', label: 'Home', icon: 'grid' },
@@ -73,73 +74,12 @@ function SidebarLinks({ onNavigate, id }) {
   )
 }
 
-function ProfilePlaceholder({ id, onNavigate }) {
-  const [open, setOpen] = useState(false)
-  const profileRef = useRef(null)
-  const triggerRef = useRef(null)
-
-  useEffect(() => {
-    if (!open) return undefined
-    const closeOutside = (event) => {
-      if (!profileRef.current?.contains(event.target)) setOpen(false)
-    }
-    const closeOnEscape = (event) => {
-      if (event.key === 'Escape') {
-        setOpen(false)
-        triggerRef.current?.focus()
-      }
-    }
-    document.addEventListener('pointerdown', closeOutside)
-    document.addEventListener('keydown', closeOnEscape)
-    return () => {
-      document.removeEventListener('pointerdown', closeOutside)
-      document.removeEventListener('keydown', closeOnEscape)
-    }
-  }, [open])
-
-  return (
-    <div className="workspace-profile" ref={profileRef}>
-      <button
-        ref={triggerRef}
-        type="button"
-        className="workspace-profile__trigger"
-        aria-label="Profile options"
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen((value) => !value)}
-      >
-        <span className="workspace-profile__avatar" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.2" /><path d="M5.5 20c.6-3.3 2.8-5 6.5-5s5.9 1.7 6.5 5" /></svg>
-        </span>
-        <span className="workspace-profile__label">Profile</span>
-        <svg className="workspace-profile__chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg>
-      </button>
-      <div className="workspace-profile__menu" id={id} hidden={!open}>
-        <p>Profile setup is coming later.</p>
-        <Link
-          to="/settings"
-          onClick={() => {
-            setOpen(false)
-            onNavigate?.()
-          }}
-        >
-          Open settings
-        </Link>
-      </div>
-    </div>
-  )
-}
-
-function SidebarFooter({ menuId, onNavigate }) {
+function SidebarFooter() {
   return (
     <div className="workspace-sidebar__footer">
       <div className="workspace-sidebar__note">
         <span className="workspace-sidebar__note-mark" aria-hidden="true" />
         <p>A little space to notice what you need.</p>
-      </div>
-      <div className="workspace-sidebar__account">
-        <p className="workspace-sidebar__account-label">Your account</p>
-        <ProfilePlaceholder id={menuId} onNavigate={onNavigate} />
       </div>
     </div>
   )
@@ -238,7 +178,7 @@ export default function AppShell({ children, variant = 'app' }) {
             </button>
           </div>
           <SidebarLinks id="workspace-desktop-navigation" />
-          <SidebarFooter menuId="workspace-profile-menu-landing-desktop" />
+          <SidebarFooter />
         </aside>
 
         {drawerOpen && <button type="button" className="workspace-drawer-backdrop" aria-label="Close navigation" onClick={() => setDrawerOpen(false)} />}
@@ -250,6 +190,9 @@ export default function AppShell({ children, variant = 'app' }) {
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
               </button>
               <span className="workspace-topbar__page">Home</span>
+            </div>
+            <div className="workspace-topbar__actions">
+              <AccountButton id="workspace-topbar-account-landing" />
             </div>
           </header>
           <div className="workspace-content">{children}</div>
@@ -263,7 +206,7 @@ export default function AppShell({ children, variant = 'app' }) {
             </button>
           </div>
           <SidebarLinks onNavigate={() => setDrawerOpen(false)} />
-          <SidebarFooter menuId="workspace-profile-menu-landing-mobile" onNavigate={() => setDrawerOpen(false)} />
+          <SidebarFooter />
         </div>
         <ToastStack />
       </div>
@@ -291,7 +234,7 @@ export default function AppShell({ children, variant = 'app' }) {
           </button>
         </div>
         <SidebarLinks id="workspace-desktop-navigation" />
-        <SidebarFooter menuId="workspace-profile-menu-workspace-desktop" />
+        <SidebarFooter />
       </aside>
 
       {drawerOpen && <button type="button" className="workspace-drawer-backdrop" aria-label="Close navigation" onClick={() => setDrawerOpen(false)} />}
@@ -309,6 +252,7 @@ export default function AppShell({ children, variant = 'app' }) {
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
               <span>Quick check-in</span>
             </button>
+            <AccountButton id="workspace-topbar-account" />
           </div>
         </header>
 
@@ -320,7 +264,7 @@ export default function AppShell({ children, variant = 'app' }) {
             </button>
           </div>
           <SidebarLinks onNavigate={() => setDrawerOpen(false)} />
-          <SidebarFooter menuId="workspace-profile-menu-workspace-mobile" onNavigate={() => setDrawerOpen(false)} />
+          <SidebarFooter />
         </div>
 
         <div className="workspace-content">{children}</div>

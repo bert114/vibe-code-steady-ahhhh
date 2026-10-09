@@ -15,6 +15,10 @@ describe('foundation', () => {
     expect(screen.getByRole('link', { name: 'Personal Insights' })).toHaveAttribute('href', '/insights')
     expect(screen.getByRole('link', { name: 'Profile & Settings' })).toHaveAttribute('href', '/settings')
     expect(screen.getByRole('button', { name: 'Profile options' })).toBeInTheDocument()
+    // Account lives in the topbar now; the sidebar footer is note-only so it
+    // can never overlap or clip the account menu at short viewport heights.
+    expect(document.querySelector('.workspace-topbar__account')).toBeInTheDocument()
+    expect(screen.queryByText('Your account')).not.toBeInTheDocument()
   })
 
   it('toggles the sidebar into its collapsed layout state', () => {

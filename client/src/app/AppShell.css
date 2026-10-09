@@ -83,9 +83,14 @@
 
 .workspace-sidebar__nav {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 0.3rem;
+  min-height: 0;
   margin-top: 3.3rem;
+  overflow-y: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
 }
 
 .workspace-sidebar__label {
@@ -221,6 +226,44 @@
   stroke: currentColor;
   stroke-width: 1.8;
   stroke-linecap: round;
+}
+
+.workspace-topbar__account {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.workspace-topbar__avatar {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+}
+
+.workspace-topbar__account .cl-userButtonTrigger,
+.workspace-topbar__account .cl-avatarBox {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.workspace-topbar__sign-in {
+  display: inline-flex;
+  min-height: 2.45rem;
+  align-items: center;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--line-subtle);
+  border-radius: 7px;
+  background: var(--surface-raised);
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 160ms var(--ease-out), border-color 160ms var(--ease-out);
+}
+
+.workspace-topbar__sign-in:hover {
+  border-color: var(--accent-soft);
+  background: color-mix(in oklch, var(--accent-soft) 12%, var(--surface-raised));
 }
 
 .workspace-profile {
@@ -877,6 +920,7 @@
 }
 
 .app-shell--workspace.is-checkin .workspace-quick-action,
+.app-shell--workspace.is-checkin .workspace-topbar__sign-in,
 .app-shell--workspace.is-checkin .workspace-profile__trigger {
   border-color: color-mix(in srgb, var(--checkin-white) 30%, transparent);
   background: color-mix(in srgb, var(--checkin-white) 13%, transparent);
@@ -884,6 +928,7 @@
 }
 
 .app-shell--workspace.is-checkin .workspace-quick-action:hover,
+.app-shell--workspace.is-checkin .workspace-topbar__sign-in:hover,
 .app-shell--workspace.is-checkin .workspace-profile__trigger:hover,
 .app-shell--workspace.is-checkin .workspace-profile__trigger[aria-expanded='true'] {
   border-color: color-mix(in srgb, var(--checkin-white) 62%, transparent);
@@ -944,6 +989,7 @@
 /* Shared account footer and warm landing-page navigation variant. */
 .workspace-sidebar__footer {
   display: grid;
+  flex-shrink: 0;
   gap: 0.9rem;
   margin-top: auto;
   padding-top: 1rem;
@@ -1120,6 +1166,17 @@
   background: rgba(232, 226, 217, 0.92);
 }
 
+.app-shell--landing .workspace-topbar__sign-in {
+  border-color: #d8d0c5;
+  background: #f7f4ed;
+  color: #242424;
+}
+
+.app-shell--landing .workspace-topbar__sign-in:hover {
+  border-color: #cfc4b8;
+  background: #e8e2d9;
+}
+
 .app-shell--landing .workspace-topbar__page {
   color: #77736d;
 }
@@ -1245,6 +1302,7 @@
 }
 
 .app-shell--workspace.is-checkin .workspace-quick-action,
+.app-shell--workspace.is-checkin .workspace-topbar__sign-in,
 .app-shell--workspace.is-checkin .workspace-profile__trigger {
   border-color: #d8d0c5;
   background: #f7f4ed;
@@ -1252,6 +1310,7 @@
 }
 
 .app-shell--workspace.is-checkin .workspace-quick-action:hover,
+.app-shell--workspace.is-checkin .workspace-topbar__sign-in:hover,
 .app-shell--workspace.is-checkin .workspace-profile__trigger:hover,
 .app-shell--workspace.is-checkin .workspace-profile__trigger[aria-expanded='true'] {
   border-color: #cfc4b8;
