@@ -4,6 +4,7 @@ import './AppShell.css'
 import ToastStack from '../components/ui/Toast.jsx'
 import QuickCheckInDialog from '../features/checkins/components/QuickCheckInDialog.jsx'
 import AccountButton from './AccountButton.jsx'
+import { SignedInView } from './auth.jsx'
 
 const LINKS = [
   { to: '/', label: 'Home', icon: 'grid' },
@@ -30,6 +31,7 @@ function NavIcon({ name }) {
     checkin: <><path d="M12 3.5v17" /><path d="M3.5 12h17" /><circle cx="12" cy="12" r="9" /></>,
     trend: <><path d="M4 18.5 9 13l3.5 3L20 8" /><path d="M15.5 8H20v4.5" /></>,
     spark: <><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z" /><path d="m19 15 .9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z" /></>,
+    signin: <><path d="M14 3.5h3.5A1.5 1.5 0 0 1 19 5v14a1.5 1.5 0 0 1-1.5 1.5H14" /><path d="M10 12h9" /><path d="m16 9 3 3-3 3" /></>,
     settings: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1a1.8 1.8 0 0 1-2.5 2.5l-.1-.1a1.8 1.8 0 0 0-3 .9v.2a1.8 1.8 0 0 1-3.6 0v-.2a1.8 1.8 0 0 0-3-.9l-.1.1a1.8 1.8 0 0 1-2.5-2.5l.1-.1a1.8 1.8 0 0 0-.9-3h-.2a1.8 1.8 0 0 1 0-3.6h.2a1.8 1.8 0 0 0 .9-3l-.1-.1a1.8 1.8 0 0 1 2.5-2.5l.1.1a1.8 1.8 0 0 0 3-.9v-.2a1.8 1.8 0 0 1 3.6 0v.2a1.8 1.8 0 0 0 3 .9l.1-.1a1.8 1.8 0 0 1 2.5 2.5l-.1.1a1.8 1.8 0 0 0 .9 3h.2a1.8 1.8 0 0 1 0 3.6h-.2a1.8 1.8 0 0 0-.9 3Z" /></>,
   }
 
@@ -70,6 +72,37 @@ function SidebarLinks({ onNavigate, id }) {
           <span>{link.label}</span>
         </NavLink>
       ))}
+    </nav>
+  )
+}
+
+// Public landing navigation for signed-out visitors: only Home and Sign in.
+// Private destinations require a session, so they are never advertised here.
+function LandingPublicNav({ onNavigate, id }) {
+  return (
+    <nav id={id} aria-label="Workspace" className="workspace-sidebar__nav">
+      <p className="workspace-sidebar__label">Your space</p>
+      <NavLink
+        to="/"
+        end
+        onClick={onNavigate}
+        aria-label="Home"
+        data-tooltip="Home"
+        className={({ isActive }) => `workspace-nav__link${isActive ? ' is-active' : ''}`}
+      >
+        <NavIcon name="grid" />
+        <span>Home</span>
+      </NavLink>
+      <Link
+        to="/sign-in"
+        onClick={onNavigate}
+        aria-label="Sign in"
+        data-tooltip="Sign in"
+        className="workspace-nav__link"
+      >
+        <NavIcon name="signin" />
+        <span>Sign in</span>
+      </Link>
     </nav>
   )
 }
@@ -177,7 +210,9 @@ export default function AppShell({ children, variant = 'app' }) {
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" /><path d="M9 4.5v15M14.5 9.5 12 12l2.5 2.5" /></svg>
             </button>
           </div>
-          <SidebarLinks id="workspace-desktop-navigation" />
+          <SignedInView fallback={<LandingPublicNav id="workspace-desktop-navigation" />}>
+            <SidebarLinks id="workspace-desktop-navigation" />
+          </SignedInView>
           <SidebarFooter />
         </aside>
 
@@ -205,7 +240,9 @@ export default function AppShell({ children, variant = 'app' }) {
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
             </button>
           </div>
-          <SidebarLinks onNavigate={() => setDrawerOpen(false)} />
+          <SignedInView fallback={<LandingPublicNav onNavigate={() => setDrawerOpen(false)} />}>
+            <SidebarLinks onNavigate={() => setDrawerOpen(false)} />
+          </SignedInView>
           <SidebarFooter />
         </div>
         <ToastStack />

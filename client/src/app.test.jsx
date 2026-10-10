@@ -3,17 +3,19 @@ import { describe, expect, it } from 'vitest'
 import App from './app/App.jsx'
 
 describe('foundation', () => {
-  it('renders the landing page with sidebar navigation and account access', () => {
+  it('renders the public landing page: brand, Home + Sign in, and account access only', () => {
     render(<App />)
     expect(screen.getByRole('heading', { level: 1, name: 'Make room for what you need.' })).toBeInTheDocument()
     expect(screen.getByRole('navigation', { name: 'Workspace' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Steady-Ahh home' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/')
-    expect(screen.getByRole('link', { name: 'Dashboard' })).toHaveAttribute('href', '/dashboard')
-    expect(screen.getByRole('link', { name: 'Daily Reflection' })).toHaveAttribute('href', '/check-in')
-    expect(screen.getByRole('link', { name: 'Reflection History' })).toHaveAttribute('href', '/check-in#history-heading')
-    expect(screen.getByRole('link', { name: 'Personal Insights' })).toHaveAttribute('href', '/insights')
-    expect(screen.getByRole('link', { name: 'Profile & Settings' })).toHaveAttribute('href', '/settings')
+    expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/sign-in')
+    // Private destinations must never be advertised to a signed-out visitor.
+    expect(screen.queryByRole('link', { name: 'Dashboard' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Daily Reflection' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Reflection History' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Personal Insights' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Profile & Settings' })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Profile options' })).toBeInTheDocument()
     // Account lives in the topbar now; the sidebar footer is note-only so it
     // can never overlap or clip the account menu at short viewport heights.

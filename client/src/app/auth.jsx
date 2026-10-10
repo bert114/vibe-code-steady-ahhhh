@@ -1,4 +1,10 @@
-import { ClerkProvider, RedirectToSignIn, useAuth } from "@clerk/clerk-react";
+import {
+  ClerkProvider,
+  RedirectToSignIn,
+  SignedIn,
+  SignedOut,
+  useAuth,
+} from "@clerk/clerk-react";
 import { createContext, useContext, useEffect } from "react";
 import { clearTokenGetter, setTokenGetter } from "../lib/api/authToken.js";
 
@@ -9,6 +15,26 @@ const ClerkContext = createContext({ clerkActive: false });
 
 export function useClerkActive() {
   return useContext(ClerkContext).clerkActive;
+}
+
+// Renders children only for a signed-in Clerk user. Without Clerk keys
+// (local dev bypass) there is no session to read, so the fallback renders.
+export function SignedInView({ children, fallback = null }) {
+  const clerkActive = useClerkActive();
+  if (!clerkEnabled || !clerkActive) {
+    return <>{fallback}</>;
+  }
+  return <SignedIn>{children}</SignedIn>;
+}
+
+// Renders children only for a signed-out visitor. Without Clerk keys the
+// visitor is treated as signed out, so children render.
+export function SignedOutView({ children }) {
+  const clerkActive = useClerkActive();
+  if (!clerkEnabled || !clerkActive) {
+    return <>{children}</>;
+  }
+  return <SignedOut>{children}</SignedOut>;
 }
 
 // Registers a fresh-token getter so every API call carries the current
