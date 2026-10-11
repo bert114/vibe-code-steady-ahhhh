@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import AuthGatedLink from '../../../app/AuthGatedLink.jsx'
 import landingReference from '../../../assets/landing-reference.png'
 import privacyIllustration from '../../../assets/privacy-illustration-c.png'
 import './HomePage.css'
@@ -121,9 +122,9 @@ export default function HomePage() {
           <p className="calm-hero__subtitle">
             One small check-in. A little more clarity.
           </p>
-          <Link to="/check-in" className="calm-hero__cta">
+          <AuthGatedLink to="/check-in" className="calm-hero__cta">
             Start a check-in
-          </Link>
+          </AuthGatedLink>
         </div>
         <div className="calm-hero__visual">
           <img
