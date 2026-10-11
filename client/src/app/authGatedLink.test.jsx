@@ -1,10 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 
 // Controllable Clerk session state for the gated check-in entry point.
 const authState = vi.hoisted(() => ({
   isSignedIn: false,
+  openSignIn: vi.fn(),
 }));
 
 vi.mock("@clerk/clerk-react", () => ({
@@ -14,6 +15,7 @@ vi.mock("@clerk/clerk-react", () => ({
   SignedOut: ({ children }) =>
     !authState.isSignedIn ? <>{children}</> : null,
   SignInButton: ({ children }) => <>{children}</>,
+  useClerk: () => ({ openSignIn: authState.openSignIn }),
   useAuth: () => ({
     getToken: vi.fn(async () => "test-token"),
     isLoaded: true,
@@ -60,12 +62,34 @@ describe("AuthGatedLink", () => {
 
   it("opens the Clerk sign-in modal instead of navigating when signed out", () => {
     authState.isSignedIn = false;
+    authState.openSignIn.mockClear();
     renderLink();
-    expect(
-      screen.getByRole("button", { name: "Start a check-in" }),
-    ).toBeInTheDocument();
+    const button = screen.getByRole("button", { name: "Start a check-in" });
+    expect(button).toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: "Start a check-in" }),
     ).not.toBeInTheDocument();
+
+    fireEvent.click(button);
+    expect(authState.openSignIn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        forceRedirectUrl: "/check-in",
+        fallbackRedirectUrl: "/check-in",
+        signInForceRedirectUrl: "/check-in",
+        signInFallbackRedirectUrl: "/check-in",
+      }),
+    );
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+

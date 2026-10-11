@@ -112,7 +112,7 @@ export default function AccountButton({
           />
         </SignedIn>
         <SignedOut>
-          <SignInButton mode="modal">
+          <SignInButton mode="modal" forceRedirectUrl="/check-in" fallbackRedirectUrl="/check-in" signInForceRedirectUrl="/check-in" signInFallbackRedirectUrl="/check-in">
             <button type="button" className="workspace-topbar__sign-in">
               Sign in
             </button>
@@ -128,3 +128,5 @@ export default function AccountButton({
     </div>
   );
 }
+
+
