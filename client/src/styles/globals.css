@@ -3011,7 +3011,7 @@ article>ul li {
 }
 
 
-/* Daily Reflection: one calm prompt at a time, with compact progress and no future-step menu. */
+/* Daily check-in: one prompt at a time with compact progress. */
 .app-shell--workspace.is-checkin .checkin-page {
   display: block;
   max-width: 760px;
@@ -3023,23 +3023,14 @@ article>ul li {
   margin: 0 auto 1.5rem;
 }
 
-.app-shell--workspace.is-checkin .checkin-page__eyebrow {
-  margin: 0 0 0.55rem;
-  color: var(--checkin-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
 .app-shell--workspace.is-checkin .checkin-page__header h1 {
   max-width: 30ch;
   margin: 0;
   color: var(--checkin-ink);
   font-family: 'Steady Sans', 'Satoshi', system-ui, sans-serif;
-  font-size: clamp(2rem, 4.5vw, 2.75rem);
+  font-size: 2rem;
   font-weight: 500;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.03em;
   line-height: 1.08;
   text-wrap: balance;
 }
@@ -3083,22 +3074,17 @@ article>ul li {
   gap: 1rem;
 }
 
-.app-shell--workspace.is-checkin .stepper-progress__name,
 .app-shell--workspace.is-checkin .stepper-progress__label {
   margin: 0;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.app-shell--workspace.is-checkin .stepper-progress__name {
-  color: var(--checkin-blue-deep);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .app-shell--workspace.is-checkin .stepper-progress__label {
   color: var(--checkin-muted);
-  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
 }
 
 .app-shell--workspace.is-checkin .stepper-progress__track {
@@ -3129,8 +3115,8 @@ article>ul li {
 
 .app-shell--workspace.is-checkin .score-step legend h2 {
   color: var(--checkin-ink);
-  font-size: clamp(1.45rem, 3vw, 1.9rem);
-  letter-spacing: -0.035em;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
 }
 
 .app-shell--workspace.is-checkin .score-step__hint {
@@ -3278,7 +3264,7 @@ article>ul li {
 
 @media (max-width: 560px) {
   .app-shell--workspace.is-checkin .checkin-page__header h1 {
-    font-size: clamp(1.9rem, 9vw, 2.4rem);
+    font-size: 1.8rem;
   }
 
   .app-shell--workspace.is-checkin .checkin-card {

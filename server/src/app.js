@@ -13,6 +13,7 @@ import { dashboardRouter } from "./modules/dashboard/dashboard.routes.js";
 import { insightsRouter } from "./modules/insights/insights.routes.js";
 import { remindersRouter } from "./modules/reminders/reminders.routes.js";
 import { usersRouter } from "./modules/users/users.routes.js";
+import { clerkWebhookRouter } from "./modules/users/users.webhook.routes.js";
 
 const clerkResolver = createClerkResolver();
 
@@ -21,6 +22,9 @@ export function createApp() {
 
   app.use(helmet());
   app.use(cors({ origin: env.CLIENT_ORIGIN }));
+  // Clerk webhooks need the untouched request body for signature validation
+  // and must stay outside the session-authenticated API middleware.
+  app.use("/api/webhooks", clerkWebhookRouter);
   app.use(express.json({ limit: "100kb" }));
   app.use(audit);
 

@@ -782,6 +782,7 @@ AI_ANALYSIS_RATE_LIMIT=5
 AI_MAX_INPUT_CHARS=
 CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
+CLERK_WEBHOOK_SIGNING_SECRET=
 ```
 
 ### Client `.env`
@@ -799,6 +800,7 @@ Never place:
 DATABASE_URL
 GROQ_API_KEY
 CLERK_SECRET_KEY
+CLERK_WEBHOOK_SIGNING_SECRET
 ```
 
 in the client environment.
@@ -980,7 +982,8 @@ The AI then turns this evidence into user-facing language.
 - **External beta/production:** Clerk free Hobby (verified $0 to 50k MRU/app).
   - Server: `@clerk/express` `clerkMiddleware()` + `getAuth()` on API (Bearer header for cross-origin static client).
   - Client: `@clerk/clerk-react` provider + route gates.
-  - `auth_identities` table (migration 003) maps Clerk `sub` → internal UUID — no existing tables changed.
+  - Public `POST /api/webhooks/clerk` verifies Clerk signatures and syncs users for `user.created`, `user.updated`, and `session.created`; on sign-in it fetches the current Clerk user to populate an existing account's email. Configure `CLERK_WEBHOOK_SIGNING_SECRET` and subscribe the Clerk endpoint to all three events. Request-time resolution remains a fallback because webhook delivery is asynchronous.
+  - `auth_identities` table (migration 003) maps Clerk `sub` → internal UUID; migration 006 adds nullable `users.email` for the synced primary email.
 - **Production boot guard:** server fails startup if `DEV_AUTH_BYPASS=true` while `NODE_ENV=production`, or if bypass enabled without valid `DEV_USER_ID`, or if `CLERK_SECRET_KEY` missing in production.
 - Every API query must be scoped to the authenticated user (`req.user.id`).
 

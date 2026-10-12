@@ -9,6 +9,7 @@ export async function getMe(req, res, next) {
       id: req.user.id,
       role: req.user.role || profile?.role || 'user',
       clerkSub: req.user.clerkSub || null,
+      email: profile?.email ?? null,
       createdAt: profile?.created_at || null,
     })
   } catch (err) {

@@ -41,8 +41,16 @@ export async function createUserForClerkSub(clerkSub, role = "user") {
 
 export async function findUserById(userId) {
   const { rows } = await dbQuery(
-    "SELECT id, role, created_at FROM users WHERE id = $1",
+    "SELECT id, role, email, created_at FROM users WHERE id = $1",
     [userId],
+  );
+  return rows[0] ?? null;
+}
+
+export async function updateUserEmail(userId, email) {
+  const { rows } = await dbQuery(
+    "UPDATE users SET email = $1 WHERE id = $2 RETURNING id, role, email",
+    [email, userId],
   );
   return rows[0] ?? null;
 }

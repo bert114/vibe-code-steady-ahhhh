@@ -161,11 +161,14 @@ describe.skipIf(!HAS_DB)('users delete (db)', () => {
 
   it('returns current user profile and role via GET /api/users/me', async () => {
     await seedUser(USER_A)
+    const email = 'profile@example.test'
+    await dbQuery('UPDATE users SET email = $1 WHERE id = $2', [email, USER_A])
     try {
       const res = await request(authedApp(USER_A)).get('/api/users/me')
       expect(res.status).toBe(200)
       expect(res.body.id).toBe(USER_A)
       expect(res.body.role).toBe('user')
+      expect(res.body.email).toBe(email)
     } finally {
       await resetUsers()
     }

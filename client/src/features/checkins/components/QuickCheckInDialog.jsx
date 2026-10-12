@@ -14,9 +14,9 @@ const EMPTY_CHECK_IN = {
 }
 
 const DIMENSIONS = [
-  { key: 'moodScore', name: 'quick-mood', title: 'Mood', question: "How's your mood?", captions: ['Rough', 'Okay', 'Great'], Icon: FaceIcon },
-  { key: 'energyScore', name: 'quick-energy', title: 'Energy', question: "How's your energy?", captions: ['Low', 'Steady', 'Full'], Icon: EnergyIcon },
-  { key: 'drainScore', name: 'quick-drain', title: 'Drain', question: 'How draining has it felt?', captions: ['Light', 'Some', 'A lot'], Icon: DrainIcon },
+  { key: 'moodScore', name: 'quick-mood', question: 'How has your mood been today?', captions: ['Low', 'Okay', 'Good'], Icon: FaceIcon },
+  { key: 'energyScore', name: 'quick-energy', question: 'How much energy do you have today?', captions: ['Very little', 'Some', 'A lot'], Icon: EnergyIcon },
+  { key: 'drainScore', name: 'quick-drain', question: 'How drained do you feel today?', captions: ['Not at all', 'A little', 'A lot'], Icon: DrainIcon },
 ]
 
 function QuickRating({ dimension, value, onChange }) {
@@ -98,9 +98,8 @@ export default function QuickCheckInDialog({ open, onClose }) {
       <form className="quick-checkin__form" onSubmit={save}>
         <header className="quick-checkin__header">
           <div>
-            <p className="quick-checkin__eyebrow">A moment for you</p>
             <h2 id="quick-checkin-title">Quick check-in</h2>
-            <p className="quick-checkin__intro">Notice where you are. You can add context if you want.</p>
+            <p className="quick-checkin__intro">Rate your mood, energy, and how drained you feel.</p>
           </div>
           <button type="button" className="quick-checkin__close" aria-label="Close quick check-in" onClick={closeDialog}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
@@ -119,19 +118,19 @@ export default function QuickCheckInDialog({ open, onClose }) {
         </div>
 
         <details className="quick-checkin__details">
-          <summary>Add a note or context <span>Optional</span></summary>
+          <summary>Add details <span>Optional</span></summary>
           <div className="quick-checkin__optional-fields">
             <label>
-              What words fit how you feel?
+              Which words describe your feelings?
               <input value={draft.emotions} onChange={(event) => setDraft((current) => ({ ...current, emotions: event.target.value }))} placeholder="e.g. tired, hopeful" />
             </label>
             <label>
-              What was going on?
+              What was happening?
               <input value={draft.contextTags} onChange={(event) => setDraft((current) => ({ ...current, contextTags: event.target.value }))} placeholder="e.g. a busy day, family" />
             </label>
             <label>
-              Anything else?
-              <textarea value={draft.note} onChange={(event) => setDraft((current) => ({ ...current, note: event.target.value }))} rows={3} maxLength={5000} placeholder="Only if it helps you remember this moment" />
+              Add a note
+              <textarea value={draft.note} onChange={(event) => setDraft((current) => ({ ...current, note: event.target.value }))} rows={3} maxLength={5000} placeholder="Write a note to remember this moment." />
             </label>
           </div>
         </details>

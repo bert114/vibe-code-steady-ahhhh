@@ -6,19 +6,19 @@ import FaceIcon from './FaceIcon.jsx'
 function scoreLabel(type, val) {
   const num = Number(val)
   if (type === 'mood') {
-    if (num <= 1) return { text: 'Rough', cls: 'badge--mood-rough' }
+    if (num <= 1) return { text: 'Low', cls: 'badge--mood-rough' }
     if (num <= 3) return { text: 'Okay', cls: 'badge--mood-okay' }
-    return { text: 'Great', cls: 'badge--mood-great' }
+    return { text: 'Good', cls: 'badge--mood-great' }
   }
   if (type === 'energy') {
-    if (num <= 1) return { text: 'Empty', cls: 'badge--energy-low' }
-    if (num <= 3) return { text: 'Steady', cls: 'badge--energy-mid' }
-    return { text: 'Full', cls: 'badge--energy-high' }
+    if (num <= 1) return { text: 'Very little', cls: 'badge--energy-low' }
+    if (num <= 3) return { text: 'Some', cls: 'badge--energy-mid' }
+    return { text: 'A lot', cls: 'badge--energy-high' }
   }
   if (type === 'drain') {
-    if (num <= 1) return { text: 'Light', cls: 'badge--drain-light' }
-    if (num <= 3) return { text: 'Moderate', cls: 'badge--drain-mid' }
-    return { text: 'Heavy', cls: 'badge--drain-heavy' }
+    if (num <= 1) return { text: 'Not at all', cls: 'badge--drain-light' }
+    if (num <= 3) return { text: 'A little', cls: 'badge--drain-mid' }
+    return { text: 'A lot', cls: 'badge--drain-heavy' }
   }
   return { text: String(val), cls: '' }
 }
@@ -112,7 +112,7 @@ function HistoryCard({ checkin, onDelete }) {
           </span>
           <span className="history-card__score-sub">{energy.text}</span>
         </div>
-        <div className="history-card__score-box" aria-label={`Drain: ${drain.text}`}>
+        <div className="history-card__score-box" aria-label={`Feeling drained: ${drain.text}`}>
           <span className={`history-card__score-icon ${drain.cls}`}>
             <DrainIcon score={checkin.drainScore} />
           </span>
@@ -178,14 +178,14 @@ export default function CheckInHistoryList({ checkins = [], onDelete }) {
       <div className="checkin-history__empty-card">
         <p className="checkin-history__empty-title">No check-ins yet</p>
         <p className="checkin-history__empty-desc">
-          Take a moment to record your first check-in above. Over time, your entries help uncover patterns in your daily energy and boundaries.
+          Save your first check-in above to start your history.
         </p>
       </div>
     )
   }
 
   return (
-    <div className="checkin-history__timeline" role="feed" aria-label="Previous check-ins">
+    <div className="checkin-history__timeline" role="feed" aria-label="Check-in history">
       {checkins.map((checkin) => (
         <HistoryCard key={checkin.id} checkin={checkin} onDelete={onDelete} />
       ))}

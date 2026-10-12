@@ -9,8 +9,8 @@ import { SignedInView } from './auth.jsx'
 const LINKS = [
   { to: '/', label: 'Home', icon: 'grid' },
   { to: '/dashboard', label: 'Dashboard', icon: 'grid' },
-  { to: '/check-in', label: 'Daily Reflection', icon: 'checkin' },
-  { to: '/check-in#history-heading', label: 'Reflection History', icon: 'trend' },
+  { to: '/check-in', label: 'Check-in', icon: 'checkin' },
+  { to: '/check-in#history-heading', label: 'Check-in history', icon: 'trend' },
   { to: '/insights', label: 'Personal Insights', icon: 'spark' },
   { to: '/settings', label: 'Profile & Settings', icon: 'settings' },
 ]
@@ -129,7 +129,7 @@ export default function AppShell({ children, variant = 'app' }) {
   const currentPage = variant === 'landing'
     ? 'Home'
     : location.pathname === '/check-in' && location.hash === '#history-heading'
-      ? 'Reflection History'
+      ? 'Check-in history'
       : LINKS.find((link) => link.to === location.pathname)?.label ?? 'Your space'
 
   useEffect(() => {

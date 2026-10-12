@@ -13,22 +13,22 @@ const SCORE_STEPS = [
   {
     key: "moodScore",
     name: "moodScore",
-    question: "How's your mood right now?",
-    captions: ["Rough", "Okay", "Great"],
+    question: "How has your mood been today?",
+    captions: ["Low", "Okay", "Good"],
     Icon: FaceIcon,
   },
   {
     key: "energyScore",
     name: "energyScore",
-    question: "How's your energy?",
-    captions: ["Running on empty", "Steady", "Full tank"],
+    question: "How much energy do you have today?",
+    captions: ["Very little", "Some", "A lot"],
     Icon: EnergyIcon,
   },
   {
     key: "drainScore",
     name: "drainScore",
-    question: "How draining has it been?",
-    captions: ["Light", "Moderate", "Overwhelming"],
+    question: "How drained do you feel today?",
+    captions: ["Not at all", "A little", "A lot"],
     Icon: DrainIcon,
   },
 ];
@@ -36,25 +36,25 @@ const SCORE_STEPS = [
 // Only the three ratings are counted steps. Optional notes live in a dialog.
 const TOTAL_STEPS = SCORE_STEPS.length;
 
-const STEP_NAMES = ["Mood", "Energy", "Drain"];
+const STEP_NAMES = ["Mood", "Energy", "Feeling drained"];
 
 const OPTIONAL_DETAIL_PROMPTS = [
   {
     key: "emotions",
-    title: "What words fit how you feel?",
+    title: "Which words describe your feelings?",
     placeholder: "e.g. tired, hopeful",
     type: "text",
   },
   {
     key: "contextTags",
-    title: "What was going on?",
+    title: "What was happening?",
     placeholder: "e.g. work, family dinner",
     type: "text",
   },
   {
     key: "note",
-    title: "Anything you’d like to remember?",
-    placeholder: "Add a note…",
+    title: "Add a note",
+    placeholder: "Write a note to remember this moment.",
     type: "textarea",
   },
 ];
@@ -66,7 +66,7 @@ function ScoreStep({ meta, value, onSelect }) {
       <legend>
         <h2 className="score-step__question">{meta.question}</h2>
       </legend>
-      <p className="score-step__hint">Choose the one that feels closest.</p>
+      <p className="score-step__hint">Choose the option that feels closest.</p>
       <div
         role="radiogroup"
         aria-label={meta.question}
@@ -157,9 +157,8 @@ function OptionalDetailsDialog({
       <div className="reflection-save-dialog__content">
         <header className="reflection-save-dialog__header">
           <div>
-            <p className="reflection-save-dialog__eyebrow">Optional</p>
             <h2 id="reflection-save-title">
-              {detailsExpanded ? detailPrompt.title : "Add personal details?"}
+              {detailsExpanded ? detailPrompt.title : "Add details?"}
             </h2>
           </div>
           <button
@@ -227,7 +226,7 @@ function OptionalDetailsDialog({
               onClick={onAddDetails}
               disabled={saving}
             >
-              Add personal details
+              Add details
             </button>
           )}
           <button
@@ -240,13 +239,11 @@ function OptionalDetailsDialog({
               ? "Saving…"
               : detailsExpanded
                 ? isLastDetail
-                  ? detailValue.trim()
-                    ? "Save reflection"
-                    : "Skip & save"
+                  ? "Save check-in"
                   : detailValue.trim()
                     ? "Continue"
-                    : "Skip"
-                : "Save now"}
+                    : "Skip this"
+              : "Save without details"}
           </button>
         </footer>
         {saveError && (
@@ -290,8 +287,8 @@ export default function CheckInForm({ onSubmit, saving }) {
     prevStatusRef.current = status;
   }, [status]);
 
-  // Explicit save function: single entry point for "Save now" and
-  // "Save reflection". Surfaces failures inside the dialog instead of
+  // Explicit save function: single entry point for each save action.
+  // Surfaces failures inside the dialog instead of
   // failing silently — the store + global toast still run underneath.
   async function handleSave() {
     if (saving) return;
@@ -350,9 +347,8 @@ export default function CheckInForm({ onSubmit, saving }) {
     >
       <header className="stepper-progress">
         <div className="stepper-progress__top">
-          <p className="stepper-progress__name">{STEP_NAMES[step]}</p>
           <p className="stepper-progress__label">
-            Step {step + 1} of {TOTAL_STEPS}
+            Question {step + 1} of {TOTAL_STEPS}
           </p>
         </div>
         <div
@@ -362,7 +358,7 @@ export default function CheckInForm({ onSubmit, saving }) {
           aria-valuemin={1}
           aria-valuemax={TOTAL_STEPS}
           aria-valuenow={step + 1}
-          aria-valuetext={`Step ${step + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[step]}`}
+          aria-valuetext={`Question ${step + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[step]}`}
         >
           {STEP_NAMES.map((name, index) => (
             <span
@@ -392,14 +388,12 @@ export default function CheckInForm({ onSubmit, saving }) {
             </button>
           )}
           <button type="button" className="stepper-nav__next" onClick={goNext}>
-            {isLastStep
-              ? "Continue to save"
-              : `Continue to ${STEP_NAMES[step + 1].toLowerCase()}`}
+            {isLastStep ? "Continue to save" : "Next question"}
             <span aria-hidden="true">→</span>
           </button>
         </div>
         <p className="stepper-reassurance">
-          You can go back and change your answers before saving.
+          You can change your answers before saving.
         </p>
       </div>
 

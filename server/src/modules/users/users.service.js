@@ -26,6 +26,13 @@ export async function resolveUser(clerkSub, defaultRole = 'user') {
   }
 }
 
+export async function syncUserFromClerk(clerkSub, email) {
+  const user = await resolveUser(clerkSub);
+  const updated = await repository.updateUserEmail(user.id, email);
+  if (!updated) throw new Error('Unable to sync Clerk user email.');
+  return { id: updated.id, role: updated.role, email: updated.email };
+}
+
 export async function getUserProfile(userId) {
   return repository.findUserById(userId);
 }

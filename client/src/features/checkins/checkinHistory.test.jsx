@@ -30,7 +30,7 @@ describe('check-in history list', () => {
     render(<CheckInHistoryList checkins={[]} onDelete={() => {}} />)
     expect(screen.getByText('No check-ins yet')).toBeInTheDocument()
     expect(
-      screen.getByText(/Take a moment to record your first check-in above/i),
+      screen.getByText(/Save your first check-in above to start your history/i),
     ).toBeInTheDocument()
   })
 
@@ -38,17 +38,17 @@ describe('check-in history list', () => {
     render(<CheckInHistoryList checkins={sampleCheckins} onDelete={() => {}} />)
 
     // Scores rendered as value-only subs with full labels on the boxes
-    expect(screen.getByText('Great')).toBeInTheDocument()
-    expect(screen.getByText('Steady')).toBeInTheDocument()
-    expect(screen.getByText('Light')).toBeInTheDocument()
+    expect(screen.getByText('Good')).toBeInTheDocument()
+    expect(screen.getByText('Some')).toBeInTheDocument()
+    expect(screen.getByText('Not at all')).toBeInTheDocument()
 
-    expect(screen.getByText('Rough')).toBeInTheDocument()
-    expect(screen.getByText('Empty')).toBeInTheDocument()
-    expect(screen.getByText('Heavy')).toBeInTheDocument()
+    expect(screen.getByText('Low')).toBeInTheDocument()
+    expect(screen.getByText('Very little')).toBeInTheDocument()
+    expect(screen.getByText('A lot')).toBeInTheDocument()
 
-    expect(screen.getByLabelText('Mood: Great')).toBeInTheDocument()
-    expect(screen.getByLabelText('Energy: Empty')).toBeInTheDocument()
-    expect(screen.getByLabelText('Drain: Heavy')).toBeInTheDocument()
+    expect(screen.getByLabelText('Mood: Good')).toBeInTheDocument()
+    expect(screen.getByLabelText('Energy: Very little')).toBeInTheDocument()
+    expect(screen.getByLabelText('Feeling drained: A lot')).toBeInTheDocument()
 
     // Tags
     expect(screen.getByText('calm')).toBeInTheDocument()
