@@ -982,7 +982,7 @@ The AI then turns this evidence into user-facing language.
 - **External beta/production:** Clerk free Hobby (verified $0 to 50k MRU/app).
   - Server: `@clerk/express` `clerkMiddleware()` + `getAuth()` on API (Bearer header for cross-origin static client).
   - Client: `@clerk/clerk-react` provider + route gates.
-  - Public `POST /api/webhooks/clerk` verifies Clerk signatures and syncs users for `user.created`, `user.updated`, and `session.created`; on sign-in it fetches the current Clerk user to populate an existing account's email. Configure `CLERK_WEBHOOK_SIGNING_SECRET` and subscribe the Clerk endpoint to all three events. Request-time resolution remains a fallback because webhook delivery is asynchronous.
+  - Authenticated API requests resolve or provision a local user from the Clerk subject; if the local email is missing, the server fetches Clerk's current user profile and saves its primary email. Public `POST /api/webhooks/clerk` verifies signatures and syncs `user.created`, `user.updated`, and `session.created` events as the ongoing update and retry path. Configure `CLERK_WEBHOOK_SIGNING_SECRET` and subscribe the Clerk endpoint to all three events.
   - `auth_identities` table (migration 003) maps Clerk `sub` → internal UUID; migration 006 adds nullable `users.email` for the synced primary email.
 - **Production boot guard:** server fails startup if `DEV_AUTH_BYPASS=true` while `NODE_ENV=production`, or if bypass enabled without valid `DEV_USER_ID`, or if `CLERK_SECRET_KEY` missing in production.
 - Every API query must be scoped to the authenticated user (`req.user.id`).
@@ -1603,9 +1603,10 @@ validation-ready
    → Decided 2026-09-19 (Phase 5): Clerk free Hobby (verified $0 to 50k MRU/app).
    `@clerk/express` clerkMiddleware + getAuth on the API (Bearer header for the
    cross-origin static client), `@clerk/clerk-react` provider + gates on the
-   client, `auth_identities` mapping (003) from Clerk sub to internal UUID so no
-   existing table changes. No Cloudflare account exists, so the client deploys
-   as a Render Static Site instead of Cloudflare Pages (render.yaml).
+   client, `auth_identities` mapping (003) from Clerk sub to internal UUID, plus
+   nullable `users.email` added in migration 006. No Cloudflare account exists,
+   so the client deploys as a Render Static Site instead of Cloudflare Pages
+   (render.yaml).
 7. What privacy notice and deletion flow should be shown to testers?
    → Decided 2026-09-19 (Phase 5): `/settings` page holds the ownership
    explanation, AI data-use explanation (honest fallback-only status while no

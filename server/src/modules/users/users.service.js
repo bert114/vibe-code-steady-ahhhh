@@ -12,15 +12,17 @@ export async function resolveUserId(clerkSub) {
 export async function resolveUser(clerkSub, defaultRole = 'user') {
   const existing = await repository.findUserByClerkSub(clerkSub);
   if (existing) {
-    return { id: existing.userId, role: existing.role };
+    return { id: existing.userId, role: existing.role, email: existing.email ?? null };
   }
   try {
     const created = await repository.createUserForClerkSub(clerkSub, defaultRole);
-    return { id: created.userId, role: created.role };
+    return { id: created.userId, role: created.role, email: created.email ?? null };
   } catch (err) {
     if (err?.code === '23505') {
       const winner = await repository.findUserByClerkSub(clerkSub);
-      if (winner) return { id: winner.userId, role: winner.role };
+      if (winner) {
+        return { id: winner.userId, role: winner.role, email: winner.email ?? null };
+      }
     }
     throw err;
   }

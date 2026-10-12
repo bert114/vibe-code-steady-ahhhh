@@ -1,6 +1,7 @@
 import { clerkClient } from "@clerk/express";
 import { verifyWebhook } from "@clerk/express/webhooks";
 import { env } from "../../config/env.js";
+import { primaryEmailFromClerkUser } from "./clerk-user.js";
 import { syncUserFromClerk } from "./users.service.js";
 
 function sendError(res, status, code, message) {
@@ -15,14 +16,6 @@ function writeSafeLog(log, fields) {
   } catch {
     // Logging must not change webhook processing or expose the event payload.
   }
-}
-
-function primaryEmail(user) {
-  const addresses = Array.isArray(user?.email_addresses) ? user.email_addresses : [];
-  const primary = addresses.find(
-    (address) => address?.id === user?.primary_email_address_id,
-  );
-  return typeof primary?.email_address === "string" ? primary.email_address : null;
 }
 
 export function createClerkWebhookHandler({
@@ -61,12 +54,12 @@ export function createClerkWebhookHandler({
 
     if (eventType === "user.created" || eventType === "user.updated") {
       clerkSub = event.data?.id;
-      email = primaryEmail(event.data);
+      email = primaryEmailFromClerkUser(event.data);
     } else if (eventType === "session.created") {
       clerkSub = event.data?.user_id;
       if (typeof clerkSub === "string" && clerkSub.length > 0) {
         try {
-          email = primaryEmail(await getClerkUserFn(clerkSub));
+          email = primaryEmailFromClerkUser(await getClerkUserFn(clerkSub));
         } catch {
           writeSafeLog(log, {
             eventId,

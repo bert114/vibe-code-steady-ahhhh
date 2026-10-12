@@ -11,14 +11,14 @@ export async function findUserIdByClerkSub(clerkSub) {
 
 export async function findUserByClerkSub(clerkSub) {
   const { rows } = await dbQuery(
-    `SELECT a.user_id, u.role
+    `SELECT a.user_id, u.role, u.email
      FROM auth_identities a
      JOIN users u ON u.id = a.user_id
      WHERE a.clerk_sub = $1`,
     [clerkSub],
   );
   if (!rows[0]) return null;
-  return { userId: rows[0].user_id, role: rows[0].role };
+  return { userId: rows[0].user_id, role: rows[0].role, email: rows[0].email ?? null };
 }
 
 export async function createUserForClerkSub(clerkSub, role = "user") {
@@ -36,7 +36,7 @@ export async function createUserForClerkSub(clerkSub, role = "user") {
       params: [clerkSub, userId],
     },
   ]);
-  return { userId, role: safeRole };
+  return { userId, role: safeRole, email: null };
 }
 
 export async function findUserById(userId) {
