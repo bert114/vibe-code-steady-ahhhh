@@ -267,6 +267,36 @@ main>section {
   align-content: start;
 }
 
+.dashboard-layout-variant--balanced {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.dashboard-layout-variant--balanced > .dashboard-layout-variant__insight,
+.dashboard-layout-variant--balanced > .dashboard-layout-variant__signals {
+  grid-column: 1;
+}
+
+.dashboard-layout-variant--balanced > .dashboard-layout-variant__reminders {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+@media (max-width: 760px) {
+  .dashboard-layout-variant--balanced {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-layout-variant--balanced > .dashboard-layout-variant__insight,
+  .dashboard-layout-variant--balanced > .dashboard-layout-variant__signals,
+  .dashboard-layout-variant--balanced > .dashboard-layout-variant__reminders {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
 .dashboard-panel {
   min-height: 100%;
   padding: 1.75rem;
@@ -284,6 +314,31 @@ main>section {
 
 .dashboard-panel--feature {
   background: var(--bg);
+}
+
+/* Dashboard hierarchy: use one quiet accent for focus while keeping the
+   workspace calm enough for the data to carry the page. */
+.dashboard-panel--battery-compact {
+  border-color: color-mix(in oklch, var(--primary) 24%, var(--border-muted));
+  background: var(--bg-light);
+}
+
+.dashboard-panel--battery-compact .battery-head h2 {
+  color: var(--text);
+}
+
+.dashboard-panel--overview {
+  border-color: var(--border-muted);
+  background: var(--bg-light);
+}
+
+.dashboard-panel--feature {
+  border-color: var(--border-muted);
+  background: var(--bg);
+}
+
+.dashboard-panel--feature h3 {
+  color: var(--text);
 }
 
 .dashboard-panel__label {
@@ -391,7 +446,7 @@ main>section {
 }
 
 .toast--error {
-  border-left: 3px solid var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 36%, var(--border));
 }
 
 .toast--error .toast__icon {
@@ -399,7 +454,7 @@ main>section {
 }
 
 .toast--success {
-  border-left: 3px solid var(--success);
+  border-color: color-mix(in srgb, var(--success) 36%, var(--border));
 }
 
 .toast--success .toast__icon {
@@ -572,6 +627,12 @@ main>section {
   margin: 0;
 }
 
+.battery-ring__status .tag {
+  padding-inline: 0.75rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+}
+
 .battery-ring__bolt-slot {
   position: absolute;
   left: 50%;
@@ -666,6 +727,11 @@ main>section {
   color: var(--text);
 }
 
+.capsule-col--active {
+  outline: 2px solid color-mix(in oklch, var(--primary) 32%, transparent);
+  outline-offset: 3px;
+}
+
 .capsule-track {
   display: flex;
   align-items: flex-end;
@@ -683,11 +749,11 @@ main>section {
   width: 100%;
   min-height: 12px;
   border-radius: inherit;
-  background: var(--bg-light);
+  background: color-mix(in oklch, var(--primary) 28%, var(--surface-panel));
 }
 
 .capsule-fill--active {
-  background: var(--primary100);
+  background: color-mix(in oklch, var(--primary) 62%, var(--surface-panel));
 }
 
 .capsule-fill--empty {
@@ -2157,18 +2223,6 @@ article>ul li {
   align-items: center;
 }
 
-.history-card__confirm-group {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.history-card__confirm-prompt {
-  font-size: 0.78rem;
-  color: var(--danger);
-  font-weight: 600;
-}
-
 .history-card__scores {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3371,6 +3425,195 @@ article>ul li {
 .app-shell--workspace.is-checkin .reflection-save-dialog::backdrop {
   background: rgba(38, 31, 25, 0.48);
   backdrop-filter: blur(3px);
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog {
+  --surface-ink: var(--checkin-record);
+  --surface-panel: var(--checkin-paper);
+  --surface-raised: var(--checkin-white);
+  --line-subtle: var(--checkin-rule);
+  --text-soft: var(--checkin-ink);
+  --text-faint: var(--checkin-muted);
+  --accent-pale: var(--checkin-blue-deep);
+  --accent-soft: var(--checkin-blue-deep);
+  width: min(calc(100vw - 2rem), 32rem);
+  max-width: none;
+  max-height: min(88dvh, 44rem);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--checkin-rule);
+  border-radius: 20px;
+  background: var(--checkin-paper);
+  color: var(--checkin-ink);
+  box-shadow: 0 24px 70px rgba(46, 35, 25, 0.26);
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog::backdrop {
+  background: rgba(38, 31, 25, 0.48);
+  backdrop-filter: blur(3px);
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__content {
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog h2 {
+  margin: 0;
+  color: var(--checkin-ink);
+  font-family: 'Steady Sans', 'Satoshi', system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__content > p {
+  margin: 0.65rem 0 1.25rem;
+  color: var(--checkin-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__record > time {
+  display: block;
+  color: var(--checkin-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__scores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0.85rem 0 0;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--checkin-rule);
+  border-bottom: 1px solid var(--checkin-rule);
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__scores > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0 0.5rem;
+  text-align: center;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__scores > div + div {
+  border-left: 1px solid var(--checkin-rule);
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__scores dt {
+  display: grid;
+  min-height: 3.2rem;
+  justify-items: center;
+  align-content: start;
+  gap: 0.35rem;
+  color: var(--checkin-muted);
+  font-size: 0.7rem;
+  line-height: 1.25;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__score-icon {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__score-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__scores dd {
+  margin: 0;
+  color: var(--checkin-ink);
+  font-size: 0.88rem;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__actions button {
+  min-height: 2.85rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 650;
+  transition: all 160ms var(--ease-out);
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__cancel {
+  border: 1px solid var(--checkin-rule);
+  background: var(--checkin-record);
+  color: var(--checkin-ink);
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__cancel:hover:not(:disabled) {
+  border-color: var(--checkin-blue-deep);
+  background: var(--checkin-blue-light);
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__confirm {
+  border: 1px solid var(--danger);
+  background: var(--danger);
+  color: var(--checkin-white);
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__confirm:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--danger) 86%, var(--checkin-ink));
+  background: color-mix(in srgb, var(--danger) 86%, var(--checkin-ink));
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__cancel:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--checkin-blue-deep) 38%, transparent);
+  outline-offset: 3px;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__confirm:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--danger) 42%, transparent);
+  outline-offset: 3px;
+}
+
+.app-shell--workspace.is-checkin .checkin-delete-dialog__actions button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+@media (max-width: 560px) {
+  .app-shell--workspace.is-checkin .checkin-delete-dialog {
+    width: calc(100vw - 1rem);
+    max-height: 92dvh;
+    border-radius: 16px;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-delete-dialog__content {
+    padding: 1.1rem;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-delete-dialog__actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-delete-dialog__actions button {
+    width: 100%;
+  }
 }
 
 .app-shell--workspace.is-checkin .reflection-save-dialog__content {

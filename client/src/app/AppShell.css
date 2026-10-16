@@ -363,11 +363,6 @@
 }
 
 @media (min-width: 761px) {
-  .workspace-sidebar,
-  .workspace-main {
-    transition: width 200ms var(--ease-out), margin-left 200ms var(--ease-out), padding 200ms var(--ease-out);
-  }
-
   .app-shell--workspace.is-collapsed {
     --workspace-rail: 4.65rem;
   }
@@ -1060,14 +1055,14 @@
 .app-shell--workspace.app-shell--landing {
   --workspace-rail: 15.25rem;
   min-height: 100vh;
-  background: #e8e2d9;
+  background: var(--surface-ink);
   color: #242424;
 }
 
 .app-shell--landing .workspace-sidebar,
 .app-shell--landing .workspace-drawer {
-  border-color: #d8d0c5;
-  background: #f0ebe3;
+  border-color: var(--line-subtle);
+  background: var(--bg);
   color: #242424;
 }
 
@@ -1078,7 +1073,7 @@
 }
 
 .app-shell--landing .workspace-brand__mark {
-  background: #f7f4ed;
+  background: var(--surface-panel);
 }
 
 .app-shell--landing .workspace-brand__mark span,
@@ -1087,12 +1082,12 @@
 }
 
 .app-shell--landing .workspace-sidebar__toggle {
-  color: #77736d;
+  color: var(--text-faint);
 }
 
 .app-shell--landing .workspace-sidebar__toggle:hover {
-  border-color: #d8d0c5;
-  background: #e8e2d9;
+  border-color: var(--line-subtle);
+  background: var(--surface-ink);
   color: #242424;
 }
 
@@ -1102,11 +1097,11 @@
 }
 
 .app-shell--landing .workspace-nav__link {
-  color: #77736d;
+  color: var(--text-faint);
 }
 
 .app-shell--landing .workspace-nav__link:hover {
-  background: #e8e2d9;
+  background: var(--surface-ink);
   color: #242424;
 }
 
@@ -1120,13 +1115,13 @@
 }
 
 .app-shell--landing .workspace-sidebar__note p {
-  color: #77736d;
+  color: var(--text-faint);
 }
 
 .app-shell--landing .workspace-sidebar__footer,
 .app-shell--landing .workspace-sidebar__account,
 .app-shell--landing .workspace-drawer__footer {
-  border-color: #d8d0c5;
+  border-color: var(--line-subtle);
 }
 
 .app-shell--landing .workspace-profile__trigger {
@@ -1135,26 +1130,26 @@
 
 .app-shell--landing .workspace-profile__trigger:hover,
 .app-shell--landing .workspace-profile__trigger[aria-expanded='true'] {
-  border-color: #d8d0c5;
-  background: #e8e2d9;
+  border-color: var(--line-subtle);
+  background: var(--surface-ink);
   color: #242424;
 }
 
 .app-shell--landing .workspace-profile__avatar {
-  border-color: #d8d0c5;
-  background: #f7f4ed;
+  border-color: var(--line-subtle);
+  background: var(--surface-panel);
   color: #5d554e;
 }
 
 .app-shell--landing .workspace-profile__menu {
-  border-color: #d8d0c5;
-  background: #fbf9f3;
+  border-color: var(--line-subtle);
+  background: var(--surface-raised);
   color: #242424;
   box-shadow: 0 14px 32px rgba(67, 57, 45, 0.14);
 }
 
 .app-shell--landing .workspace-profile__menu p {
-  color: #77736d;
+  color: var(--text-faint);
 }
 
 .app-shell--landing .workspace-profile__menu a {
@@ -1162,23 +1157,23 @@
 }
 
 .app-shell--landing .workspace-topbar--landing {
-  border-color: #d8d0c5;
+  border-color: var(--line-subtle);
   background: rgba(232, 226, 217, 0.92);
 }
 
 .app-shell--landing .workspace-topbar__sign-in {
-  border-color: #d8d0c5;
-  background: #f7f4ed;
+  border-color: var(--line-subtle);
+  background: var(--surface-panel);
   color: #242424;
 }
 
 .app-shell--landing .workspace-topbar__sign-in:hover {
-  border-color: #cfc4b8;
-  background: #e8e2d9;
+  border-color: var(--border);
+  background: var(--surface-ink);
 }
 
 .app-shell--landing .workspace-topbar__page {
-  color: #77736d;
+  color: var(--text-faint);
 }
 
 .app-shell--landing .workspace-sidebar__footer .workspace-sidebar__note {
@@ -1214,14 +1209,14 @@
 
   .app-shell--landing .workspace-menu-toggle,
   .app-shell--landing .workspace-drawer__close {
-    border-color: #d8d0c5;
-    background: #f7f4ed;
+    border-color: var(--line-subtle);
+    background: var(--surface-panel);
     color: #242424;
   }
 
   .app-shell--landing .workspace-menu-toggle:hover,
   .app-shell--landing .workspace-drawer__close:hover {
-    background: #e8e2d9;
+    background: var(--surface-ink);
   }
 
   .app-shell--landing .workspace-drawer {
@@ -1258,23 +1253,23 @@
 .app-shell--workspace.is-checkin .workspace-topbar,
 .app-shell--workspace.is-checkin .workspace-drawer,
 .app-shell--workspace.is-checkin .workspace-content {
-  background: #e8e2d9;
+  background: var(--surface-ink);
 }
 
 .app-shell--workspace.is-checkin .workspace-sidebar,
 .app-shell--workspace.is-checkin .workspace-topbar {
-  border-color: #d8d0c5;
+  border-color: var(--line-subtle);
 }
 
 .app-shell--workspace.is-checkin .workspace-brand,
 .app-shell--workspace.is-checkin .workspace-topbar__page,
 .app-shell--workspace.is-checkin .workspace-profile__trigger,
 .app-shell--workspace.is-checkin .workspace-sidebar__note p {
-  color: #292723;
+  color: var(--text-soft);
 }
 
 .app-shell--workspace.is-checkin .workspace-brand__mark {
-  background: #f7f4ed;
+  background: var(--surface-panel);
 }
 
 .app-shell--workspace.is-checkin .workspace-brand__mark span,
@@ -1284,7 +1279,7 @@
 
 .app-shell--workspace.is-checkin .workspace-sidebar__label,
 .app-shell--workspace.is-checkin .workspace-nav__link {
-  color: #77736d;
+  color: var(--text-faint);
 }
 
 .app-shell--workspace.is-checkin .workspace-nav__link:hover,
@@ -1298,14 +1293,14 @@
 }
 
 .app-shell--workspace.is-checkin .workspace-sidebar__note {
-  border-color: #d8d0c5;
+  border-color: var(--line-subtle);
 }
 
 .app-shell--workspace.is-checkin .workspace-quick-action,
 .app-shell--workspace.is-checkin .workspace-topbar__sign-in,
 .app-shell--workspace.is-checkin .workspace-profile__trigger {
-  border-color: #d8d0c5;
-  background: #f7f4ed;
+  border-color: var(--line-subtle);
+  background: var(--surface-panel);
   color: #615d57;
 }
 
@@ -1313,26 +1308,26 @@
 .app-shell--workspace.is-checkin .workspace-topbar__sign-in:hover,
 .app-shell--workspace.is-checkin .workspace-profile__trigger:hover,
 .app-shell--workspace.is-checkin .workspace-profile__trigger[aria-expanded='true'] {
-  border-color: #cfc4b8;
-  background: #fbf9f3;
+  border-color: var(--border);
+  background: var(--surface-raised);
   color: #242424;
 }
 
 .app-shell--workspace.is-checkin .workspace-profile__avatar,
 .app-shell--workspace.is-checkin .workspace-menu-toggle {
-  border-color: #d8d0c5;
-  background: #f7f4ed;
+  border-color: var(--line-subtle);
+  background: var(--surface-panel);
   color: #615d57;
 }
 
 .app-shell--workspace.is-checkin .workspace-content > main {
-  border-color: #d8d0c5;
-  background: #e8e2d9;
+  border-color: var(--line-subtle);
+  background: var(--surface-ink);
 }
 
 @media (max-width: 760px) {
   .app-shell--workspace.is-checkin .workspace-drawer {
-    border-color: #d8d0c5;
+    border-color: var(--line-subtle);
     box-shadow: 16px 0 45px rgba(67, 57, 45, 0.13);
   }
 }

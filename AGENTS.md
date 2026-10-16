@@ -22,6 +22,14 @@
 - `npm run typecheck` — intentional no-op. **JavaScript-only: no TypeScript, no class constructors, no ORM; never add `tsc`/TS config.**
 - `npx vibeworkflow` / `npx vibeworkflow doctor` — agent-driven vibe workflow; run with `--tools claude,codex` to match this repo's adapters. Treat its output as instructions to follow, not a substitute for reasoning.
 
+## UI design workflow
+
+- Impeccable's project hook is enabled through `.impeccable/config.json` and `.codex/hooks.json`; Codex may require one-time hook approval in `/hooks`.
+- `npm run design:check` runs the bundled Impeccable detector against `client/src`; pass one or more frontend paths after `--` for a focused scan.
+- Detector advisories are printed for review and do not fail the command; primary findings return a non-zero exit code. Do not add broad or silent detector ignores.
+- After UI edits, run the focused design check plus `npm run lint`, `npm run typecheck`, `npm run test`, and `npm run build`. When a dev server and browser are available, inspect the affected route at desktop and mobile sizes.
+- Keep `PRODUCT.md`, `DESIGN.md`, and the current frontend token/component structure as the source of product and visual truth. Use Impeccable's `document` or a scoped refinement command when those records need an intentional update.
+
 ## Read first
 
 1. `docs/PRD-Steady-Ahh-MVP.md` (what we're building — source of truth)

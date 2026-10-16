@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import CheckInHistoryList from './components/CheckInHistoryList.jsx'
 
@@ -125,26 +125,57 @@ describe('check-in history list', () => {
     expect(card.querySelectorAll('.history-card__score-box')).toHaveLength(3)
   })
 
-  it('handles two-step delete confirmation', async () => {
-    const onDelete = vi.fn().mockResolvedValue()
+  it('shows the selected check-in details and cancels without deleting', () => {
+    const onDelete = vi.fn()
     render(<CheckInHistoryList checkins={[sampleCheckins[0]]} onDelete={onDelete} />)
 
-    const deleteBtn = screen.getByRole('button', { name: /delete check-in/i })
-    fireEvent.click(deleteBtn)
-
-    // Confirmation UI appears
-    expect(screen.getByText('Delete?')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Yes' })).toBeInTheDocument()
-    const cancelBtn = screen.getByRole('button', { name: 'Cancel' })
-
-    // Cancel closes confirmation
-    fireEvent.click(cancelBtn)
-    expect(screen.queryByText('Delete?')).not.toBeInTheDocument()
-
-    // Click delete again and confirm
     fireEvent.click(screen.getByRole('button', { name: /delete check-in/i }))
-    fireEvent.click(screen.getByRole('button', { name: 'Yes' }))
+
+    const dialog = screen.getByRole('dialog', { name: 'Delete this check-in?' })
+    expect(dialog).toHaveAttribute('open')
+    expect(within(dialog).getByText('Good')).toBeInTheDocument()
+    expect(within(dialog).getByText('Some')).toBeInTheDocument()
+    expect(within(dialog).getByText('Not at all')).toBeInTheDocument()
+    expect(within(dialog).queryByText(sampleCheckins[0].note)).not.toBeInTheDocument()
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    expect(screen.queryByRole('dialog', { name: 'Delete this check-in?' })).not.toBeInTheDocument()
+    expect(onDelete).not.toHaveBeenCalled()
+  })
+
+  it('submits the selected deletion and shows a disabled loading state', async () => {
+    let resolveDelete
+    const onDelete = vi.fn(
+      () =>
+        new Promise((resolve) => {
+          resolveDelete = resolve
+        }),
+    )
+    render(<CheckInHistoryList checkins={[sampleCheckins[0]]} onDelete={onDelete} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /delete check-in/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete check-in' }))
 
     expect(onDelete).toHaveBeenCalledWith('c1')
+    expect(screen.getByRole('button', { name: 'Deleting…' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeDisabled()
+
+    await act(async () => resolveDelete())
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'Delete this check-in?' })).not.toBeInTheDocument()
+    })
+  })
+
+  it('keeps the dialog open after a failed delete so the user can retry or cancel', async () => {
+    const onDelete = vi.fn().mockRejectedValue(new Error('Delete failed'))
+    render(<CheckInHistoryList checkins={[sampleCheckins[0]]} onDelete={onDelete} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /delete check-in/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete check-in' }))
+
+    const dialog = await screen.findByRole('dialog', { name: 'Delete this check-in?' })
+    expect(within(dialog).getByRole('button', { name: 'Delete check-in' })).toBeEnabled()
+    expect(within(dialog).getByRole('button', { name: 'Cancel' })).toBeEnabled()
+    expect(onDelete).toHaveBeenCalledTimes(1)
   })
 })

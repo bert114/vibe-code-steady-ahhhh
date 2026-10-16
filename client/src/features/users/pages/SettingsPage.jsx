@@ -38,7 +38,7 @@ function UserProfileInfo() {
   }
 
   return (
-    <div className="profile-info-badge" style={{ marginTop: '0.75rem', fontSize: '0.9rem', color: 'var(--text-muted, #64748b)' }}>
+    <div className="profile-info-badge" style={{ marginTop: '0.75rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
       <span>Account ID: <code>{profile.id}</code></span>
       <span style={{ marginLeft: '1rem' }}>
         Role: <strong style={{ textTransform: 'capitalize' }}>{profile.role || 'user'}</strong>

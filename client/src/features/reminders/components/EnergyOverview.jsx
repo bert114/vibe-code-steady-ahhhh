@@ -39,6 +39,7 @@ export default function EnergyOverview({ checkins }) {
               key={day.key}
               type="button"
               className={`capsule-col${isActive ? ' capsule-col--active' : ''}`}
+              aria-current={isActive ? 'date' : undefined}
               aria-label={day.percent ? `${day.label} ${day.fullLabel}: ${day.percent} percent` : `${day.label} ${day.fullLabel}: no reading`}
             >
               <span className="capsule-tip" aria-hidden="true">

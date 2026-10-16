@@ -9,7 +9,8 @@
     "test:e2e": "playwright test --config=e2e/playwright.config.cjs",
     "lint": "npm run lint --workspace=client && npm run lint --workspace=server",
     "build": "npm run build --workspace=client && npm run build --workspace=server",
-    "typecheck": "node -e \"console.log('JavaScript project: no TypeScript typecheck configured')\""
+    "typecheck": "node -e \"console.log('JavaScript project: no TypeScript typecheck configured')\"",
+    "design:check": "node scripts/impeccable-design-check.cjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

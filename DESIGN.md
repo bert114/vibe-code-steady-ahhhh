@@ -12,6 +12,49 @@ colors:
   rule: "#cbd7d8"
   button-ink: "#243d4a"
   white: "#ffffff"
+  app-bg-dark: "#e8e2d9"
+  app-bg: "#f0ebe3"
+  app-surface: "#f7f4ed"
+  app-raised: "#fbf9f3"
+  app-ink: "#292723"
+  app-muted: "#6f6861"
+  app-faint: "#77736d"
+  app-border: "#cfc4b8"
+  app-border-muted: "#d8d0c5"
+  app-primary: "#914a2c"
+  app-primary-soft: "#a85836"
+  app-primary-deep: "#783d27"
+  status-low: "oklch(0.7 0.05 30)"
+  status-steady: "oklch(0.7 0.05 100)"
+  status-charged: "oklch(0.7 0.05 160)"
+  landing-ink: "#242424"
+  landing-ink-strong: "#302721"
+  landing-warm: "#e9946c"
+  landing-warm-soft: "#f4d9ca"
+  landing-warm-deep: "#c9744e"
+  landing-muted-strong: "#5d554e"
+  landing-muted: "#615d57"
+  landing-label: "#89837b"
+  landing-focus: "#d77f58"
+  landing-card-warm: "#f0e8dc"
+  landing-card-gradient: "#f3eee4"
+  landing-surface-hover: "#eee8dd"
+  landing-button-hover: "#45413d"
+  landing-mark: "#f1a078"
+  landing-drag: "#2a2825"
+  landing-cream: "#fffdf8"
+  landing-toolbar: "#5f5b55"
+  elevation-workspace-menu: "rgba(0, 0, 0, 0.28)"
+  elevation-workspace-drawer: "rgba(0, 0, 0, 0.24)"
+  elevation-workspace-dialog: "rgba(0, 0, 0, 0.45)"
+  elevation-workspace-mobile-drawer: "rgba(0, 0, 0, 0.32)"
+  elevation-landing-soft: "rgba(67, 57, 45, 0.13)"
+  elevation-landing-card: "rgba(67, 57, 45, 0.09)"
+  elevation-landing-rule: "rgba(81, 64, 46, 0.07)"
+  elevation-landing-drag-outline: "rgba(220, 137, 98, 0.75)"
+  elevation-landing-mark-border: "rgba(110, 72, 49, 0.08)"
+  elevation-checkin-dialog: "rgba(46, 35, 25, 0.26)"
+  elevation-checkin-backdrop: "rgba(38, 31, 25, 0.48)"
 typography:
   display:
     fontFamily: "Steady Sans, system-ui, sans-serif"
@@ -19,6 +62,11 @@ typography:
     fontWeight: 300
     lineHeight: 0.98
     letterSpacing: "-0.035em"
+  editorial:
+    fontFamily: "Melodrama, Georgia, serif"
+    fontSize: "clamp(2rem, 4vw, 3rem)"
+    fontWeight: 500
+    lineHeight: 1.1
   body:
     fontFamily: "Steady Sans, system-ui, sans-serif"
     fontSize: "1rem"
@@ -28,11 +76,180 @@ typography:
     fontFamily: "Steady Sans, system-ui, sans-serif"
     fontSize: "clamp(1.8rem, 3vw, 2.5rem)"
     fontWeight: 500
+  application:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 400
+    lineHeight: 1.6
+  data:
+    fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace"
+    fontSize: "0.75rem"
+    fontWeight: 400
+  fallback:
+    fontFamily: "Georgia, serif"
+    fontSize: "1rem"
+    fontWeight: 400
+  application-micro:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.64rem"
+    fontWeight: 500
+  application-auxiliary:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.68rem"
+    fontWeight: 500
+  application-caption:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.7rem"
+    fontWeight: 500
+  application-label:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.72rem"
+    fontWeight: 500
+  application-meta:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.78rem"
+    fontWeight: 400
+  application-support:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.76rem"
+    fontWeight: 400
+  application-card:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.8rem"
+    fontWeight: 400
+  application-compact:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.82rem"
+    fontWeight: 400
+  application-small:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.85rem"
+    fontWeight: 400
+  application-secondary:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.88rem"
+    fontWeight: 400
+  application-copy:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.9rem"
+    fontWeight: 400
+  application-lead:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "0.98rem"
+    fontWeight: 400
+  application-emphasis:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1.05rem"
+    fontWeight: 500
+  application-hero-subtitle:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1.15rem"
+    fontWeight: 400
+  application-prompt:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1.18rem"
+    fontWeight: 500
+  application-callout:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 500
+  application-subheading:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1.35rem"
+    fontWeight: 500
+  application-feature-title:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1.4rem"
+    fontWeight: 500
+  application-dialog-title:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1.45rem"
+    fontWeight: 500
+  application-modal-title:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1.55rem"
+    fontWeight: 500
+  application-heading:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 500
+  application-title:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "1.75rem"
+    fontWeight: 500
+  application-display:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "2rem"
+    fontWeight: 500
+  landing-hero:
+    fontFamily: "Steady Sans, system-ui, sans-serif"
+    fontSize: "clamp(2.35rem, 6vw, 4.4rem)"
+    fontWeight: 500
+  landing-section:
+    fontFamily: "Steady Sans, system-ui, sans-serif"
+    fontSize: "clamp(1.8rem, 4vw, 2.7rem)"
+    fontWeight: 500
+  landing-note:
+    fontFamily: "Steady Sans, system-ui, sans-serif"
+    fontSize: "0.94rem"
+    fontWeight: 400
+  workspace-hero:
+    fontFamily: "Steady Sans, Satoshi, system-ui, sans-serif"
+    fontSize: "clamp(2.35rem, 5vw, 4rem)"
+    fontWeight: 500
+  checkin-heading:
+    fontFamily: "Steady Sans, Satoshi, system-ui, sans-serif"
+    fontSize: "clamp(2.55rem, 5vw, 3.75rem)"
+    fontWeight: 500
+  checkin-prompt:
+    fontFamily: "Steady Sans, Satoshi, system-ui, sans-serif"
+    fontSize: "clamp(1.55rem, 3vw, 2.1rem)"
+    fontWeight: 500
+  home-hero:
+    fontFamily: "Steady Sans, Satoshi, system-ui, sans-serif"
+    fontSize: "clamp(2rem, 5vw, 3.25rem)"
+    fontWeight: 500
+  home-hero-subtitle:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "clamp(1.15rem, 2.5vw, 1.65rem)"
+    fontWeight: 400
+  glance-value:
+    fontFamily: "Steady Sans, Satoshi, system-ui, sans-serif"
+    fontSize: "clamp(2rem, 4vw, 2.6rem)"
+    fontWeight: 500
+  checkin-display:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "clamp(2.6rem, 5vw, 4.8rem)"
+    fontWeight: 300
+  checkin-mobile-display:
+    fontFamily: "Satoshi, system-ui, sans-serif"
+    fontSize: "clamp(2.65rem, 12vw, 3.5rem)"
+    fontWeight: 300
+  legacy-vite-mobile-heading:
+    fontFamily: "system-ui, sans-serif"
+    fontSize: "36px"
+    fontWeight: 500
 rounded:
   button: "12px"
   record: "14px"
   frame: "18px"
   small-control: "999px"
+  app-micro: "6px"
+  app-tail: "3px"
+  app-tail-small: "2px"
+  app-control: "7px"
+  app-small: "8px"
+  app-menu: "9px"
+  app-field: "10px"
+  app-tag: "11px"
+  app-panel: "16px"
+  app-feature: "17px"
+  app-dialog: "20px"
+  app-hero: "22px"
+  app-sheet: "24px"
+  app-pill: "9999px"
+  legacy-vite-code: "4px"
+  legacy-vite-counter: "5px"
 spacing:
   compact: "0.75rem"
   base: "1rem"
@@ -71,6 +288,10 @@ components:
 The homepage follows the reference’s human-centered composition: an open blue frame, restrained navigation, and a large portrait area balanced by spacious editorial copy. The person-led image gives the first screen a warm, human focus. A clearly synthetic paper record appears below the hero to show how a check-in can lead to evidence and an optional reflection.
 
 This direction applies to the public landing page. The check-in, dashboard, insights, and settings screens retain their existing application styling. The product-wide commitments remain calm first, evidence before explanation, user choice, and privacy.
+
+The application surfaces use a warm paper system already implemented in the shared CSS variables: ink, muted ink, paper, raised paper, rules, and terracotta accents. The landing page uses the same paper family plus a small set of warmer editorial colors for active navigation, focus, sample content, and the draggable demo surface. Those colors are intentional parts of the landing composition.
+
+The shipped client enters through `client/src/main.jsx`, which loads `client/src/app/App.jsx` and the shared `client/src/styles/globals.css`. The root-level `client/src/App.jsx`, `client/src/App.css`, and `client/src/index.css` are retained Vite starter files and are outside the product design system; their legacy values should not be used as application tokens.
 
 **Key Characteristics:**
 
@@ -112,6 +333,10 @@ The landing palette pairs a muted blue field with pale paper surfaces and dark, 
 - **Body** (400, 1rem, 1.7 line height): Introductory and explanatory copy.
 - **Label** (700, 0.72rem, 0.055em, uppercase): Evidence and record section labels.
 
+The application uses Satoshi for interface text and keeps a compact scale for navigation, metadata, tags, helper copy, headings, and check-in prompts. The recurring steps are 0.64rem, 0.72rem, 0.78rem, 0.82rem, 0.85rem, 0.88rem, 0.9rem, 0.98rem, 1.5rem, 1.75rem, and 2rem. Fluid values remain local to the screen when they need to respond to viewport width.
+
+Named fluid scales are intentional per surface: the landing hero and section heading, the workspace hero, the check-in heading and prompt, the home hero, the glance metric, and the mobile check-in display each use their documented clamp range to preserve hierarchy across breakpoints.
+
 **The Plain Voice Rule.** Let concise, direct wording carry warmth; avoid clinical certainty and performative intimacy.
 
 ## Layout
@@ -120,11 +345,19 @@ The desktop hero and navigation span the available viewport width with consisten
 
 ## Elevation & Depth
 
-The landing page is flat. Contrast between the blue hero, pale page, and paper record establishes hierarchy; fine borders separate content. No shadows are used.
+The landing shell stays visually quiet: contrast between the paper background, editorial content, and sample record establishes most of the hierarchy. The sample privacy and editor surfaces use soft warm shadows to separate their layers from the page; there are no hard offset shadows. Workspace menus, drawers, and dialogs use the same restrained depth approach with functional translucent overlays.
 
 ## Shapes
 
 The hero frame has softly rounded outer corners, the evidence sheet has a modest rounded edge, and action buttons use a restrained radius. The compact navigation action may use a pill shape. Keep large content surfaces calm and simple.
+
+Application controls use a compact 6px–12px radius scale, with 14px–24px reserved for larger panels, dialogs, and feature surfaces. The 999px and 9999px values are reserved for pills and circular status controls.
+
+Soft warm alpha values are reserved for sample card depth, landing drag affordances, workspace menus and drawers, and check-in dialog overlays. They are elevation colors rather than text or surface colors.
+
+## Application Workspace
+
+The authenticated workspace, check-in flow, dashboard, insights, reminders, trends, and settings share the warm paper palette. Their shadows and translucent overlays provide functional depth for menus, drawers, and dialogs. The application may use those surfaces and responsive type steps without changing the public landing direction.
 
 ## Components
 
@@ -137,7 +370,7 @@ The hero frame has softly rounded outer corners, the evidence sheet has a modest
 ### Cards / Containers
 - **Corner Style:** 14px for the record sheet; 18px for the outer hero frame.
 - **Background:** Paper surface against the blue hero.
-- **Shadow Strategy:** Flat; borders and contrast define the surface.
+- **Shadow Strategy:** Flat shell with soft warm shadows on sample surfaces; borders and contrast still carry most of the hierarchy.
 - **Internal Padding:** Responsive horizontal padding, with compact padding on mobile.
 
 ### Navigation

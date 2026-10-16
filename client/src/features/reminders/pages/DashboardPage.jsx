@@ -211,40 +211,36 @@ export default function DashboardPage() {
                 </div>
               </section>
             </div>
-            <div className="dashboard-page__grid">
-              <div className="dashboard-page__main">
-                <section
-                  className="reveal"
-                  style={{ "--index": 3 }}
-                  aria-labelledby="insight-heading"
-                >
-                  <p className="dashboard-panel__label">A gentle read</p>
-                  <h2 id="insight-heading">Latest insight</h2>
-                  <LatestInsight insight={summary.latestInsight} />
-                </section>
-                <div
-                  className="dashboard-panel reveal"
-                  style={{ "--index": 4 }}
-                >
-                  <SignalsPanel signals={summary.signals} />
-                </div>
+            <div className="dashboard-layout-variant dashboard-layout-variant--balanced">
+              <section
+                className="dashboard-layout-variant__insight reveal"
+                style={{ "--index": 3 }}
+                aria-labelledby="insight-heading-balanced"
+              >
+                <p className="dashboard-panel__label">A gentle read</p>
+                <h2 id="insight-heading-balanced">Latest insight</h2>
+                <LatestInsight insight={summary.latestInsight} />
+              </section>
+              <div
+                className="dashboard-panel dashboard-layout-variant__signals reveal"
+                style={{ "--index": 4 }}
+              >
+                <SignalsPanel signals={summary.signals} />
               </div>
-              <div className="dashboard-page__side">
-                <section
-                  className="dashboard-panel reveal"
-                  style={{ "--index": 5 }}
-                  aria-labelledby="reminders-heading"
-                >
-                  <p className="dashboard-panel__label">For later</p>
-                  <h2 id="reminders-heading">Reminders</h2>
-                  <Reminders
-                    reminders={summary.reminders}
-                    unreadReminders={summary.unreadReminders}
-                    markingId={markingId}
-                    onMarkRead={(id) => markRead(id).catch(() => {})}
-                  />
-                </section>
-              </div>
+              <section
+                className="dashboard-panel dashboard-layout-variant__reminders reveal"
+                style={{ "--index": 5 }}
+                aria-labelledby="reminders-heading-balanced"
+              >
+                <p className="dashboard-panel__label">For later</p>
+                <h2 id="reminders-heading-balanced">Reminders</h2>
+                <Reminders
+                  reminders={summary.reminders}
+                  unreadReminders={summary.unreadReminders}
+                  markingId={markingId}
+                  onMarkRead={(id) => markRead(id).catch(() => {})}
+                />
+              </section>
             </div>
           </>
         )

@@ -1,5 +1,5 @@
 body:has(.app-shell--landing) {
-  background: #e8e2d9;
+  background: var(--surface-ink);
   color: #242424;
 }
 
@@ -8,10 +8,10 @@ body:has(.app-shell--landing)::before {
 }
 
 .app-shell--landing {
-  --landing-bg: #e8e2d9;
+  --landing-bg: var(--surface-ink);
   --landing-ink: #242424;
-  --landing-muted: #77736d;
-  --landing-card: #f7f4ed;
+  --landing-muted: var(--text-faint);
+  --landing-card: var(--surface-panel);
   min-height: 100vh;
   display: flow-root;
   background: var(--landing-bg);
@@ -107,7 +107,7 @@ body:has(.app-shell--landing)::before {
   border: 0;
   border-radius: 999px;
   background: var(--landing-ink);
-  color: #fffdf8;
+  color: var(--checkin-white);
   font: inherit;
   font-size: 0.88rem;
   font-weight: 500;
@@ -213,7 +213,7 @@ body:has(.app-shell--landing)::before {
   padding: 0.5rem 0.85rem;
   border: 1px solid rgba(36, 36, 36, 0.15);
   border-radius: 999px;
-  background: #f7f4ed;
+  background: var(--surface-panel);
   color: #242424;
   font: inherit;
   cursor: pointer;
@@ -257,7 +257,7 @@ body:has(.app-shell--landing)::before {
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
   background: #2a2825;
-  color: #fffdf8;
+  color: var(--checkin-white);
   font: 500 0.75rem/1 'Steady Sans', system-ui, sans-serif;
   cursor: grab;
   user-select: none;
@@ -384,7 +384,7 @@ body:has(.app-shell--landing)::before {
 }
 
 .privacy-assurance__promise-copy strong {
-  color: #292723;
+  color: var(--text-soft);
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.02em;

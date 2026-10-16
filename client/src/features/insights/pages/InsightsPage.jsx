@@ -101,82 +101,213 @@ export default function InsightsPage() {
   })
 
   return (
-    <main className="insights-page">
-      <div className="insights-page__header">
-        <p className="page-eyebrow">Patterns, not verdicts</p>
-        <h1>Insights</h1>
-        <p className="insights-page__lead">
-          Notice recurring emotional triggers and overextension patterns with enough space to decide what they mean for you.
-        </p>
+    <div
+      data-impeccable-variants="22c4b009"
+      data-impeccable-variant-count="2"
+      style={{ display: "contents" }}
+    >
+      {/* impeccable-variants-start 22c4b009 */}
+      {/* Original */}
+      <div data-impeccable-variant="original">
+        <main className="insights-page">
+          <div className="insights-page__header">
+            <p className="page-eyebrow">Patterns, not verdicts</p>
+            <h1>Insights</h1>
+            <p className="insights-page__lead">
+              Notice recurring emotional triggers and overextension patterns with enough space to decide what they mean for you.
+            </p>
 
-        <div className="insights-toolbar">
-          <div className="insights-tabs" role="tablist" aria-label="Insight categories">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'all'}
-              className={`insights-tab ${activeTab === 'all' ? 'insights-tab--active' : ''}`}
-              onClick={() => setActiveTab('all')}
-            >
-              All Patterns
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'boundary'}
-              className={`insights-tab ${activeTab === 'boundary' ? 'insights-tab--active' : ''}`}
-              onClick={() => setActiveTab('boundary')}
-            >
-              Boundaries
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'burnout'}
-              className={`insights-tab ${activeTab === 'burnout' ? 'insights-tab--active' : ''}`}
-              onClick={() => setActiveTab('burnout')}
-            >
-              Burnout Signals
-            </button>
+            <div className="insights-toolbar">
+              <div className="insights-tabs" role="tablist" aria-label="Insight categories">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'all'}
+                  className={`insights-tab ${activeTab === 'all' ? 'insights-tab--active' : ''}`}
+                  onClick={() => setActiveTab('all')}
+                >
+                  All Patterns
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'boundary'}
+                  className={`insights-tab ${activeTab === 'boundary' ? 'insights-tab--active' : ''}`}
+                  onClick={() => setActiveTab('boundary')}
+                >
+                  Boundaries
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'burnout'}
+                  className={`insights-tab ${activeTab === 'burnout' ? 'insights-tab--active' : ''}`}
+                  onClick={() => setActiveTab('burnout')}
+                >
+                  Burnout Signals
+                </button>
+              </div>
+
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={analyze}
+                disabled={busy}
+              >
+                {status === 'analyzing' ? 'Analyzing…' : 'Analyze my recent check-ins'}
+              </button>
+            </div>
           </div>
 
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={analyze}
-            disabled={busy}
-          >
-            {status === 'analyzing' ? 'Analyzing…' : 'Analyze my recent check-ins'}
-          </button>
-        </div>
+          {!busy && rawShown.length === 0 && (
+            <div className="insights-empty-card">
+              <h2>No insights yet</h2>
+              <p>
+                Insights appear once you have accumulated a few check-ins. The pattern engine needs at least 3 entries to identify recurring patterns or boundary pressures.
+              </p>
+              <Link to="/check-in" className="btn-secondary">
+                Record a check-in now
+              </Link>
+            </div>
+          )}
+
+          {!busy && rawShown.length > 0 && filteredShown.length === 0 && (
+            <div className="insights-empty-card">
+              <p>No insights found under this category filter.</p>
+              <button type="button" className="btn-ghost btn-sm" onClick={() => setActiveTab('all')}>
+                View all insights
+              </button>
+            </div>
+          )}
+
+          <div className="insights-list">
+            {filteredShown.map((insight) => (
+              <InsightCard key={insight.id} insight={insight} />
+            ))}
+          </div>
+        </main>
       </div>
+      <style data-impeccable-css="22c4b009">{`
+@scope ([data-impeccable-variant="1"]) {
+  :scope > .insights-page--quiet-underline .insights-tabs {
+    gap: calc(1.1rem * var(--p-density, 1));
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
 
-      {!busy && rawShown.length === 0 && (
-        <div className="insights-empty-card">
-          <h2>No insights yet</h2>
-          <p>
-            Insights appear once you have accumulated a few check-ins. The pattern engine needs at least 3 entries to identify recurring patterns or boundary pressures.
-          </p>
-          <Link to="/check-in" className="btn-secondary">
-            Record a check-in now
-          </Link>
-        </div>
-      )}
+  :scope > .insights-page--quiet-underline .insights-tab {
+    padding: 0.55rem 0.1rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    font-weight: 500;
+  }
 
-      {!busy && rawShown.length > 0 && filteredShown.length === 0 && (
-        <div className="insights-empty-card">
-          <p>No insights found under this category filter.</p>
-          <button type="button" className="btn-ghost btn-sm" onClick={() => setActiveTab('all')}>
-            View all insights
-          </button>
-        </div>
-      )}
+  :scope > .insights-page--quiet-underline .insights-tab--active {
+    background: transparent;
+    color: var(--text);
+    border-bottom-color: var(--primary);
+  }
+}
 
-      <div className="insights-list">
-        {filteredShown.map((insight) => (
-          <InsightCard key={insight.id} insight={insight} />
-        ))}
+@scope ([data-impeccable-variant="2"]) {
+  :scope > .insights-page--quiet-surface .insights-tabs {
+    gap: calc(0.25rem * var(--p-density, 1));
+    border-color: color-mix(in oklch, var(--border-muted) 70%, transparent);
+    background: color-mix(in oklch, var(--bg-light) 72%, transparent);
+  }
+
+  :scope > .insights-page--quiet-surface .insights-tab {
+    font-weight: 500;
+  }
+
+  :scope > .insights-page--quiet-surface .insights-tab--active {
+    background: color-mix(in oklch, var(--primary) 12%, var(--bg-light));
+    color: var(--primary);
+    box-shadow: inset 0 -1px 0 color-mix(in oklch, var(--primary) 42%, transparent);
+  }
+}
+
+@media (max-width: 760px) {
+  @scope ([data-impeccable-variant="1"]) {
+    :scope > .insights-page--quiet-underline .insights-tabs {
+      gap: 0.75rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+  }
+}
+`}</style>
+      <div
+        data-impeccable-variant="1"
+        data-impeccable-params='[{"id":"density","kind":"range","min":0.8,"max":1.2,"step":0.05,"default":1,"label":"Tab spacing"}]'
+      >
+        <main className="insights-page insights-page--quiet-underline">
+          <div className="insights-page__header">
+            <p className="page-eyebrow">Patterns, not verdicts</p>
+            <h1>Insights</h1>
+            <p className="insights-page__lead">
+              Notice recurring emotional triggers and overextension patterns with enough space to decide what they mean for you.
+            </p>
+            <div className="insights-toolbar">
+              <div className="insights-tabs" role="tablist" aria-label="Insight categories">
+                <button type="button" role="tab" aria-selected={activeTab === 'all'} className={`insights-tab ${activeTab === 'all' ? 'insights-tab--active' : ''}`} onClick={() => setActiveTab('all')}>All Patterns</button>
+                <button type="button" role="tab" aria-selected={activeTab === 'boundary'} className={`insights-tab ${activeTab === 'boundary' ? 'insights-tab--active' : ''}`} onClick={() => setActiveTab('boundary')}>Boundaries</button>
+                <button type="button" role="tab" aria-selected={activeTab === 'burnout'} className={`insights-tab ${activeTab === 'burnout' ? 'insights-tab--active' : ''}`} onClick={() => setActiveTab('burnout')}>Burnout Signals</button>
+              </div>
+              <button type="button" className="btn-primary" onClick={analyze} disabled={busy}>{status === 'analyzing' ? 'Analyzing…' : 'Analyze my recent check-ins'}</button>
+            </div>
+          </div>
+          {!busy && rawShown.length === 0 && (
+            <div className="insights-empty-card">
+              <h2>No insights yet</h2>
+              <p>Insights appear once you have accumulated a few check-ins. The pattern engine needs at least 3 entries to identify recurring patterns or boundary pressures.</p>
+              <Link to="/check-in" className="btn-secondary">Record a check-in now</Link>
+            </div>
+          )}
+          {!busy && rawShown.length > 0 && filteredShown.length === 0 && (
+            <div className="insights-empty-card">
+              <p>No insights found under this category filter.</p>
+              <button type="button" className="btn-ghost btn-sm" onClick={() => setActiveTab('all')}>View all insights</button>
+            </div>
+          )}
+          <div className="insights-list">{filteredShown.map((insight) => <InsightCard key={insight.id} insight={insight} />)}</div>
+        </main>
       </div>
-    </main>
+      <div data-impeccable-variant="2" style={{ display: "none" }} data-impeccable-params='[{"id":"density","kind":"range","min":0.8,"max":1.2,"step":0.05,"default":1,"label":"Tab spacing"}]'>
+        <main className="insights-page insights-page--quiet-surface">
+          <div className="insights-page__header">
+            <p className="page-eyebrow">Patterns, not verdicts</p>
+            <h1>Insights</h1>
+            <p className="insights-page__lead">Notice recurring emotional triggers and overextension patterns with enough space to decide what they mean for you.</p>
+            <div className="insights-toolbar">
+              <div className="insights-tabs" role="tablist" aria-label="Insight categories">
+                <button type="button" role="tab" aria-selected={activeTab === 'all'} className={`insights-tab ${activeTab === 'all' ? 'insights-tab--active' : ''}`} onClick={() => setActiveTab('all')}>All Patterns</button>
+                <button type="button" role="tab" aria-selected={activeTab === 'boundary'} className={`insights-tab ${activeTab === 'boundary' ? 'insights-tab--active' : ''}`} onClick={() => setActiveTab('boundary')}>Boundaries</button>
+                <button type="button" role="tab" aria-selected={activeTab === 'burnout'} className={`insights-tab ${activeTab === 'burnout' ? 'insights-tab--active' : ''}`} onClick={() => setActiveTab('burnout')}>Burnout Signals</button>
+              </div>
+              <button type="button" className="btn-primary" onClick={analyze} disabled={busy}>{status === 'analyzing' ? 'Analyzing…' : 'Analyze my recent check-ins'}</button>
+            </div>
+          </div>
+          {!busy && rawShown.length === 0 && (
+            <div className="insights-empty-card">
+              <h2>No insights yet</h2>
+              <p>Insights appear once you have accumulated a few check-ins. The pattern engine needs at least 3 entries to identify recurring patterns or boundary pressures.</p>
+              <Link to="/check-in" className="btn-secondary">Record a check-in now</Link>
+            </div>
+          )}
+          {!busy && rawShown.length > 0 && filteredShown.length === 0 && (
+            <div className="insights-empty-card">
+              <p>No insights found under this category filter.</p>
+              <button type="button" className="btn-ghost btn-sm" onClick={() => setActiveTab('all')}>View all insights</button>
+            </div>
+          )}
+          <div className="insights-list">{filteredShown.map((insight) => <InsightCard key={insight.id} insight={insight} />)}</div>
+        </main>
+      </div>
+      {/* impeccable-variants-end 22c4b009 */}
+    </div>
   )
 }
