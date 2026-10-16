@@ -47,9 +47,7 @@ function CurrentBattery({ checkins }) {
         aria-labelledby="battery-label"
       >
         <div className="battery-head">
-          <h2 id="battery-label">
-            Current Energy
-          </h2>
+          <h2 id="battery-label">Current Energy</h2>
         </div>
         <div className="battery-body">
           <EnergyBattery checkins={checkins} />
@@ -74,9 +72,7 @@ function CurrentBattery({ checkins }) {
       aria-labelledby="battery-label"
     >
       <div className="battery-head">
-        <h2 id="battery-label">
-          Current Energy
-        </h2>
+        <h2 id="battery-label">Current Energy</h2>
         <p className="battery-updated">Updated {updated}</p>
       </div>
       <div className="battery-body">
@@ -159,15 +155,21 @@ function Reminders({ reminders, unreadReminders, markingId, onMarkRead }) {
 }
 
 export default function DashboardPage() {
-  const { summary, status, markingId, load, markRead } =
-    useDashboardStore();
+  const { summary, status, markingId, load, markRead } = useDashboardStore();
   const loading = status === "loading" || status === "idle";
   const scopeRef = useReveal([status, summary]);
 
   useEffect(() => {
     load();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    console.log(summary);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [summary]);
 
   return (
     <main className="dashboard-page" ref={scopeRef}>

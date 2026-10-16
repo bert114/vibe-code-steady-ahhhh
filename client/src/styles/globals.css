@@ -2423,6 +2423,10 @@ article>ul li {
   transition: all 150ms var(--ease-out);
 }
 
+.insights-tab:not(.insights-tab--active) {
+  color: color-mix(in oklch, var(--text-muted) 72%, transparent);
+}
+
 .insights-tab:hover {
   color: var(--text);
 }
