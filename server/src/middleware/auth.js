@@ -1,4 +1,17 @@
 import { env } from "../config/env.js";
+import { sendApiError, sourceFile } from "./apiError.js";
+
+const authFile = sourceFile(import.meta.url);
+
+function authError(req, res, status, code, message) {
+  return sendApiError(req, res, {
+    status,
+    code,
+    message,
+    triggerFile: authFile,
+    cause: { name: "AuthenticationError", code, message },
+  });
+}
 
 // Development-only auth resolver. In production (or when the bypass is off)
 // this sets no user — protected routes must then use real authentication,
@@ -35,13 +48,7 @@ export function requireUser(req, res, next) {
     return next();
   }
   if (!req.user?.id) {
-    return res.status(401).json({
-      error: {
-        code: "UNAUTHORIZED",
-        message: "Authentication is required.",
-        details: [],
-      },
-    });
+    return authError(req, res, 401, "UNAUTHORIZED", "Authentication is required.");
   }
   next();
 }
@@ -51,24 +58,12 @@ export function requireUser(req, res, next) {
 export function requireRole(...allowedRoles) {
   return function roleGuard(req, res, next) {
     if (!req.user?.id) {
-      return res.status(401).json({
-        error: {
-          code: "UNAUTHORIZED",
-          message: "Authentication is required.",
-          details: [],
-        },
-      });
+      return authError(req, res, 401, "UNAUTHORIZED", "Authentication is required.");
     }
 
     const currentRole = req.user.role || "user";
     if (!allowedRoles.includes(currentRole)) {
-      return res.status(403).json({
-        error: {
-          code: "FORBIDDEN",
-          message: "You do not have permission to access this resource.",
-          details: [],
-        },
-      });
+      return authError(req, res, 403, "FORBIDDEN", "You do not have permission to access this resource.");
     }
 
     next();

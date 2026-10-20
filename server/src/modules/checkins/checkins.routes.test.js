@@ -30,8 +30,17 @@ describe('checkins boundaries (no db)', () => {
     // Test env has no dev bypass, so req.user is unset.
     const res = await request(createApp()).get('/api/check-ins')
     expect(res.status).toBe(401)
-    expect(res.body).toEqual({
-      error: { code: 'UNAUTHORIZED', message: expect.any(String), details: [] },
+    expect(res.body).toMatchObject({
+      success: false,
+      error: {
+        code: 'UNAUTHORIZED',
+        message: expect.any(String),
+        details: [],
+        path: '/api/check-ins',
+        request_id: expect.stringMatching(/^req_/),
+        timestamp: expect.any(String),
+        debug: { trigger: { controller: 'checkins.getCheckins' } },
+      },
     })
   })
 
@@ -52,6 +61,12 @@ describe('checkins boundaries (no db)', () => {
     expect(res.status).toBe(400)
     expect(res.body.error.code).toBe('VALIDATION_ERROR')
     expect(res.body.error.details.length).toBeGreaterThan(0)
+    expect(res.body.success).toBe(false)
+    expect(res.body.error.details[0]).toMatchObject({
+      field: expect.any(String),
+      issue: expect.any(String),
+      message: expect.any(String),
+    })
   })
 
   it('rejects off-allowlist scores with VALIDATION_ERROR before touching the db', async () => {

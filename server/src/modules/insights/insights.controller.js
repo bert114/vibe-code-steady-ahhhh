@@ -6,6 +6,9 @@ import {
   getLatestInsights,
 } from "../../services/ai/ai.service.js";
 import { analyzeUserPatterns } from "../../services/patterns/pattern.service.js";
+import { sendApiError, sourceFile } from "../../middleware/apiError.js";
+
+const controllerFile = sourceFile(import.meta.url);
 
 export async function getSignals(req, res, next) {
   try {
@@ -57,12 +60,12 @@ export async function getInsightByIdHandler(req, res, next) {
   try {
     const insight = await getInsightById(req.user.id, req.params.id);
     if (!insight) {
-      return res.status(404).json({
-        error: {
-          code: "INSIGHT_NOT_FOUND",
-          message: "That insight was not found.",
-          details: [],
-        },
+      return sendApiError(req, res, {
+        status: 404,
+        code: "INSIGHT_NOT_FOUND",
+        message: "That insight was not found.",
+        triggerFile: controllerFile,
+        cause: { name: "NotFoundError", code: "INSIGHT_NOT_FOUND", message: "Insight was not found for this user." },
       });
     }
     res.json(insight);

@@ -1,16 +1,19 @@
 // Data access ONLY for analysis artifacts. Parameterized SQL, user-scoped,
 // no user-facing messages — same discipline as every other repository.
-import { dbQuery } from '../../db/pool.js'
+import { dbQuery } from "../../db/pool.js";
 
-export async function startRun(userId, { inputCheckinCount, latestCheckinAt, provider, model }) {
+export async function startRun(
+  userId,
+  { inputCheckinCount, latestCheckinAt, provider, model },
+) {
   const { rows } = await dbQuery(
     `INSERT INTO analysis_runs
        (user_id, status, input_checkin_count, latest_checkin_at, provider, model)
      VALUES ($1, 'running', $2, $3, $4, $5)
      RETURNING id, started_at`,
     [userId, inputCheckinCount, latestCheckinAt, provider, model],
-  )
-  return rows[0]
+  );
+  return rows[0];
 }
 
 export async function completeRun(runId, errorCode = null) {
@@ -18,8 +21,8 @@ export async function completeRun(runId, errorCode = null) {
     `UPDATE analysis_runs
      SET status = $2, completed_at = now(), error_code = $3
      WHERE id = $1`,
-    [runId, errorCode ? 'failed' : 'completed', errorCode],
-  )
+    [runId, errorCode ? "failed" : "completed", errorCode],
+  );
 }
 
 export async function getLastCompletedRun(userId) {
@@ -28,8 +31,8 @@ export async function getLastCompletedRun(userId) {
      WHERE user_id = $1 AND status = 'completed'
      ORDER BY started_at DESC LIMIT 1`,
     [userId],
-  )
-  return rows[0] ?? null
+  );
+  return rows[0] ?? null;
 }
 
 export async function insertInsight(userId, runId, insight) {
@@ -48,8 +51,8 @@ export async function insertInsight(userId, runId, insight) {
       insight.confidence,
       JSON.stringify(insight.suggestions),
     ],
-  )
-  return toApi(rows[0])
+  );
+  return toApi(rows[0]);
 }
 
 export async function insertReminder(userId, insightId, kind, message) {
@@ -58,8 +61,8 @@ export async function insertReminder(userId, insightId, kind, message) {
      VALUES ($1, $2, $3, $4)
      RETURNING id, kind, message, created_at`,
     [userId, insightId, kind, message],
-  )
-  return rows[0]
+  );
+  return rows[0];
 }
 
 export async function listInsights(userId, limit = 10) {
@@ -67,8 +70,8 @@ export async function listInsights(userId, limit = 10) {
     `SELECT id, insight_type, title, summary, evidence, confidence, suggestions, created_at
      FROM insights WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2`,
     [userId, limit],
-  )
-  return rows.map(toApi)
+  );
+  return rows.map(toApi);
 }
 
 export async function findInsightById(userId, id) {
@@ -76,8 +79,8 @@ export async function findInsightById(userId, id) {
     `SELECT id, insight_type, title, summary, evidence, confidence, suggestions, created_at
      FROM insights WHERE id = $1 AND user_id = $2`,
     [id, userId],
-  )
-  return rows[0] ? toApi(rows[0]) : null
+  );
+  return rows[0] ? toApi(rows[0]) : null;
 }
 
 function toApi(row) {
@@ -90,5 +93,5 @@ function toApi(row) {
     confidence: row.confidence,
     suggestions: row.suggestions,
     createdAt: row.created_at,
-  }
+  };
 }

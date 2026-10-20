@@ -34,9 +34,21 @@ describe('foundation', () => {
   it('unknown routes return the error contract (no stack traces)', async () => {
     const res = await request(app).get('/api/nope')
     expect(res.status).toBe(404)
-    expect(res.body).toEqual({
-      error: { code: 'NOT_FOUND', message: expect.any(String), details: [] },
+    expect(res.body).toMatchObject({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: expect.any(String),
+        details: [],
+        path: '/api/nope',
+        request_id: expect.stringMatching(/^req_[0-9a-f-]{36}$/),
+        timestamp: expect.any(String),
+        debug: {
+          trigger: { file: 'server/src/middleware/error.js' },
+        },
+      },
     })
+    expect(res.headers['x-request-id']).toBe(res.body.error.request_id)
   })
 
   it('requireUser rejects requests without an authenticated user', () => {

@@ -41,5 +41,5 @@ Last verified: 2026-09
 - Data fetching: shared request helper under `client/src/lib/api/`; feature modules call it via their public `api.js` — do not duplicate request configuration.
 - State management: Zustand, small feature-scoped stores only (check-in draft, insight/reminder UI state, dev user context, dashboard data). No giant global server-state store.
 - Forms/validation: client validation for UX; Zod on the server for every write request and for AI structured output.
-- Error handling: single contract `{ error: { code, message, details } }`; no stack traces to users.
+- Error handling: API failures use `{ success: false, error: { code, message, details, timestamp, path, request_id } }`; validation details use `{ field, issue, message }`. Development adds structured requester/controller/source/cause diagnostics under `error.debug`; production omits them. Never return stack traces or log raw notes, prompts, or AI output.
 - Logging/monitoring: only IDs, status codes, timing, and safe error codes — never raw notes, prompts, or full AI output.

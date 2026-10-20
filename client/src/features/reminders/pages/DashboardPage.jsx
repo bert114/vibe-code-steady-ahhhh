@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { latestCheckin } from "../components/energyBattery.helpers.js";
@@ -158,6 +159,12 @@ export default function DashboardPage() {
   const { summary, status, markingId, load, markRead } = useDashboardStore();
   const loading = status === "loading" || status === "idle";
   const scopeRef = useReveal([status, summary]);
+
+  const { user } = useUser();
+
+  useEffect(() => {
+    console.log("user", user);
+  }, [user]);
 
   useEffect(() => {
     load();

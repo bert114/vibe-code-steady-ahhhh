@@ -8,6 +8,8 @@ import { audit } from "./middleware/audit.js";
 import { authResolver, requireRole, requireUser } from "./middleware/auth.js";
 import { createClerkResolver } from "./middleware/clerk.js";
 import { errorHandler, notFound } from "./middleware/error.js";
+import { requestContext } from "./middleware/apiError.js";
+import { withController } from "./middleware/withController.js";
 import { checkinsRouter } from "./modules/checkins/checkins.routes.js";
 import { dashboardRouter } from "./modules/dashboard/dashboard.routes.js";
 import { insightsRouter } from "./modules/insights/insights.routes.js";
@@ -22,6 +24,7 @@ export function createApp() {
 
   app.use(helmet());
   app.use(cors({ origin: env.CLIENT_ORIGIN }));
+  app.use(requestContext);
   // Clerk webhooks need the untouched request body for signature validation
   // and must stay outside the session-authenticated API middleware.
   app.use("/api/webhooks", clerkWebhookRouter);
@@ -31,36 +34,42 @@ export function createApp() {
   // try/catch + next(err) is load-bearing: Express 4 does not forward
   // async rejections to errorHandler on its own, so without this a thrown
   // DB error would hang the request instead of returning the error contract.
-  app.get("/api/health", async (_req, res, next) => {
-    try {
-      const db = await checkDatabase();
-      const body = { status: "ok", db };
-      // Specific error detail for debugging. Dev only — production keeps
-      // the bare contract so internals (hosts, pg codes) don't leak.
-      if (db === "down" && env.NODE_ENV !== "production") {
-        const detail = getLastDbError();
-        if (detail) body.detail = detail;
+  app.get(
+    "/api/health",
+    withController("health", async (_req, res, next) => {
+      try {
+        const db = await checkDatabase();
+        const body = { status: "ok", db };
+        // Specific error detail for debugging. Dev only — production keeps
+        // the bare contract so internals (hosts, pg codes) don't leak.
+        if (db === "down" && env.NODE_ENV !== "production") {
+          const detail = getLastDbError();
+          if (detail) body.detail = detail;
+        }
+        res.json(body);
+      } catch (err) {
+        next(err);
       }
-      res.json(body);
-    } catch (err) {
-      next(err);
-    }
-  });
+    }),
+  );
 
-  app.get("/", (_req, res) => {
-    res.json({
-      name: "steady-ahh-api",
-      version: "0.1.0",
-      status: "ok",
-      message: "Steady-Ahh API is running",
-      links: {
-        health: "/api/health",
-        checkins: "/api/check-ins",
-        insights: "/api/insights",
-        dashboard: "/api/dashboard",
-      },
-    });
-  });
+  app.get(
+    "/",
+    withController("root", (_req, res) => {
+      res.json({
+        name: "steady-ahh-api",
+        version: "0.1.0",
+        status: "ok",
+        message: "Steady-Ahh API is running",
+        links: {
+          health: "/api/health",
+          checkins: "/api/check-ins",
+          insights: "/api/insights",
+          dashboard: "/api/dashboard",
+        },
+      });
+    }),
+  );
 
   if (env.CLERK_SECRET_KEY) {
     app.use(clerkMiddleware());
@@ -74,14 +83,19 @@ export function createApp() {
   app.use("/api/dashboard", dashboardRouter);
   app.use("/api/users", usersRouter);
 
-  app.get("/api/admin/overview", requireUser, requireRole("admin"), (req, res) => {
-    res.json({
-      status: "ok",
-      admin: true,
-      user: { id: req.user.id, role: req.user.role },
-      timestamp: new Date().toISOString(),
-    });
-  });
+  app.get(
+    "/api/admin/overview",
+    requireUser,
+    requireRole("admin"),
+    withController("admin.overview", (req, res) => {
+      res.json({
+        status: "ok",
+        admin: true,
+        user: { id: req.user.id, role: req.user.role },
+        timestamp: new Date().toISOString(),
+      });
+    }),
+  );
 
   app.use(notFound);
   app.use(errorHandler);

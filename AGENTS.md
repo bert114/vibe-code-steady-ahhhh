@@ -57,7 +57,7 @@
 - **E2E API interception:** match the exact origin (`**/localhost:5001/api/**`). A bare `**/api/**` also aborts Vite's `/src/lib/api/*.js` modules.
 - **Layer discipline:** controllers never write SQL; repositories do data access only and never build user-facing messages; business rules never live in React components.
 - **Every DB query is scoped by `req.user.id`; never trust a client-supplied `user_id`.**
-- **Single error contract:** `{ error: { code, message, details } }`. No stack traces to users. Never log raw check-in notes, AI prompts, or full AI output — only IDs, statuses, timing, and safe error codes (`server/src/middleware/audit.js` enforces safe metadata).
+- **Single API error contract:** `{ success: false, error: { code, message, details, timestamp, path, request_id } }`. Validation details use `{ field, issue, message }`; development adds requester/controller/source/cause diagnostics under `error.debug`, while production omits them. No stack traces to users. Never log raw check-in notes, AI prompts, or full AI output — only IDs, statuses, timing, and safe error codes (`server/src/middleware/audit.js` enforces safe metadata).
 - **Budget is $0.** Free-tier limits apply (Render sleeps after idle; Workers AI daily neuron allocation); verify limits before any paid/dependency choice.
 
 ## Protected areas — ask before changing

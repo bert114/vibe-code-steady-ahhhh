@@ -102,6 +102,7 @@ export function audit(req, res, next) {
     const entry = {
       audit: true,
       id,
+      requestId: req.requestId,
       ts: new Date().toISOString(),
       method: req.method,
       path: req.path,

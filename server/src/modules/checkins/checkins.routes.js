@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { requireUser } from "../../middleware/auth.js";
 import { validate } from "../../middleware/validate.js";
+import { withController } from "../../middleware/withController.js";
 import {
   deleteCheckin,
   getCheckinById,
@@ -17,14 +18,31 @@ import {
 
 export const checkinsRouter = Router();
 
-// All check-in routes require an authenticated user (dev bypass in local dev,
-// real auth before the external beta).
 checkinsRouter.use(requireUser);
-checkinsRouter.post("/", validate(createCheckinSchema, "body"), postCheckin);
-checkinsRouter.get("/", validate(listCheckinsSchema, "query"), getCheckins);
+checkinsRouter.post(
+  "/",
+  validate(createCheckinSchema, "body"),
+  withController("checkins.postCheckin", postCheckin),
+);
+checkinsRouter.get(
+  "/",
+  validate(listCheckinsSchema, "query"),
+  withController("checkins.getCheckins", getCheckins),
+);
 // Must come before "/:id" — otherwise "trends" is matched as an :id and
 // rejected by the uuid check instead of reaching this handler.
-checkinsRouter.get("/trends", validate(trendsQuerySchema, "query"), getTrends);
-checkinsRouter.get("/:id", validate(checkinIdSchema, "params"), getCheckinById);
-checkinsRouter.delete("/:id", validate(checkinIdSchema, "params"), deleteCheckin);
-
+checkinsRouter.get(
+  "/trends",
+  validate(trendsQuerySchema, "query"),
+  withController("checkins.getTrends", getTrends),
+);
+checkinsRouter.get(
+  "/:id",
+  validate(checkinIdSchema, "params"),
+  withController("checkins.getCheckinById", getCheckinById),
+);
+checkinsRouter.delete(
+  "/:id",
+  validate(checkinIdSchema, "params"),
+  withController("checkins.deleteCheckin", deleteCheckin),
+);

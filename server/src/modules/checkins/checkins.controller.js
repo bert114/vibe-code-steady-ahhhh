@@ -1,6 +1,9 @@
 // HTTP only: read validated data, call the service, return responses.
 // No SQL here, no business rules here.
 import * as service from "./checkins.service.js";
+import { sendApiError, sourceFile } from "../../middleware/apiError.js";
+
+const controllerFile = sourceFile(import.meta.url);
 
 export async function postCheckin(req, res, next) {
   try {
@@ -26,12 +29,12 @@ export async function getCheckinById(req, res, next) {
   try {
     const checkin = await service.getCheckinById(req.user.id, req.params.id);
     if (!checkin) {
-      return res.status(404).json({
-        error: {
-          code: "CHECKIN_NOT_FOUND",
-          message: "That check-in was not found.",
-          details: [],
-        },
+      return sendApiError(req, res, {
+        status: 404,
+        code: "CHECKIN_NOT_FOUND",
+        message: "That check-in was not found.",
+        triggerFile: controllerFile,
+        cause: { name: "NotFoundError", code: "CHECKIN_NOT_FOUND", message: "Check-in was not found for this user." },
       });
     }
     res.json(checkin);
@@ -52,12 +55,12 @@ export async function deleteCheckin(req, res, next) {
   try {
     const deleted = await service.removeCheckin(req.user.id, req.params.id);
     if (!deleted) {
-      return res.status(404).json({
-        error: {
-          code: "CHECKIN_NOT_FOUND",
-          message: "That check-in was not found.",
-          details: [],
-        },
+      return sendApiError(req, res, {
+        status: 404,
+        code: "CHECKIN_NOT_FOUND",
+        message: "That check-in was not found.",
+        triggerFile: controllerFile,
+        cause: { name: "NotFoundError", code: "CHECKIN_NOT_FOUND", message: "Check-in was not found for this user." },
       });
     }
     res.status(200).json({ data: { id: req.params.id, deleted: true } });

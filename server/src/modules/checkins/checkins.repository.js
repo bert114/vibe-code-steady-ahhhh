@@ -1,12 +1,12 @@
 // Data access ONLY: parameterized SQL, raw rows, no user-facing messages.
 // Every query is scoped by userId — never trust a client-supplied user_id.
-import { dbQuery } from '../../db/pool.js'
+import { dbQuery } from "../../db/pool.js";
 
 const COLUMNS = `
   id, user_id, occurred_at,
   mood_score, energy_score, drain_score,
   emotions, context_tags, note, created_at
-`
+`;
 
 export async function insertCheckin(userId, data) {
   const { rows } = await dbQuery(
@@ -24,8 +24,8 @@ export async function insertCheckin(userId, data) {
       data.context_tags,
       data.note,
     ],
-  )
-  return rows[0]
+  );
+  return rows[0];
 }
 
 export async function listCheckins(userId, { limit, offset }) {
@@ -35,24 +35,24 @@ export async function listCheckins(userId, { limit, offset }) {
      ORDER BY occurred_at DESC
      LIMIT $2 OFFSET $3`,
     [userId, limit, offset],
-  )
-  return rows
+  );
+  return rows;
 }
 
 export async function findCheckinById(userId, id) {
   const { rows } = await dbQuery(
     `SELECT ${COLUMNS} FROM checkins WHERE id = $1 AND user_id = $2`,
     [id, userId],
-  )
-  return rows[0] ?? null
+  );
+  return rows[0] ?? null;
 }
 
 export async function deleteCheckinById(userId, id) {
   const { rowCount } = await dbQuery(
     `DELETE FROM checkins WHERE id = $1 AND user_id = $2`,
     [id, userId],
-  )
-  return (rowCount ?? 0) > 0
+  );
+  return (rowCount ?? 0) > 0;
 }
 
 // One row per calendar day with at least one check-in, oldest first —
@@ -71,8 +71,8 @@ export async function getDailyAverages(userId, sinceDate) {
      GROUP BY day
      ORDER BY day ASC`,
     [userId, sinceDate],
-  )
-  return rows
+  );
+  return rows;
 }
 
 // Most frequent context tags on high-drain check-ins (drain_score = 5) in
@@ -87,7 +87,6 @@ export async function getTopDrainingTags(userId, sinceDate, limit) {
      ORDER BY count DESC, tag ASC
      LIMIT $3`,
     [userId, sinceDate, limit],
-  )
-  return rows
+  );
+  return rows;
 }
-

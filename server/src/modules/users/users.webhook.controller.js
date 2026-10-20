@@ -1,12 +1,19 @@
 import { clerkClient } from "@clerk/express";
 import { verifyWebhook } from "@clerk/express/webhooks";
 import { env } from "../../config/env.js";
+import { sendApiError, sourceFile } from "../../middleware/apiError.js";
 import { primaryEmailFromClerkUser } from "./clerk-user.js";
 import { syncUserFromClerk } from "./users.service.js";
 
-function sendError(res, status, code, message) {
-  return res.status(status).json({
-    error: { code, message, details: [] },
+const controllerFile = sourceFile(import.meta.url);
+
+function sendError(req, res, status, code, message) {
+  return sendApiError(req, res, {
+    status,
+    code,
+    message,
+    triggerFile: controllerFile,
+    cause: { name: "WebhookError", code, message },
   });
 }
 
@@ -28,6 +35,7 @@ export function createClerkWebhookHandler({
   return async function clerkWebhookHandler(req, res) {
     if (!signingSecret) {
       return sendError(
+        req,
         res,
         503,
         "WEBHOOK_NOT_CONFIGURED",
@@ -40,6 +48,7 @@ export function createClerkWebhookHandler({
       event = await verifyWebhookFn(req, { signingSecret });
     } catch {
       return sendError(
+        req,
         res,
         400,
         "WEBHOOK_SIGNATURE_INVALID",
@@ -68,6 +77,7 @@ export function createClerkWebhookHandler({
             errorCode: "CLERK_USER_LOOKUP_FAILED",
           });
           return sendError(
+            req,
             res,
             500,
             "WEBHOOK_PROCESSING_FAILED",
@@ -82,6 +92,7 @@ export function createClerkWebhookHandler({
 
     if (typeof clerkSub !== "string" || clerkSub.length === 0) {
       return sendError(
+        req,
         res,
         400,
         "WEBHOOK_INVALID_EVENT",
@@ -99,6 +110,7 @@ export function createClerkWebhookHandler({
         errorCode: "USER_PROVISIONING_FAILED",
       });
       return sendError(
+        req,
         res,
         500,
         "WEBHOOK_PROCESSING_FAILED",

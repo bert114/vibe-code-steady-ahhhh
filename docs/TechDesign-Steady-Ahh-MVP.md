@@ -397,15 +397,25 @@ Use one consistent JSON shape for API errors:
 
 ```json
 {
+  "success": false,
   "error": {
     "code": "VALIDATION_ERROR",
-    "message": "The check-in could not be saved.",
-    "details": []
+    "message": "The request contains invalid data.",
+    "details": [],
+    "timestamp": "2026-10-20T04:19:00.000Z",
+    "path": "/api/check-ins",
+    "request_id": "req_a1b2c3d4"
   }
 }
 ```
 
-Do not send stack traces to users.
+Every API error response uses this envelope and echoes its `request_id` in the
+`X-Request-Id` response header. Validation details are objects with `field`,
+`issue`, and `message` keys. Do not send stack traces to users.
+
+In non-production environments, `error.debug` identifies `requester_id`, the
+triggering controller and source file, and a structured `cause`. It is omitted
+in production and excludes stack traces, absolute paths, and credentials.
 
 ---
 
