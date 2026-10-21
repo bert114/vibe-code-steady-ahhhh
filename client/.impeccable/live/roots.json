@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "appRoot": "C:\\Users\\pwt\\Downloads\\ai\\manus\\client",
+  "repoRoot": "C:\\Users\\pwt\\Downloads\\ai\\manus",
+  "contextRoot": "C:\\Users\\pwt\\Downloads\\ai\\manus",
+  "sessionRoot": "C:\\Users\\pwt\\Downloads\\ai\\manus\\client\\.impeccable\\live",
+  "productPath": "C:\\Users\\pwt\\Downloads\\ai\\manus\\PRODUCT.md",
+  "designPath": "C:\\Users\\pwt\\Downloads\\ai\\manus\\DESIGN.md",
+  "resolvedFrom": "target:client\\src\\features\\home\\pages\\HomePage.jsx"
+}

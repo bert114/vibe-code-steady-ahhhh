@@ -9,8 +9,8 @@ import { insightsRouter } from './insights.routes.js'
 const HAS_DB = Boolean(process.env.DATABASE_URL)
 // Dedicated identities: the checkins suite owns USER_A/USER_B and vitest
 // runs files in parallel, so sharing ids would pollute both suites.
-const USER_A = '33333333-3333-4333-8333-333333333333'
-const USER_B = '44444444-4444-4444-8444-444444444444'
+const USER_A = 'test_insights_user_a'
+const USER_B = 'test_insights_user_b'
 
 describe('insights signals boundaries (no db)', () => {
   it('rejects unauthenticated requests with the error contract', async () => {
@@ -42,7 +42,7 @@ function authedApp(userId) {
 
 describe.skipIf(!HAS_DB)('insights signals (db)', () => {
   it('returns evidence for a drained user and nothing for a fresh one', async () => {
-    await dbQuery('INSERT INTO users (id) VALUES ($1), ($2) ON CONFLICT DO NOTHING', [
+    await dbQuery('INSERT INTO users (clerk_id) VALUES ($1), ($2) ON CONFLICT DO NOTHING', [
       USER_A,
       USER_B,
     ])

@@ -23,11 +23,11 @@ describe("getMe", () => {
     });
     const res = { json: vi.fn() };
 
-    await getMe({ user: { id: "internal-user-id", role: "user" } }, res, vi.fn());
+    await getMe({ user: { id: "user_clerk_123", role: "user" } }, res, vi.fn());
 
-    expect(service.getUserProfile).toHaveBeenCalledWith("internal-user-id");
+    expect(service.getUserProfile).toHaveBeenCalledWith("user_clerk_123");
     expect(res.json).toHaveBeenCalledWith({
-      id: "internal-user-id",
+      id: "user_clerk_123",
       role: "user",
       clerkSub: null,
       email: "person@example.test",
@@ -39,10 +39,10 @@ describe("getMe", () => {
     service.getUserProfile.mockResolvedValue(null);
     const res = { json: vi.fn() };
 
-    await getMe({ user: { id: "internal-user-id" } }, res, vi.fn());
+    await getMe({ user: { id: "user_clerk_123" } }, res, vi.fn());
 
     expect(res.json).toHaveBeenCalledWith({
-      id: "internal-user-id",
+      id: "user_clerk_123",
       role: "user",
       clerkSub: null,
       email: null,

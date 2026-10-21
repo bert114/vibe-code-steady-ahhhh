@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "appRoot": "C:\\Users\\pwt\\Downloads\\ai\\manus\\client",
+  "framework": "vite-generic",
+  "port": 8400,
+  "pid": 1364,
+  "recordedAt": "2026-10-20T03:55:28.863Z",
+  "artifacts": [
+    {
+      "kind": "patched",
+      "path": "index.html",
+      "patch": "live-tag",
+      "markers": [
+        "impeccable-live-start",
+        "data-impeccable-csp-original"
+      ]
+    }
+  ]
+}

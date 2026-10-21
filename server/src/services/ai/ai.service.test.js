@@ -6,14 +6,14 @@ import { analyzeRecentCheckins } from './ai.service.js'
 
 const HAS_DB = Boolean(process.env.DATABASE_URL)
 // Dedicated identities — every DB suite owns its own pair.
-const USER_A = '55555555-5555-4555-8555-555555555555'
-const USER_B = '66666666-6666-4666-8666-666666666666'
+const USER_A = 'test_ai_user_a'
+const USER_B = 'test_ai_user_b'
 
 const goodOutput = cases.cases.find((c) => c.name === 'direct-pattern').providerOutput
 const fakeProvider = () => async () => goodOutput
 
 async function seed(userId) {
-  await dbQuery('INSERT INTO users (id) VALUES ($1) ON CONFLICT DO NOTHING', [userId])
+  await dbQuery('INSERT INTO users (clerk_id) VALUES ($1) ON CONFLICT DO NOTHING', [userId])
   await dbQuery(
     `INSERT INTO checkins (user_id, occurred_at, mood_score, energy_score, drain_score, emotions, context_tags, note)
      VALUES ($1, now(), 1, 1, 5, '{tired}', '{overtime}', ''),
@@ -99,7 +99,7 @@ describe.skipIf(!HAS_DB)('ai.service (db)', () => {
   it(
     'reports insufficient data instead of calling the provider',
     async () => {
-      await dbQuery('INSERT INTO users (id) VALUES ($1) ON CONFLICT DO NOTHING', [USER_B])
+      await dbQuery('INSERT INTO users (clerk_id) VALUES ($1) ON CONFLICT DO NOTHING', [USER_B])
       try {
         let providerCalls = 0
         const result = await analyzeRecentCheckins(USER_B, {

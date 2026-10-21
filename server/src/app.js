@@ -6,7 +6,7 @@ import { env } from "./config/env.js";
 import { checkDatabase, getLastDbError } from "./db/pool.js";
 import { audit } from "./middleware/audit.js";
 import { authResolver, requireRole, requireUser } from "./middleware/auth.js";
-import { createClerkResolver } from "./middleware/clerk.js";
+import { createRequireSyncedUser } from "./middleware/clerk.js";
 import { errorHandler, notFound } from "./middleware/error.js";
 import { checkinsRouter } from "./modules/checkins/checkins.routes.js";
 import { dashboardRouter } from "./modules/dashboard/dashboard.routes.js";
@@ -15,7 +15,7 @@ import { remindersRouter } from "./modules/reminders/reminders.routes.js";
 import { usersRouter } from "./modules/users/users.routes.js";
 import { clerkWebhookRouter } from "./modules/users/users.webhook.routes.js";
 
-const clerkResolver = createClerkResolver();
+const requireSyncedUser = createRequireSyncedUser();
 
 export function createApp() {
   const app = express();
@@ -65,7 +65,9 @@ export function createApp() {
   if (env.CLERK_SECRET_KEY) {
     app.use(clerkMiddleware());
   }
-  app.use(clerkResolver);
+  // A Bearer token is verified by Clerk middleware, then its Clerk subject is
+  // used as the text key for all user-owned database foreign keys.
+  app.use(requireSyncedUser);
   app.use(authResolver);
 
   app.use("/api/check-ins", checkinsRouter);

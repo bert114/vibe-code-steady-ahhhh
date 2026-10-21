@@ -65,7 +65,7 @@ export const testConnection = async () => {
 
 /**
  * Reusable query helper function
- * @param {string} text - The SQL query string (e.g., 'SELECT * FROM users WHERE id = $1')
+ * @param {string} text - The SQL query string (e.g., 'SELECT * FROM users WHERE clerk_id = $1')
  * @param {Array} params - The array of parameters to safely inject into the query
  */
 export const query = (text, params) => {

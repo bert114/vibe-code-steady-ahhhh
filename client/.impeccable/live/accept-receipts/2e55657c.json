@@ -1,0 +1,11 @@
+{
+  "id": "2e55657c",
+  "operation": "discard",
+  "variantId": null,
+  "result": {
+    "handled": true,
+    "file": "src\\features\\insights\\pages\\InsightsPage.jsx",
+    "carbonize": false
+  },
+  "completedAt": "2026-10-14T06:46:25.504Z"
+}

@@ -415,19 +415,21 @@ Do not send stack traces to users.
 
 #### `users`
 
-| Column       | Type          | Notes         |
-| ------------ | ------------- | ------------- |
-| `id`         | `uuid`        | Primary key   |
-| `created_at` | `timestamptz` | Creation time |
+| Column       | Type          | Notes                               |
+| ------------ | ------------- | ----------------------------------- |
+| `clerk_id`   | `text`        | Clerk subject; primary key          |
+| `created_at` | `timestamptz` | Creation time                       |
 
-Authentication details remain outside this table until the real auth mechanism is selected.
+The former UUID `users.id` key is removed by migration 007. The `auth_identities`
+mapping and every user ownership foreign key use text values that reference
+`users.clerk_id`.
 
 #### `checkins`
 
 | Column         | Type          | Notes                               |
 | -------------- | ------------- | ----------------------------------- |
 | `id`           | `uuid`        | Primary key                         |
-| `user_id`      | `uuid`        | Foreign key to `users.id`           |
+| `user_id`      | `text`        | Foreign key to `users.clerk_id`      |
 | `occurred_at`  | `timestamptz` | When the experience happened        |
 | `mood_score`   | `smallint`    | Product scale to be finalized       |
 | `energy_score` | `smallint`    | Product scale to be finalized       |
@@ -444,7 +446,7 @@ Stores analysis metadata, not raw prompts.
 | Column                | Type          | Notes                            |
 | --------------------- | ------------- | -------------------------------- |
 | `id`                  | `uuid`        | Primary key                      |
-| `user_id`             | `uuid`        | Foreign key                      |
+| `user_id`             | `text`        | Foreign key to `users.clerk_id`  |
 | `started_at`          | `timestamptz` | Run start                        |
 | `completed_at`        | `timestamptz` | Nullable until complete          |
 | `status`              | `text`        | `running`, `completed`, `failed` |
@@ -459,7 +461,7 @@ Stores analysis metadata, not raw prompts.
 | Column            | Type          | Notes                                                       |
 | ----------------- | ------------- | ----------------------------------------------------------- |
 | `id`              | `uuid`        | Primary key                                                 |
-| `user_id`         | `uuid`        | Foreign key                                                 |
+| `user_id`         | `text`        | Foreign key to `users.clerk_id`                             |
 | `analysis_run_id` | `uuid`        | Foreign key                                                 |
 | `insight_type`    | `text`        | Pattern/burnout/boundary/general                            |
 | `title`           | `text`        | User-visible title                                          |
@@ -474,7 +476,7 @@ Stores analysis metadata, not raw prompts.
 | Column       | Type          | Notes                    |
 | ------------ | ------------- | ------------------------ |
 | `id`         | `uuid`        | Primary key              |
-| `user_id`    | `uuid`        | Foreign key              |
+| `user_id`    | `text`        | Foreign key to `users.clerk_id` |
 | `insight_id` | `uuid`        | Nullable link to insight |
 | `kind`       | `text`        | Supportive reminder type |
 | `message`    | `text`        | User-visible message     |
@@ -719,7 +721,7 @@ Use environment variables on the **server**:
 ```text
 NODE_ENV=development
 DEV_AUTH_BYPASS=true
-DEV_USER_ID=<development-user-uuid>
+DEV_USER_ID=<stable-development-user-key>
 ```
 
 Optional client-only setting:
@@ -745,7 +747,7 @@ else
 - Never hardcode the development user ID in application source.
 - Never trust the browser to select the user ID.
 - Fail startup if `DEV_AUTH_BYPASS=true` while `NODE_ENV=production`.
-- Fail startup if the bypass is enabled but `DEV_USER_ID` is missing or invalid.
+- Fail startup if the bypass is enabled but `DEV_USER_ID` is missing.
 - Do not expose `DEV_USER_ID` or database credentials to the client.
 - Keep `.env` out of Git.
 - Before the external 10–20-user beta, replace the bypass with actual authentication.
@@ -764,7 +766,7 @@ PORT=5000
 CLIENT_ORIGIN=http://localhost:5173
 DATABASE_URL=<neon-postgresql-connection-string>
 DEV_AUTH_BYPASS=true
-DEV_USER_ID=<development-user-uuid>
+DEV_USER_ID=<stable-development-user-key>
 # TEMP-OPEN-ACCESS (revert before beta): unset/true = every req allowed, no
 # auth, attributed to DEV_USER_ID. Set OPEN_ACCESS=false to restore 401s.
 # Refuses to boot when NODE_ENV=production.
@@ -983,7 +985,7 @@ The AI then turns this evidence into user-facing language.
   - Server: `@clerk/express` `clerkMiddleware()` + `getAuth()` on API (Bearer header for cross-origin static client).
   - Client: `@clerk/clerk-react` provider + route gates.
   - Public `POST /api/webhooks/clerk` verifies Clerk signatures and syncs users for `user.created`, `user.updated`, and `session.created`; on sign-in it fetches the current Clerk user to populate an existing account's email. Configure `CLERK_WEBHOOK_SIGNING_SECRET` and subscribe the Clerk endpoint to all three events. Request-time resolution remains a fallback because webhook delivery is asynchronous.
-  - `auth_identities` table (migration 003) maps Clerk `sub` → internal UUID; migration 006 adds nullable `users.email` for the synced primary email.
+  - `auth_identities` table (migration 003) maps Clerk `sub` to the same text key stored in `users.clerk_id`; migration 007 removes the former UUID user key and converts ownership foreign keys to text. Migration 006 adds nullable `users.email` for the synced primary email.
 - **Production boot guard:** server fails startup if `DEV_AUTH_BYPASS=true` while `NODE_ENV=production`, or if bypass enabled without valid `DEV_USER_ID`, or if `CLERK_SECRET_KEY` missing in production.
 - Every API query must be scoped to the authenticated user (`req.user.id`).
 
@@ -1603,8 +1605,10 @@ validation-ready
    → Decided 2026-09-19 (Phase 5): Clerk free Hobby (verified $0 to 50k MRU/app).
    `@clerk/express` clerkMiddleware + getAuth on the API (Bearer header for the
    cross-origin static client), `@clerk/clerk-react` provider + gates on the
-   client, `auth_identities` mapping (003) from Clerk sub to internal UUID so no
-   existing table changes. No Cloudflare account exists, so the client deploys
+   client, initially using `auth_identities` mapping (003) from Clerk sub to an
+   internal UUID. Superseded 2026-10-21: the empty Neon database now uses the
+   Clerk subject as `users.clerk_id` text primary key, with text ownership keys
+   via migration 007. No Cloudflare account exists, so the client deploys
    as a Render Static Site instead of Cloudflare Pages (render.yaml).
 7. What privacy notice and deletion flow should be shown to testers?
    → Decided 2026-09-19 (Phase 5): `/settings` page holds the ownership
@@ -1706,7 +1710,7 @@ _Planned Operating Cost: $0/month_
     "frontend": "React + Vite + Zustand + CSS",
     "backend": "Node.js 24 LTS + Express + REST + Zod",
     "database": "PostgreSQL via Neon serverless",
-    "auth": "Development env bypass + Clerk free Hobby (beta/prod); auth_identities migration 003 maps Clerk sub → internal UUID",
+    "auth": "Development env bypass + Clerk free Hobby (beta/prod); users.clerk_id is the Clerk subject text primary key; migration 007 converts user ownership keys to text",
     "styling": "CSS Modules/plain CSS + design tokens",
     "deployment": "Render Static Site (client) + Render Web Service (API)"
   },

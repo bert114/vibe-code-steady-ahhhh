@@ -10,11 +10,11 @@ const HAS_DB = Boolean(process.env.DATABASE_URL)
 // Dedicated identities: checkins 1111/2222, insights 3333/4444, ai.service
 // 5555/6666, dashboard 8888/9999, reminders aaaa/bbbb — vitest runs files
 // in parallel, so sharing ids would pollute both suites.
-const USER_A = 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'
-const USER_B = 'ffffffff-ffff-4fff-8fff-ffffffffffff'
+const USER_A = 'test_users_user_a'
+const USER_B = 'test_users_user_b'
 // Never the open-access fallback id (00000000-…): that row legitimately
 // exists in any dev database, so it cannot prove the "no account" path.
-const UNKNOWN_ID = '77777777-7777-4777-8777-777777777777'
+const UNKNOWN_ID = 'test_users_unknown'
 
 // --- No database needed: auth boundary ---
 
@@ -46,7 +46,7 @@ function authedApp(userId) {
 }
 
 async function seedUser(userId) {
-  await dbQuery('INSERT INTO users (id) VALUES ($1) ON CONFLICT DO NOTHING', [userId])
+  await dbQuery('INSERT INTO users (clerk_id) VALUES ($1) ON CONFLICT DO NOTHING', [userId])
   await dbQuery(
     `INSERT INTO checkins (user_id, occurred_at, mood_score, energy_score, drain_score)
      VALUES ($1, now(), 3, 3, 3)`,
@@ -67,7 +67,7 @@ async function seedUser(userId) {
     insights[0].id,
   ])
   await dbQuery('INSERT INTO auth_identities (clerk_sub, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING', [
-    `test_sub_${userId.slice(0, 8)}`,
+    userId,
     userId,
   ])
 }
@@ -86,7 +86,7 @@ async function countOwned(userId) {
 
 async function resetUsers() {
   for (const userId of [USER_A, USER_B]) {
-    await dbQuery('DELETE FROM users WHERE id = $1', [userId])
+    await dbQuery('DELETE FROM users WHERE clerk_id = $1', [userId])
   }
 }
 
@@ -162,7 +162,7 @@ describe.skipIf(!HAS_DB)('users delete (db)', () => {
   it('returns current user profile and role via GET /api/users/me', async () => {
     await seedUser(USER_A)
     const email = 'profile@example.test'
-    await dbQuery('UPDATE users SET email = $1 WHERE id = $2', [email, USER_A])
+    await dbQuery('UPDATE users SET email = $1 WHERE clerk_id = $2', [email, USER_A])
     try {
       const res = await request(authedApp(USER_A)).get('/api/users/me')
       expect(res.status).toBe(200)

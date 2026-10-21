@@ -1,6 +1,18 @@
 import { create } from 'zustand'
 import { getDashboardSummary, markReminderRead } from './api.js'
 
+function logDashboardApiError(endpoint, err) {
+  console.error('[Dashboard API] Request failed', {
+    endpoint,
+    error: {
+      name: err?.name ?? 'Error',
+      code: err?.code ?? 'UNKNOWN_ERROR',
+      message: err?.message ?? 'Something went wrong.',
+      details: err?.details ?? [],
+    },
+  })
+}
+
 // Small feature-scoped store: dashboard summary + reminder read state.
 export const useDashboardStore = create((set, get) => ({
   summary: null,
@@ -14,6 +26,7 @@ export const useDashboardStore = create((set, get) => ({
       const summary = await getDashboardSummary()
       set({ status: 'succeeded', summary })
     } catch (err) {
+      logDashboardApiError('/dashboard/summary', err)
       set({ status: 'failed', error: err.message })
     }
   },
@@ -42,6 +55,7 @@ export const useDashboardStore = create((set, get) => ({
         },
       }))
     } catch (err) {
+      logDashboardApiError(`/reminders/${id}/read`, err)
       set({ summary: prev, error: err.message })
     } finally {
       set({ markingId: null })

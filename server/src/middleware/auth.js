@@ -5,7 +5,7 @@ import { env } from "../config/env.js";
 // which lands before the external beta.
 export function authResolver(req, _res, next) {
   if (!req.user?.id && env.DEV_AUTH_BYPASS && env.NODE_ENV !== "production") {
-    // Server-side env value only. Never accept a user id from the client.
+    // Server-side value only. Never accept a user id from the client.
     req.user = {
       id: env.DEV_USER_ID,
       role: process.env.DEV_USER_ROLE || "user",
@@ -24,8 +24,8 @@ export function requireUser(req, res, next) {
   if (env.OPEN_ACCESS) {
     if (!req.user?.id) {
       // Server-side value only — never accept a user id from the client.
-      // Falls back to a fixed UUID when DEV_USER_ID is unset so local dev
-      // without server/.env still flows (FK needs a UUID-shaped id).
+      // Falls back to a fixed key when DEV_USER_ID is unset so local dev
+      // without server/.env still flows (user_id references users.clerk_id).
       req.user = {
         id: env.DEV_USER_ID || '00000000-0000-4000-8000-000000000000',
         role: process.env.DEV_USER_ROLE || 'user',

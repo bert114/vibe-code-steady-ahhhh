@@ -1,0 +1,69 @@
+{
+  "id": "63b9c9b8",
+  "phase": "completed",
+  "pageUrl": "/dashboard",
+  "sourceFile": "src/features/reminders/pages/DashboardPage.jsx",
+  "previewFile": null,
+  "previewMode": null,
+  "expectedVariants": 2,
+  "arrivedVariants": 2,
+  "visibleVariant": 2,
+  "paramValues": {
+    "density": 1
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 29,
+  "browserCheckpointRevision": 29,
+  "publicationCheckpointRevision": 0,
+  "activeOwner": "ca621af9",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "generationPhase": "all_variants_ready",
+  "generationCompletedAt": 1791959196695,
+  "generationTimings": {
+    "picked_up": {
+      "at": 1791958950224,
+      "durationMs": null
+    },
+    "scaffolding": {
+      "at": 1791958950241,
+      "durationMs": null
+    },
+    "source_ready": {
+      "at": 1791958952762,
+      "durationMs": 2507.504
+    },
+    "generation_ready": {
+      "at": 1791958952779,
+      "durationMs": null
+    },
+    "first_reviewable": {
+      "at": 1791958998156,
+      "durationMs": null
+    },
+    "all_variants_ready": {
+      "at": 1791958998156,
+      "durationMs": null
+    }
+  },
+  "variantPlan": null,
+  "generationCanceled": true,
+  "generationCanceledAt": 1791959194563,
+  "cancelReason": "accept",
+  "annotationArtifacts": [],
+  "mountedVariants": [],
+  "mountFailures": [],
+  "renderState": "pending",
+  "diagnostics": [
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 1,
+      "revisionDomain": "browser"
+    }
+  ],
+  "updatedAt": "2026-10-14T06:27:16.687Z",
+  "__journalBytes": 33389,
+  "__nextSeq": 45
+}

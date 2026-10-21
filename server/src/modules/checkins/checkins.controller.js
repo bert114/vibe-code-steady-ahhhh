@@ -4,8 +4,6 @@ import * as service from "./checkins.service.js";
 
 export async function postCheckin(req, res, next) {
   try {
-    console.log("req.body", req.user.id);
-
     const checkin = await service.createCheckin(req.user.id, req.body);
     res.status(201).json(checkin);
   } catch (err) {

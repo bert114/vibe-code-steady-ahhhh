@@ -10,9 +10,9 @@ import { createCheckinSchema } from './checkins.validation.js'
 
 const HAS_DB = Boolean(process.env.DATABASE_URL)
 
-// Fixed test identities — created by the 001 migration's users table.
-const USER_A = '11111111-1111-4111-8111-111111111111'
-const USER_B = '22222222-2222-4222-8222-222222222222'
+// Clerk-like text identities exercise the production user-key shape.
+const USER_A = 'test_checkins_user_a'
+const USER_B = 'test_checkins_user_b'
 
 const validBody = {
   mood_score: 3,
@@ -91,7 +91,7 @@ function authedApp(userId) {
 describe.skipIf(!HAS_DB)('checkins api (db)', () => {
   // 30s: Neon free compute sleeps and can take seconds to wake on first contact.
   it('POST creates, GET lists, GET :id reads — scoped to the owner', async () => {
-    await dbQuery('INSERT INTO users (id) VALUES ($1), ($2) ON CONFLICT DO NOTHING', [
+    await dbQuery('INSERT INTO users (clerk_id) VALUES ($1), ($2) ON CONFLICT DO NOTHING', [
       USER_A,
       USER_B,
     ])

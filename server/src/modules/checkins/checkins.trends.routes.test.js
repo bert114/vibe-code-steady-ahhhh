@@ -10,8 +10,8 @@ const HAS_DB = Boolean(process.env.DATABASE_URL)
 
 // Dedicated identity — other suites own their own ids and vitest runs test
 // files in parallel, so sharing ids would pollute both suites.
-const USER_A = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
-const USER_B = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'
+const USER_A = 'test_trends_user_a'
+const USER_B = 'test_trends_user_b'
 
 function authedApp(userId) {
   const app = express()
@@ -52,7 +52,7 @@ describe('checkins trends boundaries (no db)', () => {
 // --- Database-backed: aggregation, tag frequency, user isolation ---
 
 async function resetUser(userId) {
-  await dbQuery('INSERT INTO users (id) VALUES ($1) ON CONFLICT DO NOTHING', [userId])
+  await dbQuery('INSERT INTO users (clerk_id) VALUES ($1) ON CONFLICT DO NOTHING', [userId])
   await dbQuery('DELETE FROM checkins WHERE user_id = $1', [userId])
 }
 

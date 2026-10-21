@@ -9,8 +9,8 @@ import { dashboardRouter } from './dashboard.routes.js'
 const HAS_DB = Boolean(process.env.DATABASE_URL)
 // Dedicated identities: other suites own their own ids and vitest runs
 // files in parallel, so sharing ids would pollute both suites.
-const USER_A = '88888888-8888-4888-8888-888888888888'
-const USER_B = '99999999-9999-4999-8999-999999999999'
+const USER_A = 'test_dashboard_user_a'
+const USER_B = 'test_dashboard_user_b'
 
 // --- No database needed: auth boundary ---
 
@@ -38,7 +38,7 @@ function authedApp(userId) {
 }
 
 async function resetUser(userId) {
-  await dbQuery('INSERT INTO users (id) VALUES ($1) ON CONFLICT DO NOTHING', [userId])
+  await dbQuery('INSERT INTO users (clerk_id) VALUES ($1) ON CONFLICT DO NOTHING', [userId])
   await dbQuery('DELETE FROM reminders WHERE user_id = $1', [userId])
   await dbQuery('DELETE FROM insights WHERE user_id = $1', [userId])
   await dbQuery('DELETE FROM analysis_runs WHERE user_id = $1', [userId])

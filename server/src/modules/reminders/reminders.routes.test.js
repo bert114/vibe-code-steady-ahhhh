@@ -10,8 +10,8 @@ const HAS_DB = Boolean(process.env.DATABASE_URL)
 // Dedicated identities: other suites own 1111/2222 (checkins), 3333/4444
 // (insights), 5555/6666 (ai.service), 8888/9999 (dashboard), and vitest
 // runs files in parallel, so sharing ids would pollute both suites.
-const USER_A = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
-const USER_B = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'
+const USER_A = 'test_reminders_user_a'
+const USER_B = 'test_reminders_user_b'
 const UNKNOWN_ID = '77777777-7777-4777-8777-777777777777'
 
 // --- No database needed: auth boundary ---
@@ -62,7 +62,7 @@ function authedApp(userId) {
 
 describe.skipIf(!HAS_DB)('reminders api (db)', () => {
   it('lists own reminders, marks read, and isolates users', async () => {
-    await dbQuery('INSERT INTO users (id) VALUES ($1), ($2) ON CONFLICT DO NOTHING', [
+    await dbQuery('INSERT INTO users (clerk_id) VALUES ($1), ($2) ON CONFLICT DO NOTHING', [
       USER_A,
       USER_B,
     ])

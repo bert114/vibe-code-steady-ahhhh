@@ -1,13 +1,15 @@
-// Production auth resolution via Clerk. Runs AFTER the dev-bypass
-// authResolver: if the bypass already set req.user (local dev), this is a
-// no-op. Otherwise it reads the Clerk session (cookie or Authorization
-// header) and maps the Clerk subject to the internal UUID user id.
-// getAuth is injectable so boundary tests never need real Clerk keys.
+// Production Clerk resolution and local-user provisioning. A verified Clerk
+// subject is the canonical users.clerk_id primary key and is provisioned before a
+// protected controller runs. The development bypass is only a fallback for
+// requests with no verified Clerk session.
 import { getAuth } from '@clerk/express'
 import { resolveUser } from '../modules/users/users.service.js'
 
-export function createClerkResolver({ getAuthFn = getAuth } = {}) {
-  return async function clerkResolver(req, _res, next) {
+export function createRequireSyncedUser({
+  getAuthFn = getAuth,
+  resolveUserFn = resolveUser,
+} = {}) {
+  return async function requireSyncedUser(req, _res, next) {
     if (req.user?.id) return next()
     let auth
     try {
@@ -22,15 +24,20 @@ export function createClerkResolver({ getAuthFn = getAuth } = {}) {
         auth.sessionClaims?.role ||
         auth.claims?.metadata?.role
       const defaultRole = claimRole === 'admin' ? 'admin' : 'user'
-      const user = await resolveUser(auth.userId, defaultRole)
+      const user = await resolveUserFn(auth.userId, defaultRole)
       req.user = {
         id: user.id,
         clerkSub: auth.userId,
         role: user.role || 'user',
       }
-    } catch {
-      return next()
+    } catch (err) {
+      // Do not continue to a controller without its local Clerk-keyed user.
+      return next(err)
     }
     next()
   }
 }
+
+// Keep the previous export for consumers outside the app while the middleware
+// name changes to describe its guarantee.
+export const createClerkResolver = createRequireSyncedUser
