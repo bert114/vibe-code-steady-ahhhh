@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { observeLiveDialogMode, showDialogForLiveSession } from '../../../lib/ui/liveDialogMode.js'
 import { useCheckinsStore } from '../store.js'
 import DrainIcon from './DrainIcon.jsx'
 import EnergyIcon from './EnergyIcon.jsx'
@@ -50,10 +51,12 @@ export default function QuickCheckInDialog({ open, onClose }) {
   const [saveFailed, setSaveFailed] = useState(false)
   const saveQuickCheckIn = useCheckinsStore((state) => state.saveQuickCheckIn)
 
+  useEffect(() => observeLiveDialogMode(dialogRef.current), [])
+
   useEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return
-    if (open && !dialog.open) dialog.showModal()
+    if (open && !dialog.open) showDialogForLiveSession(dialog)
     if (!open && dialog.open) dialog.close()
     if (open) {
       setDraft({ ...EMPTY_CHECK_IN })
@@ -86,7 +89,10 @@ export default function QuickCheckInDialog({ open, onClose }) {
       ref={dialogRef}
       className="quick-checkin"
       aria-labelledby="quick-checkin-title"
-      onClose={onClose}
+      onClose={() => {
+        if (dialogRef.current?.open) return
+        onClose()
+      }}
       onCancel={(event) => {
         event.preventDefault()
         closeDialog()

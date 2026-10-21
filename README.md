@@ -34,6 +34,10 @@ Never commit real `.env` files — only names live in `.env.example`.
 | `npm run lint`    | oxlint on both workspaces                                  |
 | `npm run build`   | Client production build (+ server no-op)                   |
 | `npm run typecheck` | Intentional no-op — JavaScript-only, no `tsc`            |
+| `npm run db:seed:dashboard --workspace=server` | Adds sample dashboard data for one user |
+
+The dashboard seed targets `SEED_USER_ID`, falling back to `DEV_USER_ID`. It
+can be rerun safely: it replaces only the seed's tagged records for that user.
 
 Health check: `GET http://localhost:5000/api/health` →
 `{ "status": "ok", "db": "up" | "down" | "unconfigured" }`.

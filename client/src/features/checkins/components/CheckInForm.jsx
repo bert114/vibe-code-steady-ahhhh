@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { observeLiveDialogMode, showDialogForLiveSession } from "../../../lib/ui/liveDialogMode.js";
 import { useCheckinsStore } from "../store.js";
 import DrainIcon from "./DrainIcon.jsx";
 import EnergyIcon from "./EnergyIcon.jsx";
@@ -95,7 +96,7 @@ function preventImplicitSubmit(event) {
 }
 
 function OptionalDetailsDialog({
-  open,
+  open = true,
   onClose,
   draft,
   setDraft,
@@ -114,12 +115,13 @@ function OptionalDetailsDialog({
   const detailValue = draft[detailPrompt.key] ?? "";
   const isLastDetail = detailsIndex === OPTIONAL_DETAIL_PROMPTS.length - 1;
 
+  useEffect(() => observeLiveDialogMode(dialogRef.current), []);
+
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
     if (open && !dialog.open) {
-      if (typeof dialog.showModal === "function") dialog.showModal();
-      else dialog.setAttribute("open", "");
+      showDialogForLiveSession(dialog);
     }
     if (!open && dialog.open) {
       if (typeof dialog.close === "function") dialog.close();
@@ -145,7 +147,10 @@ function OptionalDetailsDialog({
       ref={dialogRef}
       className="reflection-save-dialog"
       aria-labelledby="reflection-save-title"
-      onClose={onClose}
+      onClose={() => {
+        if (dialogRef.current?.open) return;
+        onClose();
+      }}
       onCancel={(event) => {
         event.preventDefault();
         closeDialog();
@@ -243,7 +248,7 @@ function OptionalDetailsDialog({
                   : detailValue.trim()
                     ? "Continue"
                     : "Skip this"
-              : "Save without details"}
+                : "Save without details"}
           </button>
         </footer>
         {saveError && (

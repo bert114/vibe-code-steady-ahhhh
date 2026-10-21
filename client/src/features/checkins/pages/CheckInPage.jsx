@@ -31,7 +31,7 @@ export default function CheckInPage() {
   }, [location.hash]);
 
   return (
-    <main className="checkin-page">
+    <main className="checkin-page checkin-layout checkin-layout--flow">
       <header className="checkin-page__header">
         <h1>How are you feeling today?</h1>
         <p className="checkin-page__intro">
@@ -39,11 +39,9 @@ export default function CheckInPage() {
           feel. Add details if you like.
         </p>
       </header>
-
       <div className="card checkin-card">
         <CheckInForm onSubmit={saveDraft} saving={saving} />
       </div>
-
       <section aria-labelledby="history-heading" className="checkin-history">
         <h2 id="history-heading">Check-in history</h2>
         <CheckInHistoryList checkins={checkins} onDelete={removeCheckin} />

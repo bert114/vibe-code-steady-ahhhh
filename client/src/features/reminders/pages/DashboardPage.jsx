@@ -98,25 +98,34 @@ function RecentEnergy({ checkins }) {
 }
 
 function LatestInsight({ insight }) {
-  if (!insight) {
-    return (
-      <p>No insights yet. Record a few check-ins, then run an analysis.</p>
-    );
-  }
   return (
     <article className="dashboard-panel dashboard-panel--feature">
-      {insight.confidence && (
-        <p className={confidenceTag(insight.confidence)}>
-          {insight.confidence}
+      <h2
+        className="dashboard-panel__insight-heading"
+        id="insight-heading-featured"
+      >
+        Latest insight
+      </h2>
+      {insight ? (
+        <>
+          {insight.confidence && (
+            <p className={confidenceTag(insight.confidence)}>
+              {insight.confidence}
+            </p>
+          )}
+          <h3>{insight.title}</h3>
+          <p>{insight.summary}</p>
+          <p>
+            <Link className="dashboard-panel__link" to="/insights">
+              Open insights <ArrowIcon />
+            </Link>
+          </p>
+        </>
+      ) : (
+        <p className="dashboard-panel__empty">
+          No insights yet. Record a few check-ins, then run an analysis.
         </p>
       )}
-      <h3>{insight.title}</h3>
-      <p>{insight.summary}</p>
-      <p>
-        <Link className="dashboard-panel__link" to="/insights">
-          Open insights <ArrowIcon />
-        </Link>
-      </p>
     </article>
   );
 }
@@ -169,87 +178,112 @@ export default function DashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <main className="dashboard-page" ref={scopeRef}>
-      <div className="dashboard-page__heading reveal" style={{ "--index": 0 }}>
-        <div>
-          <p className="dashboard-page__eyebrow">A little room to notice</p>
+  const renderEnergyOverview = () => (
+    <div className="dashboard-page__duo">
+      <CurrentBattery checkins={summary?.recentCheckins ?? []} />
+      <section
+        className="dashboard-panel dashboard-panel--overview reveal"
+        style={{ "--index": 2 }}
+        aria-labelledby="recent-heading"
+      >
+        <h2 id="recent-heading">Energy Overview</h2>
+        <RecentEnergy checkins={summary?.recentCheckins ?? []} />
+        <div className="dashboard-actions">
+          <Link className="dashboard-cta" to="/check-in">
+            Record a check-in <ArrowIcon />
+          </Link>
+          <Link className="dashboard-secondary-cta" to="/insights">
+            View all insights
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
+
+  const renderInsight = () => (
+    <section
+      className="dashboard-page__featured-insight reveal"
+      style={{ "--index": 1 }}
+      aria-labelledby="insight-heading-featured"
+    >
+      <LatestInsight insight={summary?.latestInsight ?? null} />
+    </section>
+  );
+
+  const renderSignals = () => (
+    <div
+      className="dashboard-panel reveal dashboard-page__grid-signals dashboard-page__signals--concise dashboard-page__signals--micro"
+      style={{ "--index": 4 }}
+    >
+      <SignalsPanel signals={summary?.signals ?? []} concise />
+    </div>
+  );
+
+  const renderReminders = () => (
+    <section
+      className="dashboard-panel reveal dashboard-page__grid-reminders"
+      style={{ "--index": 5 }}
+      aria-labelledby="reminders-heading"
+    >
+      <p className="dashboard-panel__label">For later</p>
+      <h2 id="reminders-heading">Reminders</h2>
+      <Reminders
+        reminders={summary?.reminders ?? []}
+        unreadReminders={summary?.unreadReminders ?? 0}
+        markingId={markingId}
+        onMarkRead={(id) => markRead(id).catch(() => {})}
+      />
+    </section>
+  );
+
+  const renderSupportGrid = () => (
+    <div className="dashboard-page__grid dashboard-page__grid--support">
+      {renderSignals()}
+      {renderReminders()}
+    </div>
+  );
+
+  const renderDashboardBody = () => (
+    <>
+      <div
+        className="dashboard-page__heading dashboard-page__heading--copy-wide reveal"
+        style={{ "--index": 0 }}
+      >
+        <div className="dashboard-page__heading-title">
           <h1>How are you holding up?</h1>
-          <p>
+        </div>
+        <div className="dashboard-page__heading-support">
+          <p className="dashboard-page__heading-copy">
             Come back to yourself without needing to solve everything at once.
           </p>
+          <p className="dashboard-page__date">
+            Today ·{" "}
+            {new Date().toLocaleDateString(undefined, {
+              month: "short",
+              day: "numeric",
+            })}
+          </p>
         </div>
-        <p className="dashboard-page__date">
-          Today ·{" "}
-          {new Date().toLocaleDateString(undefined, {
-            month: "short",
-            day: "numeric",
-          })}
-        </p>
       </div>
       {loading ? (
         <p>Looking at your recent check-ins…</p>
-      ) : (
-        summary && (
-          <>
-            <div className="dashboard-page__duo">
-              <CurrentBattery checkins={summary.recentCheckins} />
-              <section
-                className="dashboard-panel dashboard-panel--overview reveal"
-                style={{ "--index": 2 }}
-                aria-labelledby="recent-heading"
-              >
-                <h2 id="recent-heading">Energy Overview</h2>
-                <RecentEnergy checkins={summary.recentCheckins} />
-                <div className="dashboard-actions">
-                  <Link className="dashboard-cta" to="/check-in">
-                    Record a check-in <ArrowIcon />
-                  </Link>
-                  <Link className="dashboard-secondary-cta" to="/insights">
-                    View all insights
-                  </Link>
-                </div>
-              </section>
-            </div>
-            <div className="dashboard-page__grid">
-              <div className="dashboard-page__main">
-                <section
-                  className="reveal"
-                  style={{ "--index": 3 }}
-                  aria-labelledby="insight-heading"
-                >
-                  <p className="dashboard-panel__label">A gentle read</p>
-                  <h2 id="insight-heading">Latest insight</h2>
-                  <LatestInsight insight={summary.latestInsight} />
-                </section>
-                <div
-                  className="dashboard-panel reveal"
-                  style={{ "--index": 4 }}
-                >
-                  <SignalsPanel signals={summary.signals} />
-                </div>
-              </div>
-              <div className="dashboard-page__side">
-                <section
-                  className="dashboard-panel reveal"
-                  style={{ "--index": 5 }}
-                  aria-labelledby="reminders-heading"
-                >
-                  <p className="dashboard-panel__label">For later</p>
-                  <h2 id="reminders-heading">Reminders</h2>
-                  <Reminders
-                    reminders={summary.reminders}
-                    unreadReminders={summary.unreadReminders}
-                    markingId={markingId}
-                    onMarkRead={(id) => markRead(id).catch(() => {})}
-                  />
-                </section>
-              </div>
-            </div>
-          </>
-        )
-      )}
+      ) : summary ? (
+        <>
+          {renderInsight()}
+          {renderEnergyOverview()}
+          {renderSupportGrid()}
+        </>
+      ) : null}
       <FeedbackLink url={FEEDBACK_URL} />
+    </>
+  );
+
+  return (
+    <main
+      className="dashboard-page dashboard-page--insight-first dashboard-page--energy-shelf"
+      ref={scopeRef}
+    >
+      {renderDashboardBody()}
     </main>
   );
 }
