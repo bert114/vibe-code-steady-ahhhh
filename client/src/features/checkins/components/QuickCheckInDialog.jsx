@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { observeLiveDialogMode, showDialogForLiveSession } from '../../../lib/ui/liveDialogMode.js'
 import { useCheckinsStore } from '../store.js'
 import DrainIcon from './DrainIcon.jsx'
@@ -84,7 +85,7 @@ export default function QuickCheckInDialog({ open, onClose }) {
     }
   }
 
-  return (
+  return createPortal(
     <dialog
       ref={dialogRef}
       className="quick-checkin"
@@ -152,6 +153,7 @@ export default function QuickCheckInDialog({ open, onClose }) {
           </button>
         </footer>
       </form>
-    </dialog>
+    </dialog>,
+    document.body,
   )
 }

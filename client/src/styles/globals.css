@@ -3469,7 +3469,7 @@ article>ul li {
 
 
 /* Optional reflection notes live in a centered modal, not in the numbered step flow. */
-.app-shell--workspace.is-checkin .reflection-save-dialog {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog {
   --surface-ink: var(--checkin-record);
   --surface-panel: var(--checkin-paper);
   --surface-raised: var(--checkin-white);
@@ -3491,23 +3491,35 @@ article>ul li {
   box-shadow: 0 24px 70px rgba(46, 35, 25, 0.26);
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog::backdrop {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog::backdrop {
   background: rgba(38, 31, 25, 0.48);
   backdrop-filter: blur(3px);
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__content {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__content {
   padding: clamp(1.25rem, 4vw, 2rem);
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__header {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__content--stacked {
+  padding: 1.55rem 1.8rem;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__description {
+  max-width: 40ch;
+  margin: 0.55rem 0 0;
+  color: var(--checkin-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__eyebrow {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__eyebrow {
   margin: 0 0 0.5rem;
   color: var(--checkin-blue-deep);
   font-size: 0.7rem;
@@ -3516,7 +3528,7 @@ article>ul li {
   text-transform: uppercase;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__header h2 {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__header h2 {
   max-width: 25ch;
   margin: 0;
   color: var(--checkin-ink);
@@ -3528,7 +3540,7 @@ article>ul li {
   text-wrap: balance;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__close {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__close {
   display: grid;
   width: 2.35rem;
   height: 2.35rem;
@@ -3540,12 +3552,12 @@ article>ul li {
   color: var(--checkin-muted);
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__close:hover:not(:disabled) {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__close:hover:not(:disabled) {
   background: var(--checkin-record);
   color: var(--checkin-ink);
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__close svg {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__close svg {
   width: 1rem;
   height: 1rem;
   fill: none;
@@ -3554,18 +3566,18 @@ article>ul li {
   stroke-linecap: round;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__fields {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__fields {
   display: grid;
   gap: 0.8rem;
   margin-top: 1.1rem;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__fields .field {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__fields .field {
   margin: 0;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__fields .field input,
-.app-shell--workspace.is-checkin .reflection-save-dialog__fields .field textarea {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__fields .field input,
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__fields .field textarea {
   width: 100%;
   border: 1px solid var(--checkin-rule);
   border-radius: 11px;
@@ -3575,25 +3587,25 @@ article>ul li {
   font-size: 0.9rem;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__fields .field input:focus,
-.app-shell--workspace.is-checkin .reflection-save-dialog__fields .field textarea:focus {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__fields .field input:focus,
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__fields .field textarea:focus {
   border-color: var(--checkin-blue-deep);
   outline: 3px solid color-mix(in srgb, var(--checkin-blue-deep) 18%, transparent);
   outline-offset: 1px;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__fields .field textarea {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__fields .field textarea {
   min-height: 6rem;
   resize: vertical;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__fields input::placeholder,
-.app-shell--workspace.is-checkin .reflection-save-dialog__fields textarea::placeholder {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__fields input::placeholder,
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__fields textarea::placeholder {
   color: var(--checkin-muted);
   opacity: 0.82;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__actions {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3601,9 +3613,19 @@ article>ul li {
   margin-top: 1.1rem;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__add,
-.app-shell--workspace.is-checkin .reflection-save-dialog__back,
-.app-shell--workspace.is-checkin .reflection-save-dialog__save {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__content--stacked .reflection-save-dialog__actions {
+  align-items: stretch;
+  flex-direction: column-reverse;
+  gap: 0.55rem;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__content--stacked .reflection-save-dialog__actions button {
+  width: 100%;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__add,
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__back,
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__save {
   min-height: 2.85rem;
   padding: 0.7rem 1.15rem;
   border-radius: 999px;
@@ -3611,60 +3633,113 @@ article>ul li {
   font-weight: 650;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__add,
-.app-shell--workspace.is-checkin .reflection-save-dialog__back {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__add,
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__back {
   border: 1px solid var(--checkin-rule);
   background: var(--checkin-record);
   color: var(--checkin-ink);
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__add:hover:not(:disabled),
-.app-shell--workspace.is-checkin .reflection-save-dialog__back:hover:not(:disabled) {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__add:hover:not(:disabled),
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__back:hover:not(:disabled) {
   border-color: var(--checkin-blue-deep);
   background: var(--checkin-blue-light);
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__save {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__save {
   border: 1px solid var(--checkin-blue-deep);
   background: var(--checkin-blue-deep);
   color: var(--checkin-white);
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__save:hover:not(:disabled) {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__save:hover:not(:disabled) {
   background: #783d27;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__add:focus-visible,
-.app-shell--workspace.is-checkin .reflection-save-dialog__back:focus-visible,
-.app-shell--workspace.is-checkin .reflection-save-dialog__save:focus-visible,
-.app-shell--workspace.is-checkin .reflection-save-dialog__close:focus-visible {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__add:focus-visible,
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__back:focus-visible,
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__save:focus-visible,
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__close:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--checkin-blue-deep) 38%, transparent);
   outline-offset: 3px;
 }
 
-.app-shell--workspace.is-checkin .reflection-save-dialog__actions button:disabled,
-.app-shell--workspace.is-checkin .reflection-save-dialog__close:disabled {
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__actions button:disabled,
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__close:disabled {
   cursor: wait;
   opacity: 0.6;
 }
 
+:is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__content--stacked.save-choice--bold-structure {
+  gap: 2.125rem;
+  padding: 2.875rem;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .save-choice--bold-structure .reflection-save-dialog__header h2 {
+  max-width: 18ch;
+  font-size: 1.46rem;
+  letter-spacing: -0.024em;
+  line-height: 1.2;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .save-choice--bold-structure .reflection-save-dialog__description {
+  max-width: 38ch;
+  margin-top: 0.55rem;
+  line-height: 1.55;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .save-choice--bold-structure .reflection-save-dialog__actions {
+  flex-direction: column-reverse;
+  gap: 0.375rem;
+  margin-top: 1.625rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--checkin-rule);
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .save-choice--bold-structure .reflection-save-dialog__save {
+  min-height: 3.375rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .save-choice--bold-structure .reflection-save-dialog__add {
+  min-height: 2.875rem;
+  border: 0;
+  background: transparent;
+  color: var(--checkin-muted);
+  font-size: 0.94rem;
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
 @media (max-width: 560px) {
-  .app-shell--workspace.is-checkin .reflection-save-dialog {
+  :is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog {
     width: calc(100vw - 1rem);
     max-height: 92dvh;
     border-radius: 16px;
   }
 
-  .app-shell--workspace.is-checkin .reflection-save-dialog__content {
+  :is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__content {
     padding: 1.1rem;
   }
 
-  .app-shell--workspace.is-checkin .reflection-save-dialog__actions {
+  :is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__content--stacked.save-choice--bold-structure {
+    gap: 1.5rem;
+    padding: 1.875rem 1.625rem;
+  }
+
+  :is(:root, .app-shell--workspace.is-checkin) .save-choice--bold-structure .reflection-save-dialog__actions {
+    margin-top: 1rem;
+    padding-top: 1.25rem;
+  }
+
+  :is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__actions {
     align-items: stretch;
     flex-direction: column-reverse;
   }
 
-  .app-shell--workspace.is-checkin .reflection-save-dialog__actions button {
+  :is(:root, .app-shell--workspace.is-checkin) .reflection-save-dialog__actions button {
     width: 100%;
   }
 
@@ -3709,10 +3784,277 @@ article>ul li {
   border-top: 1px solid var(--checkin-rule);
 }
 
+/* Check-in visual direction: warm paper, apricot signals, charcoal actions. */
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow {
+  --checkin-apricot: #e9946c;
+  --checkin-apricot-soft: #f5e2d6;
+  --checkin-action: #292723;
+  gap: 1rem;
+  padding-top: clamp(1.7rem, 4vh, 2.8rem) !important;
+}
+
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow > .checkin-page__header {
+  margin: 0 0 0.25rem;
+}
+
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow > .checkin-page__header h1 {
+  max-width: 20ch;
+  color: var(--checkin-ink);
+  font-size: clamp(2.15rem, 4.8vw, 3rem);
+  font-weight: 550;
+  letter-spacing: -0.035em;
+  line-height: 1.03;
+  text-wrap: balance;
+}
+
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow > .checkin-page__header .checkin-page__intro {
+  max-width: 54ch;
+  margin: 0.7rem 0 0.25rem;
+  color: var(--checkin-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow > .checkin-card {
+  padding: clamp(1.1rem, 3.2vw, 2rem);
+  border: 1px solid var(--checkin-rule);
+  border-radius: 16px;
+  background: var(--checkin-white);
+  box-shadow: none;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-progress {
+  gap: 0.8rem;
+  padding-bottom: 1.1rem;
+  border-color: var(--checkin-rule);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-progress__label {
+  color: #8d492e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-progress__segment {
+  height: 6px;
+  background: #ece5db;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-progress__segment.is-complete,
+.app-shell--workspace.is-checkin .checkin-card .stepper-progress__segment.is-current {
+  background: var(--checkin-apricot);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-main {
+  gap: 1.2rem;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-step legend {
+  margin-bottom: 0.5rem;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-step legend h2 {
+  color: var(--checkin-ink);
+  font-size: clamp(1.45rem, 3vw, 1.75rem);
+  letter-spacing: -0.025em;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-step__hint {
+  margin: 0 0 1rem;
+  color: var(--checkin-muted);
+  font-size: 0.9rem;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-options {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-option {
+  min-width: 0;
+  min-height: 132px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 0.8rem 0.65rem;
+  border: 1px solid #e4d9ce;
+  border-radius: 14px;
+  background: #fbf9f3;
+  text-align: center;
+  transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-option:hover {
+  border-color: var(--checkin-apricot);
+  transform: translateY(-2px);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-option:has(input:focus-visible) {
+  outline: 3px solid color-mix(in srgb, var(--checkin-apricot) 48%, transparent);
+  outline-offset: 2px;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-option:has(input:checked) {
+  border-color: #c8734b;
+  background: var(--checkin-apricot-soft);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-option__face,
+.app-shell--workspace.is-checkin .checkin-card .score-option__icon {
+  width: 3.1rem;
+  height: 3.1rem;
+  padding: 0.45rem;
+  border-radius: 50%;
+  background: #f3e9de;
+  color: #8d492e;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-option:has(input:checked) .score-option__face,
+.app-shell--workspace.is-checkin .checkin-card .score-option:has(input:checked) .score-option__icon {
+  background: var(--checkin-apricot);
+  color: var(--checkin-action);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .score-option__caption {
+  color: var(--checkin-ink);
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav {
+  margin-top: 0.25rem;
+  padding-top: 1rem;
+  border-color: var(--checkin-rule);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__next,
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__submit {
+  min-height: 3rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  background: var(--checkin-action);
+  color: #fffdf8;
+  font-size: 0.9rem;
+  font-weight: 650;
+  transition: background-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__next:hover,
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__submit:hover {
+  background: #45413b;
+  transform: translateY(-1px);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__next:active,
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__submit:active {
+  transform: scale(0.98);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-nav__back {
+  color: var(--checkin-muted);
+}
+
+.app-shell--workspace.is-checkin .checkin-card .stepper-reassurance {
+  margin-top: -0.55rem;
+  color: var(--checkin-muted);
+  font-size: 0.82rem;
+}
+
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow > .checkin-history {
+  margin-top: 1.35rem !important;
+  padding-top: 1.25rem;
+  border-color: var(--checkin-rule);
+}
+
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow > .checkin-history h2 {
+  margin-bottom: 1rem;
+  color: var(--checkin-ink);
+  font-size: 1.55rem;
+  letter-spacing: -0.025em;
+}
+
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow .history-card,
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow .checkin-history__empty-card {
+  border-color: var(--checkin-rule);
+  border-radius: 14px;
+  background: var(--checkin-white);
+  box-shadow: none;
+}
+
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow .history-card:hover {
+  border-color: var(--checkin-apricot);
+}
+
+.app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow .history-card__score-icon {
+  display: inline-flex;
+  padding: 0.3rem;
+  border-radius: 50%;
+  background: var(--checkin-apricot-soft);
+}
+
+@media (max-width: 560px) {
+  .app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow > .checkin-page__header h1 {
+    font-size: clamp(2rem, 9vw, 2.55rem);
+  }
+
+  .app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow > .checkin-card {
+    padding: 1rem;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-card .score-options {
+    gap: 0.45rem;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-card .score-option {
+    min-height: 120px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.65rem 0.45rem;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-card .score-option__face,
+  .app-shell--workspace.is-checkin .checkin-card .score-option__icon {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-card .score-option__caption {
+    display: block;
+    font-size: 0.78rem;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-card .stepper-nav {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.6rem;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-card .stepper-nav__next {
+    grid-column: 2;
+    width: 100%;
+    margin: 0;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-card .stepper-nav:not(:has(.stepper-nav__back)) .stepper-nav__next {
+    grid-column: 1 / -1;
+  }
+
+  .app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow .history-card__score-icon .score-option__face,
+  .app-shell--workspace.is-checkin .checkin-page.checkin-layout--flow .history-card__score-icon .score-option__icon {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: transparent;
+  }
+}
+
 dialog[data-impeccable-live-open] {
   position: fixed;
   inset: 0;
-  z-index: 100000;
+  z-index: 99998;
   margin: auto;
 }
 

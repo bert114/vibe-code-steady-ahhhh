@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { observeLiveDialogMode, showDialogForLiveSession } from "../../../lib/ui/liveDialogMode.js";
 import { useCheckinsStore } from "../store.js";
 import DrainIcon from "./DrainIcon.jsx";
@@ -142,7 +143,7 @@ function OptionalDetailsDialog({
     onClose();
   }
 
-  return (
+  return createPortal(
     <dialog
       ref={dialogRef}
       className="reflection-save-dialog"
@@ -159,108 +160,14 @@ function OptionalDetailsDialog({
         if (event.target === event.currentTarget) closeDialog();
       }}
     >
-      <div className="reflection-save-dialog__content">
-        <header className="reflection-save-dialog__header">
-          <div>
-            <h2 id="reflection-save-title">
-              {detailsExpanded ? detailPrompt.title : "Add details?"}
-            </h2>
-          </div>
-          <button
-            type="button"
-            className="reflection-save-dialog__close"
-            aria-label="Close save options"
-            onClick={closeDialog}
-            disabled={saving}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m6 6 12 12M18 6 6 18" />
-            </svg>
-          </button>
-        </header>
-
-        {detailsExpanded && (
-          <div className="reflection-save-dialog__fields">
-            <div className="field">
-              {detailPrompt.type === "textarea" ? (
-                <textarea
-                  ref={detailsInputRef}
-                  id={`checkin-${detailPrompt.key}`}
-                  aria-labelledby="reflection-save-title"
-                  value={detailValue}
-                  onChange={(event) =>
-                    setDraft({ [detailPrompt.key]: event.target.value })
-                  }
-                  rows={4}
-                  maxLength={5000}
-                  placeholder={detailPrompt.placeholder}
-                />
-              ) : (
-                <input
-                  ref={detailsInputRef}
-                  id={`checkin-${detailPrompt.key}`}
-                  aria-labelledby="reflection-save-title"
-                  type="text"
-                  value={detailValue}
-                  onChange={(event) =>
-                    setDraft({ [detailPrompt.key]: event.target.value })
-                  }
-                  onKeyDown={preventImplicitSubmit}
-                  placeholder={detailPrompt.placeholder}
-                  autoComplete="off"
-                />
-              )}
-            </div>
-          </div>
-        )}
-
-        <footer className="reflection-save-dialog__actions">
-          {detailsExpanded ? (
-            <button
-              type="button"
-              className="reflection-save-dialog__back"
-              onClick={onBackFromDetails}
-              disabled={saving}
-            >
-              Back
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="reflection-save-dialog__add"
-              onClick={onAddDetails}
-              disabled={saving}
-            >
-              Add details
-            </button>
-          )}
-          <button
-            type="button"
-            className="reflection-save-dialog__save"
-            onClick={detailsExpanded ? onContinueDetails : onSave}
-            disabled={saving}
-          >
-            {saving
-              ? "Saving…"
-              : detailsExpanded
-                ? isLastDetail
-                  ? "Save check-in"
-                  : detailValue.trim()
-                    ? "Continue"
-                    : "Skip this"
-                : "Save without details"}
-          </button>
-        </footer>
-        {saveError && (
-          <p
-            className="reflection-save-dialog__error quick-checkin__error"
-            role="alert"
-          >
-            {saveError}
-          </p>
-        )}
+      <div className="reflection-save-dialog__content reflection-save-dialog__content--stacked save-choice--bold-structure">
+            <header className="reflection-save-dialog__header"><div><h2 id="reflection-save-title">{detailsExpanded ? detailPrompt.title : "Your check-in is ready"}</h2>{!detailsExpanded && <p className="reflection-save-dialog__description">Save it now, or add optional details first.</p>}</div><button type="button" className="reflection-save-dialog__close" aria-label="Close save options" onClick={closeDialog} disabled={saving}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg></button></header>
+            {detailsExpanded && <div className="reflection-save-dialog__fields"><div className="field">{detailPrompt.type === "textarea" ? <textarea ref={detailsInputRef} id={"checkin-" + detailPrompt.key} aria-labelledby="reflection-save-title" value={detailValue} onChange={(event) => setDraft({ [detailPrompt.key]: event.target.value })} rows={4} maxLength={5000} placeholder={detailPrompt.placeholder} /> : <input ref={detailsInputRef} id={"checkin-" + detailPrompt.key} aria-labelledby="reflection-save-title" type="text" value={detailValue} onChange={(event) => setDraft({ [detailPrompt.key]: event.target.value })} onKeyDown={preventImplicitSubmit} placeholder={detailPrompt.placeholder} autoComplete="off" />}</div></div>}
+            <footer className="reflection-save-dialog__actions">{detailsExpanded ? <button type="button" className="reflection-save-dialog__back" onClick={onBackFromDetails} disabled={saving}>Back</button> : <button type="button" className="reflection-save-dialog__add" onClick={onAddDetails} disabled={saving}>Add optional details</button>}<button type="button" className="reflection-save-dialog__save" onClick={detailsExpanded ? onContinueDetails : onSave} disabled={saving}>{saving ? "Saving…" : detailsExpanded ? (isLastDetail ? "Save check-in" : detailValue.trim() ? "Continue" : "Skip this") : "Save check-in"}</button></footer>
+            {saveError && <p className="reflection-save-dialog__error quick-checkin__error" role="alert">{saveError}</p>}
       </div>
-    </dialog>
+    </dialog>,
+    document.body,
   );
 }
 
