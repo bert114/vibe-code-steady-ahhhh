@@ -43,7 +43,7 @@ export default function CheckInPage() {
         <CheckInForm onSubmit={saveDraft} saving={saving} />
       </div>
       <section aria-labelledby="history-heading" className="checkin-history">
-        <h2 id="history-heading">Check-in history</h2>
+        <h2 id="history-heading">Past reflections</h2>
         <CheckInHistoryList checkins={checkins} onDelete={removeCheckin} />
       </section>
     </main>

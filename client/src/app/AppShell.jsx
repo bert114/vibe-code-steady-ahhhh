@@ -8,11 +8,12 @@ import { SignedInView } from './auth.jsx'
 
 const LINKS = [
   { to: '/', label: 'Home', icon: 'grid' },
-  { to: '/dashboard', label: 'Dashboard', icon: 'grid' },
-  { to: '/check-in', label: 'Check-in', icon: 'checkin' },
-  { to: '/check-in#history-heading', label: 'Check-in history', icon: 'trend' },
-  { to: '/insights', label: 'Personal Insights', icon: 'spark' },
-  { to: '/settings', label: 'Profile & Settings', icon: 'settings' },
+  { to: '/dashboard', label: 'Wellbeing overview', icon: 'grid' },
+  { to: '/check-in', label: 'Daily reflection', icon: 'checkin' },
+  { to: '/check-in#history-heading', label: 'Past reflections', icon: 'trend' },
+  { to: '/insights', label: 'Patterns & boundaries', icon: 'spark' },
+  { to: '/trends', label: 'Energy over time', icon: 'trend' },
+  { to: '/settings', label: 'Privacy & settings', icon: 'settings' },
 ]
 const SIDEBAR_PREFERENCE_KEY = 'steady-ahh:workspace-sidebar-collapsed'
 
@@ -49,7 +50,6 @@ function SidebarLinks({ onNavigate, id }) {
 
   return (
     <nav id={id} aria-label="Workspace" className="workspace-sidebar__nav">
-      <p className="workspace-sidebar__label">Your space</p>
       {LINKS.map((link) => (
         <NavLink
           key={link.to}
@@ -81,7 +81,6 @@ function SidebarLinks({ onNavigate, id }) {
 function LandingPublicNav({ onNavigate, id }) {
   return (
     <nav id={id} aria-label="Workspace" className="workspace-sidebar__nav">
-      <p className="workspace-sidebar__label">Your space</p>
       <NavLink
         to="/"
         end
@@ -107,17 +106,6 @@ function LandingPublicNav({ onNavigate, id }) {
   )
 }
 
-function SidebarFooter() {
-  return (
-    <div className="workspace-sidebar__footer">
-      <div className="workspace-sidebar__note">
-        <span className="workspace-sidebar__note-mark" aria-hidden="true" />
-        <p>A little space to notice what you need.</p>
-      </div>
-    </div>
-  )
-}
-
 export default function AppShell({ children, variant = 'app' }) {
   const [quickCheckInOpen, setQuickCheckInOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -129,8 +117,8 @@ export default function AppShell({ children, variant = 'app' }) {
   const currentPage = variant === 'landing'
     ? 'Home'
     : location.pathname === '/check-in' && location.hash === '#history-heading'
-      ? 'Check-in history'
-      : LINKS.find((link) => link.to === location.pathname)?.label ?? 'Your space'
+      ? 'Past reflections'
+      : LINKS.find((link) => link.to === location.pathname)?.label ?? 'Wellbeing overview'
 
   useEffect(() => {
     try {
@@ -213,7 +201,19 @@ export default function AppShell({ children, variant = 'app' }) {
           <SignedInView fallback={<LandingPublicNav id="workspace-desktop-navigation" />}>
             <SidebarLinks id="workspace-desktop-navigation" />
           </SignedInView>
-          <SidebarFooter />
+          <SignedInView
+            fallback={
+              <Link to="/sign-up" className="workspace-sidebar__reflection-link" title="Start a reflection">
+                <NavIcon name="checkin" />
+                <span>Start a reflection</span>
+              </Link>
+            }
+          >
+            <Link to="/check-in" className="workspace-sidebar__reflection-link" title="Start a reflection">
+              <NavIcon name="checkin" />
+              <span>Start a reflection</span>
+            </Link>
+          </SignedInView>
         </aside>
 
         {drawerOpen && <button type="button" className="workspace-drawer-backdrop" aria-label="Close navigation" onClick={() => setDrawerOpen(false)} />}
@@ -243,7 +243,19 @@ export default function AppShell({ children, variant = 'app' }) {
           <SignedInView fallback={<LandingPublicNav onNavigate={() => setDrawerOpen(false)} />}>
             <SidebarLinks onNavigate={() => setDrawerOpen(false)} />
           </SignedInView>
-          <SidebarFooter />
+          <SignedInView
+            fallback={
+              <Link to="/sign-up" className="workspace-sidebar__reflection-link" onClick={() => setDrawerOpen(false)}>
+                <NavIcon name="checkin" />
+                <span>Start a reflection</span>
+              </Link>
+            }
+          >
+            <Link to="/check-in" className="workspace-sidebar__reflection-link" onClick={() => setDrawerOpen(false)}>
+              <NavIcon name="checkin" />
+              <span>Start a reflection</span>
+            </Link>
+          </SignedInView>
         </div>
         <ToastStack />
       </div>
@@ -271,7 +283,10 @@ export default function AppShell({ children, variant = 'app' }) {
           </button>
         </div>
         <SidebarLinks id="workspace-desktop-navigation" />
-        <SidebarFooter />
+        <Link to="/check-in" className="workspace-sidebar__reflection-link" title="Start a reflection">
+          <NavIcon name="checkin" />
+          <span>Start a reflection</span>
+        </Link>
       </aside>
 
       {drawerOpen && <button type="button" className="workspace-drawer-backdrop" aria-label="Close navigation" onClick={() => setDrawerOpen(false)} />}
@@ -301,7 +316,10 @@ export default function AppShell({ children, variant = 'app' }) {
             </button>
           </div>
           <SidebarLinks onNavigate={() => setDrawerOpen(false)} />
-          <SidebarFooter />
+          <Link to="/check-in" className="workspace-sidebar__reflection-link" onClick={() => setDrawerOpen(false)}>
+            <NavIcon name="checkin" />
+            <span>Start a reflection</span>
+          </Link>
         </div>
 
         <div className="workspace-content">{children}</div>

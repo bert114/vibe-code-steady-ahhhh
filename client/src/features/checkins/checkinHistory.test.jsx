@@ -28,9 +28,9 @@ const sampleCheckins = [
 describe('check-in history list', () => {
   it('renders an empty state card when there are no check-ins', () => {
     render(<CheckInHistoryList checkins={[]} onDelete={() => {}} />)
-    expect(screen.getByText('No check-ins yet')).toBeInTheDocument()
+    expect(screen.getByText('No reflections yet')).toBeInTheDocument()
     expect(
-      screen.getByText(/Save your first check-in above to start your history/i),
+      screen.getByText(/Save your first reflection above to build your history/i),
     ).toBeInTheDocument()
   })
 

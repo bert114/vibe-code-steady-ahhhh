@@ -6,5 +6,5 @@
   "sessionRoot": "C:\\Users\\pwt\\Downloads\\ai\\manus\\client\\.impeccable\\live",
   "productPath": "C:\\Users\\pwt\\Downloads\\ai\\manus\\PRODUCT.md",
   "designPath": "C:\\Users\\pwt\\Downloads\\ai\\manus\\DESIGN.md",
-  "resolvedFrom": "target:src\\app\\router.jsx"
+  "resolvedFrom": "target:src\\features\\home\\pages\\HomePage.jsx"
 }

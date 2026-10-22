@@ -24,7 +24,7 @@ describe('Check-in page', () => {
     renderPage()
 
     expect(screen.getByRole('heading', { name: 'How are you feeling today?' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Check-in history' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Past reflections' })).toBeInTheDocument()
 
     expect(screen.getByText('Question 1 of 3')).toBeInTheDocument()
     expect(screen.getByRole('progressbar', { name: 'Check-in progress' })).toHaveAttribute('aria-valuemax', '3')

@@ -176,16 +176,16 @@ export default function CheckInHistoryList({ checkins = [], onDelete }) {
   if (!checkins || checkins.length === 0) {
     return (
       <div className="checkin-history__empty-card">
-        <p className="checkin-history__empty-title">No check-ins yet</p>
+        <p className="checkin-history__empty-title">No reflections yet</p>
         <p className="checkin-history__empty-desc">
-          Save your first check-in above to start your history.
+          Save your first reflection above to build your history.
         </p>
       </div>
     )
   }
 
   return (
-    <div className="checkin-history__timeline" role="feed" aria-label="Check-in history">
+    <div className="checkin-history__timeline" role="feed" aria-label="Past reflections">
       {checkins.map((checkin) => (
         <HistoryCard key={checkin.id} checkin={checkin} onDelete={onDelete} />
       ))}

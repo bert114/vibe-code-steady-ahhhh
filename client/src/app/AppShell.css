@@ -1,7 +1,8 @@
 .app-shell--workspace {
-  --workspace-rail: 15.25rem;
+  --workspace-rail: 18rem;
   min-height: 100vh;
-  background: var(--surface-ink);
+  background: #e8e2d9;
+  color: #242424;
 }
 
 .workspace-sidebar {
@@ -11,9 +12,10 @@
   display: flex;
   width: var(--workspace-rail);
   flex-direction: column;
-  padding: 1.65rem 1.1rem 1.25rem;
+  padding: 1.4rem 1.1rem 1.25rem;
   border-right: 1px solid var(--line-subtle);
-  background: var(--surface-ink);
+  background: var(--checkin-paper);
+  color: var(--text);
 }
 
 .workspace-brand {
@@ -87,7 +89,7 @@
   flex-direction: column;
   gap: 0.3rem;
   min-height: 0;
-  margin-top: 3.3rem;
+  margin-top: 2rem;
   overflow-y: auto;
   padding-bottom: 0.5rem;
   scrollbar-width: thin;
@@ -108,8 +110,8 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.5rem 0.7rem;
-  border-radius: 7px;
-  color: var(--text-faint);
+  border-radius: 10px;
+  color: var(--text-muted);
   font-size: 0.86rem;
   font-weight: 500;
   text-decoration: none;
@@ -123,18 +125,53 @@
 }
 
 .workspace-nav__link:hover {
-  color: var(--text-soft);
-  background: var(--surface-raised);
+  color: var(--text);
+  background: var(--bg-light);
 }
 
 .workspace-nav__link.is-active {
-  color: var(--accent-pale);
-  background: var(--surface-raised);
+  color: var(--primary);
+  background: var(--primary100);
   font-weight: 650;
 }
 
 .workspace-nav__link.is-active svg {
-  color: var(--accent-soft);
+  color: var(--primary);
+}
+
+.workspace-sidebar__reflection-link {
+  display: flex;
+  min-height: 3.5rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: auto;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--line-subtle);
+  border-radius: 12px;
+  background: var(--checkin-record);
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition: background 160ms var(--ease-out), color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+}
+
+.workspace-sidebar__reflection-link:hover {
+  background: var(--checkin-blue-light);
+  color: var(--checkin-blue-deep);
+}
+
+.workspace-sidebar__reflection-link svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: none;
+}
+
+.workspace-sidebar__reflection-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
 }
 
 .workspace-sidebar__note {
@@ -382,6 +419,12 @@
     gap: 0.9rem;
   }
 
+  .app-shell--workspace.is-collapsed .workspace-sidebar__head {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
   .app-shell--workspace.is-collapsed .workspace-brand > span:last-child,
   .app-shell--workspace.is-collapsed .workspace-sidebar__label,
   .app-shell--workspace.is-collapsed .workspace-sidebar__note,
@@ -398,6 +441,16 @@
     position: relative;
     justify-content: center;
     padding-inline: 0;
+  }
+
+  .app-shell--workspace.is-collapsed .workspace-sidebar__reflection-link {
+    width: 2.4rem;
+    min-height: 2.8rem;
+    padding: 0;
+  }
+
+  .app-shell--workspace.is-collapsed .workspace-sidebar__reflection-link > span {
+    display: none;
   }
 
   .app-shell--workspace.is-collapsed .workspace-nav__link::after {
@@ -1057,66 +1110,93 @@
   padding-inline: 0;
 }
 
-.app-shell--workspace.app-shell--landing {
-  --workspace-rail: 15.25rem;
-  min-height: 100vh;
-  background: #e8e2d9;
-  color: #242424;
+.app-shell--workspace .workspace-sidebar,
+.app-shell--workspace .workspace-drawer {
+  border-color: var(--line-subtle);
+  background: var(--checkin-paper);
+  color: var(--text);
 }
 
-.app-shell--landing .workspace-sidebar,
-.app-shell--landing .workspace-drawer {
-  border-color: #d8d0c5;
-  background: #f0ebe3;
-  color: #242424;
+.app-shell--workspace .workspace-sidebar__head,
+.app-shell--workspace .workspace-drawer__head {
+  padding: 0.85rem;
+  border: 1px solid var(--line-subtle);
+  border-radius: 13px;
+  background: var(--checkin-record);
 }
 
-.app-shell--landing .workspace-brand {
+.app-shell--workspace .workspace-sidebar__nav {
+  gap: 0.95rem;
+  margin-top: 2.25rem;
+}
+
+.app-shell--workspace .workspace-nav__link {
+  min-height: 3.4rem;
+  border-radius: 12px;
+}
+
+.app-shell--workspace .workspace-brand {
   color: #242424;
   font-family: 'Steady Sans', 'Satoshi', system-ui, sans-serif;
   font-weight: 500;
 }
 
-.app-shell--landing .workspace-brand__mark {
+.app-shell--workspace .workspace-brand__mark {
   background: #f7f4ed;
 }
 
-.app-shell--landing .workspace-brand__mark span,
-.app-shell--landing .workspace-sidebar__note-mark {
+.app-shell--workspace .workspace-brand__mark span,
+.app-shell--workspace .workspace-sidebar__note-mark {
   background: #e9946c;
 }
 
-.app-shell--landing .workspace-sidebar__toggle {
+.app-shell--workspace .workspace-sidebar__toggle {
   color: #77736d;
 }
 
-.app-shell--landing .workspace-sidebar__toggle:hover {
+.app-shell--workspace .workspace-sidebar__toggle:hover {
   border-color: #d8d0c5;
   background: #e8e2d9;
   color: #242424;
 }
 
-.app-shell--landing .workspace-sidebar__label,
-.app-shell--landing .workspace-sidebar__account-label {
+.app-shell--workspace .workspace-sidebar__label,
+.app-shell--workspace .workspace-sidebar__account-label {
   color: #89837b;
 }
 
-.app-shell--landing .workspace-nav__link {
-  color: #77736d;
+.app-shell--workspace .workspace-nav__link {
+  color: var(--text-muted);
 }
 
-.app-shell--landing .workspace-nav__link:hover {
-  background: #e8e2d9;
+.app-shell--workspace .workspace-nav__link:hover {
+  background: var(--bg-light);
+  color: var(--text);
+}
+
+.app-shell--workspace .workspace-nav__link.is-active {
+  background: var(--primary100);
+  color: var(--primary);
+}
+
+.app-shell--workspace .workspace-nav__link.is-active svg {
+  color: var(--primary);
+}
+
+.app-shell--workspace .workspace-sidebar__reflection-link {
+  margin-top: auto;
+}
+
+.app-shell--workspace .workspace-menu-toggle,
+.app-shell--workspace .workspace-drawer__close {
+  border-color: #d8d0c5;
+  background: #f7f4ed;
   color: #242424;
 }
 
-.app-shell--landing .workspace-nav__link.is-active {
-  background: #f4d9ca;
-  color: #302721;
-}
-
-.app-shell--landing .workspace-nav__link.is-active svg {
-  color: #c9744e;
+.app-shell--workspace .workspace-menu-toggle:hover,
+.app-shell--workspace .workspace-drawer__close:hover {
+  background: #e8e2d9;
 }
 
 .app-shell--landing .workspace-sidebar__note p {
@@ -1196,7 +1276,7 @@
 }
 
 @media (max-width: 760px) {
-  .app-shell--workspace.app-shell--landing {
+  .app-shell--workspace {
     --workspace-rail: 0px;
   }
 
@@ -1210,18 +1290,6 @@
 
   .app-shell--landing .workspace-topbar {
     min-height: 4rem;
-  }
-
-  .app-shell--landing .workspace-menu-toggle,
-  .app-shell--landing .workspace-drawer__close {
-    border-color: #d8d0c5;
-    background: #f7f4ed;
-    color: #242424;
-  }
-
-  .app-shell--landing .workspace-menu-toggle:hover,
-  .app-shell--landing .workspace-drawer__close:hover {
-    background: #e8e2d9;
   }
 
   .app-shell--landing .workspace-drawer {
@@ -1252,16 +1320,18 @@
   }
 }
 
-/* Keep the reflection flow’s shared navigation chrome on the same warm system. */
+/* Keep the reflection page content distinct while its navigation matches every route. */
 .app-shell--workspace.is-checkin .workspace-sidebar,
+.app-shell--workspace.is-checkin .workspace-drawer {
+  background: var(--checkin-paper);
+}
+
 .app-shell--workspace.is-checkin .workspace-main,
 .app-shell--workspace.is-checkin .workspace-topbar,
-.app-shell--workspace.is-checkin .workspace-drawer,
 .app-shell--workspace.is-checkin .workspace-content {
   background: #e8e2d9;
 }
 
-.app-shell--workspace.is-checkin .workspace-sidebar,
 .app-shell--workspace.is-checkin .workspace-topbar {
   border-color: #d8d0c5;
 }
@@ -1271,6 +1341,10 @@
 .app-shell--workspace.is-checkin .workspace-profile__trigger,
 .app-shell--workspace.is-checkin .workspace-sidebar__note p {
   color: #292723;
+}
+
+.app-shell--workspace.is-checkin .workspace-brand {
+  color: #242424;
 }
 
 .app-shell--workspace.is-checkin .workspace-brand__mark {
@@ -1284,17 +1358,21 @@
 
 .app-shell--workspace.is-checkin .workspace-sidebar__label,
 .app-shell--workspace.is-checkin .workspace-nav__link {
-  color: #77736d;
+  color: var(--text-muted);
 }
 
-.app-shell--workspace.is-checkin .workspace-nav__link:hover,
-.app-shell--workspace.is-checkin .workspace-nav__link.is-active {
-  background: #f4d9ca;
-  color: #302721;
+.app-shell--workspace.is-checkin .workspace-nav__link:hover {
+  background: var(--bg-light);
+  color: var(--text);
 }
 
 .app-shell--workspace.is-checkin .workspace-nav__link.is-active svg {
-  color: #a85836;
+  color: var(--primary);
+}
+
+.app-shell--workspace.is-checkin .workspace-nav__link.is-active {
+  background: var(--primary100);
+  color: var(--primary);
 }
 
 .app-shell--workspace.is-checkin .workspace-sidebar__note {
@@ -1318,11 +1396,16 @@
   color: #242424;
 }
 
-.app-shell--workspace.is-checkin .workspace-profile__avatar,
-.app-shell--workspace.is-checkin .workspace-menu-toggle {
+.app-shell--workspace.is-checkin .workspace-profile__avatar {
   border-color: #d8d0c5;
   background: #f7f4ed;
   color: #615d57;
+}
+
+.app-shell--workspace.is-checkin .workspace-menu-toggle {
+  border-color: #d8d0c5;
+  background: #f7f4ed;
+  color: #242424;
 }
 
 .app-shell--workspace.is-checkin .workspace-content > main {
@@ -1332,8 +1415,8 @@
 
 @media (max-width: 760px) {
   .app-shell--workspace.is-checkin .workspace-drawer {
-    border-color: #d8d0c5;
-    box-shadow: 16px 0 45px rgba(67, 57, 45, 0.13);
+    border-color: var(--line-subtle);
+    box-shadow: 16px 0 45px rgba(67, 57, 45, 0.16);
   }
 }
 
