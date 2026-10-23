@@ -125,25 +125,25 @@ describe('check-in history list', () => {
     expect(card.querySelectorAll('.history-card__score-box')).toHaveLength(3)
   })
 
-  it('handles two-step delete confirmation', async () => {
+  it('opens a modal before deleting a reflection', async () => {
     const onDelete = vi.fn().mockResolvedValue()
     render(<CheckInHistoryList checkins={[sampleCheckins[0]]} onDelete={onDelete} />)
 
     const deleteBtn = screen.getByRole('button', { name: /delete check-in/i })
     fireEvent.click(deleteBtn)
 
-    // Confirmation UI appears
-    expect(screen.getByText('Delete?')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Yes' })).toBeInTheDocument()
-    const cancelBtn = screen.getByRole('button', { name: 'Cancel' })
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Delete this reflection?' })).toBeInTheDocument()
+    expect(
+      screen.getByText(/removed from your reflection history and can’t be undone/i),
+    ).toBeInTheDocument()
+    expect(onDelete).not.toHaveBeenCalled()
 
-    // Cancel closes confirmation
-    fireEvent.click(cancelBtn)
-    expect(screen.queryByText('Delete?')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Keep reflection' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 
-    // Click delete again and confirm
     fireEvent.click(screen.getByRole('button', { name: /delete check-in/i }))
-    fireEvent.click(screen.getByRole('button', { name: 'Yes' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete reflection' }))
 
     expect(onDelete).toHaveBeenCalledWith('c1')
   })

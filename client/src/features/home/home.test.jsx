@@ -17,7 +17,9 @@ describe('home page', () => {
     )
 
     // Hero
-    expect(screen.getByRole('heading', { name: 'Make room for what you need.' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Understand what you’re feeling.' })).toBeInTheDocument()
+    expect(screen.getByText('A private space to check in')).toBeInTheDocument()
+    expect(screen.getByText(/Name the moment, notice what repeats, and stay in control/i)).toBeInTheDocument()
     expect(
       screen.getByRole('img', { name: /Three calm mobile app screens/i }),
     ).toBeInTheDocument()
@@ -25,22 +27,26 @@ describe('home page', () => {
       screen.getByRole('img', { name: /cream reflection journal wrapped with an apricot ribbon/i }),
     ).toBeInTheDocument()
 
-    const checkinLink = screen.getByRole('link', { name: /Start a check-in/i })
-    expect(checkinLink).toHaveAttribute('href', '/check-in')
+    const reflectionLink = screen.getByRole('link', { name: /Begin a reflection/i })
+    expect(reflectionLink).toHaveAttribute('href', '/check-in')
 
-    // Privacy & user choice section
-    expect(screen.getByRole('heading', { name: 'Your reflections belong only to you' })).toBeInTheDocument()
+    // What Steady-Ahh helps with section
+    expect(screen.getByRole('heading', { name: 'What Steady-Ahh helps you do' })).toBeInTheDocument()
     const introRow = screen.getByTestId('privacy-intro-row')
     const cardsPanel = screen.getByTestId('privacy-card-panel')
     expect(introRow.nextElementSibling).toBe(cardsPanel)
     expect(introRow.parentElement).toHaveClass('privacy-assurance')
     expect(cardsPanel.parentElement).toBe(introRow.parentElement)
     expect(
-      screen.getByText(/view your timeline, export your data, or erase your history/i),
+      screen.getByText(/Record what happened, notice what repeats, and decide what to do/i),
     ).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Start with one moment.' })).toBeInTheDocument()
+    expect(screen.getByText('A quick check-in is enough.')).toBeInTheDocument()
     expect(screen.queryByText(/pattern awareness, not diagnosis/i)).not.toBeInTheDocument()
-    expect(screen.getByText('Export anytime')).toBeInTheDocument()
-    expect(screen.getByText('Erase anytime')).toBeInTheDocument()
+    expect(screen.getByText('Check in')).toBeInTheDocument()
+    expect(screen.getByText('Notice patterns')).toBeInTheDocument()
+    expect(screen.getByText('Reflect on boundaries')).toBeInTheDocument()
+    expect(screen.getByText('Control your data')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Review privacy & settings/i })).toHaveAttribute('href', '/settings')
   })
 

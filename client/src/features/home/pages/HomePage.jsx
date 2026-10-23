@@ -116,15 +116,11 @@ export default function HomePage() {
   return (
     <main className="landing-page landing-page--calm">
       <section className="calm-hero" aria-labelledby="landing-title">
-        <div className="calm-hero__copy">
-          <p className="calm-hero__eyebrow">A calmer way to check in</p>
-          <h1 id="landing-title">Make room for what you need.</h1>
-          <p className="calm-hero__subtitle">
-            One small check-in. A little more clarity.
-          </p>
-          <AuthGatedLink to="/check-in" className="calm-hero__cta">
-            Start a check-in
-          </AuthGatedLink>
+        <div className="calm-hero__copy calm-hero__copy--trust">
+          <p className="calm-hero__eyebrow">A private space to check in</p>
+          <h1 id="landing-title">Understand what you’re feeling.</h1>
+          <p className="calm-hero__subtitle">Name the moment, notice what repeats, and stay in control of your reflections.</p>
+          <AuthGatedLink to="/check-in" className="calm-hero__cta">Begin a reflection</AuthGatedLink>
         </div>
         <div className="calm-hero__visual">
           <img
@@ -134,108 +130,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="privacy-assurance" aria-labelledby="privacy-assurance-title">
+      <section className="privacy-assurance privacy-assurance--narrow-tight" aria-labelledby="privacy-assurance-title">
         {editorAvailable && (
           <div className="privacy-assurance__editor-toolbar" aria-label="Privacy card layout editor">
-            <p>
-              {isEditing
-                ? 'Drag a grip onto the other card to swap sides. Resize from a card’s lower-right corner. Changes save in this browser.'
-                : 'Your privacy-card layout is saved in this browser.'}
-            </p>
-            <div className="privacy-assurance__editor-actions">
-              <button type="button" onClick={() => setIsEditing((current) => !current)}>
-                {isEditing ? 'Done editing' : 'Edit layout'}
-              </button>
-              {isEditing && (
-                <button type="button" onClick={resetLayout}>
-                  Reset layout
-                </button>
-              )}
-            </div>
+            <p>{isEditing ? "Drag a grip onto the other card to swap sides. Resize from a card’s lower-right corner. Changes save in this browser." : "Your privacy-card layout is saved in this browser."}</p>
+            <div className="privacy-assurance__editor-actions"><button type="button" onClick={() => setIsEditing((current) => !current)}>{isEditing ? "Done editing" : "Edit layout"}</button>{isEditing && <button type="button" onClick={resetLayout}>Reset layout</button>}</div>
           </div>
         )}
-
-        <div className="privacy-assurance__intro-row" data-testid="privacy-intro-row">
-          <div className="privacy-assurance__copy">
-            <p className="privacy-assurance__eyebrow">Your space, your choices</p>
-            <h2 id="privacy-assurance-title">Your reflections belong only to you</h2>
-          </div>
-          <p className="privacy-assurance__note">
-            Your reflections stay yours. You can view your timeline, export your data, or erase
-            your history whenever you choose.
-          </p>
-        </div>
-
+        <div className="privacy-assurance__intro-row" data-testid="privacy-intro-row"><div className="privacy-assurance__copy"><p className="privacy-assurance__eyebrow">A clearer way to check in</p><h2 id="privacy-assurance-title">What Steady-Ahh helps you do</h2></div><p className="privacy-assurance__note">Record what happened, notice what repeats, and decide what to do with your reflections.</p></div>
         <div className="privacy-assurance__panel" data-testid="privacy-card-panel">
-          <div
-            className={`privacy-assurance__visual${isEditing ? ' privacy-assurance__card--editing' : ''}${draggedCard === 'image' ? ' is-dragging' : ''}`}
-            data-testid="privacy-card-image"
-            data-layout-card="image"
-            style={cardStyle('image')}
-            onDragOver={(event) => isEditing && event.preventDefault()}
-            onDrop={(event) => handleDrop('image', event)}
-            onPointerUp={(event) => saveResizedSize('image', event)}
-          >
-            {isEditing && (
-              <button
-                type="button"
-                className="privacy-assurance__card-drag-handle"
-                draggable="true"
-                aria-label="Drag image card to reorder"
-                onDragStart={(event) => handleDragStart('image', event)}
-                onDragEnd={() => setDraggedCard(null)}
-              >
-                ⠿ Drag
-              </button>
-            )}
-            <img
-              src={privacyIllustration}
-              alt="A cream reflection journal wrapped with an apricot ribbon inside a gentle open boundary"
-            />
-          </div>
-
-          <div
-            className={`privacy-assurance__content${isEditing ? ' privacy-assurance__card--editing' : ''}${draggedCard === 'privacy' ? ' is-dragging' : ''}`}
-            data-testid="privacy-card-proof"
-            data-layout-card="privacy"
-            style={cardStyle('privacy')}
-            onDragOver={(event) => isEditing && event.preventDefault()}
-            onDrop={(event) => handleDrop('privacy', event)}
-            onPointerUp={(event) => saveResizedSize('privacy', event)}
-          >
-            {isEditing && (
-              <button
-                type="button"
-                className="privacy-assurance__card-drag-handle"
-                draggable="true"
-                aria-label="Drag privacy card to reorder"
-                onDragStart={(event) => handleDragStart('privacy', event)}
-                onDragEnd={() => setDraggedCard(null)}
-              >
-                ⠿ Drag
-              </button>
-            )}
-            <ul className="privacy-assurance__promises" aria-label="Your choices">
-              <li>
-                <span className="privacy-assurance__mark" aria-hidden="true">↗</span>
-                <span className="privacy-assurance__promise-copy">
-                  <strong>Export anytime</strong>
-                  <span>Take a copy of your reflections with you.</span>
-                </span>
-              </li>
-              <li>
-                <span className="privacy-assurance__mark" aria-hidden="true">×</span>
-                <span className="privacy-assurance__promise-copy">
-                  <strong>Erase anytime</strong>
-                  <span>Delete your account and its history when you choose.</span>
-                </span>
-              </li>
-            </ul>
-
-            <Link to="/settings" className="privacy-assurance__link">
-              Review privacy &amp; settings <span aria-hidden="true">→</span>
-            </Link>
-          </div>
+          <div className={"privacy-assurance__visual" + (isEditing ? " privacy-assurance__card--editing" : "") + (draggedCard === "image" ? " is-dragging" : "")} data-testid="privacy-card-image" data-layout-card="image" style={cardStyle("image")} onDragOver={(event) => isEditing && event.preventDefault()} onDrop={(event) => handleDrop("image", event)} onPointerUp={(event) => saveResizedSize("image", event)}>{isEditing && <button type="button" className="privacy-assurance__card-drag-handle" draggable="true" aria-label="Drag image card to reorder" onDragStart={(event) => handleDragStart("image", event)} onDragEnd={() => setDraggedCard(null)}>⠿ Drag</button>}<img src={privacyIllustration} alt="A cream reflection journal wrapped with an apricot ribbon inside a gentle open boundary" /></div>
+              <div className={"privacy-assurance__content privacy-assurance__content--summary privacy-assurance__content--headed-top privacy-assurance__content--hierarchy-airy" + (isEditing ? " privacy-assurance__card--editing" : "") + (draggedCard === "privacy" ? " is-dragging" : "")} data-testid="privacy-card-proof" data-layout-card="privacy" style={cardStyle("privacy")} onDragOver={(event) => isEditing && event.preventDefault()} onDrop={(event) => handleDrop("privacy", event)} onPointerUp={(event) => saveResizedSize("privacy", event)}>{isEditing && <button type="button" className="privacy-assurance__card-drag-handle" draggable="true" aria-label="Drag privacy card to reorder" onDragStart={(event) => handleDragStart("privacy", event)} onDragEnd={() => setDraggedCard(null)}>⠿ Drag</button>}
+                <h3 className="privacy-assurance__support-heading">Start with one moment.</h3><p className="privacy-assurance__support-copy">A quick check-in is enough.</p>
+                <ul className="privacy-assurance__capabilities-list privacy-assurance__capabilities-list--summary" aria-label="What Steady-Ahh can help you do"><li><span className="privacy-assurance__mark" aria-hidden="true">↗</span><span className="privacy-assurance__promise-copy"><strong>Check in</strong></span></li><li><span className="privacy-assurance__mark" aria-hidden="true">◌</span><span className="privacy-assurance__promise-copy"><strong>Notice patterns</strong></span></li><li><span className="privacy-assurance__mark" aria-hidden="true">⌁</span><span className="privacy-assurance__promise-copy"><strong>Reflect on boundaries</strong></span></li><li><span className="privacy-assurance__mark" aria-hidden="true">×</span><span className="privacy-assurance__promise-copy"><strong>Control your data</strong></span></li></ul>
+                <Link to="/settings" className="privacy-assurance__link">Review privacy &amp; settings <span aria-hidden="true">→</span></Link></div>
         </div>
       </section>
     </main>

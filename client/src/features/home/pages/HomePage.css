@@ -97,6 +97,14 @@ body:has(.app-shell--landing)::before {
   line-height: 1.45;
 }
 
+.calm-hero__copy--trust {
+  gap: 1.15rem;
+}
+
+.calm-hero__copy--trust .calm-hero__subtitle {
+  max-width: 31ch;
+}
+
 .calm-hero__cta {
   display: inline-flex;
   min-height: 48px;
@@ -143,6 +151,10 @@ body:has(.app-shell--landing)::before {
 .privacy-assurance {
   width: min(100% - 3rem, 1120px);
   margin: 0 auto clamp(4rem, 8vw, 7rem);
+}
+
+.privacy-assurance--narrow-tight {
+  width: min(100% - 3rem, 1000px);
 }
 
 .privacy-assurance__panel {
@@ -437,6 +449,101 @@ body:has(.app-shell--landing)::before {
   outline-offset: 4px;
 }
 
+.privacy-assurance__panel {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid rgba(81, 64, 46, 0.12);
+  border-radius: 18px;
+}
+
+.privacy-assurance__visual,
+.privacy-assurance__content {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.privacy-assurance__content--capabilities-v2 {
+  gap: 1.25rem;
+}
+
+.privacy-assurance__capabilities-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.privacy-assurance__capabilities-list li {
+  min-height: 0;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(81, 64, 46, 0.13);
+}
+
+.privacy-assurance__content--summary {
+  gap: 1rem;
+}
+
+.privacy-assurance__capabilities-list--summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.privacy-assurance__capabilities-list--summary li {
+  min-height: 0;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0;
+}
+
+.privacy-assurance__content--headed-top {
+  gap: 0.7rem;
+}
+
+.privacy-assurance__support-heading {
+  margin: 0;
+  color: #292723;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.privacy-assurance__support-copy {
+  margin: -0.25rem 0 0;
+  color: #5f5b55;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.privacy-assurance__content--hierarchy-airy {
+  gap: 1.05rem;
+}
+
+.privacy-assurance__content--hierarchy-airy .privacy-assurance__support-heading {
+  font-size: 1.18rem;
+}
+
+.privacy-assurance__content--hierarchy-airy .privacy-assurance__support-copy {
+  max-width: 24ch;
+  margin-top: -0.15rem;
+}
+
+.privacy-assurance__content--hierarchy-airy .privacy-assurance__capabilities-list--summary {
+  row-gap: 1.15rem;
+}
+
+.privacy-assurance__content {
+  background: #f7f4ed;
+}
+
 @media (max-width: 640px) {
   .app-nav--landing .app-nav__inner {
     width: min(100% - 2rem, 1180px);
@@ -493,6 +600,15 @@ body:has(.app-shell--landing)::before {
   .privacy-assurance__promises {
     grid-template-columns: 1fr;
     gap: 0.7rem;
+  }
+
+  .privacy-assurance__capabilities-list {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .privacy-assurance__capabilities-list--summary {
+    grid-template-columns: 1fr;
   }
 
   .privacy-assurance__promises li {

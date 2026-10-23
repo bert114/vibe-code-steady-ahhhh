@@ -2280,16 +2280,108 @@ article>ul li {
   align-items: center;
 }
 
-.history-card__confirm-group {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog {
+  width: min(calc(100vw - 2rem), 29rem);
+  max-width: none;
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--checkin-rule);
+  border-radius: 16px;
+  background: var(--checkin-paper);
+  color: var(--checkin-ink);
+  box-shadow: 0 24px 70px rgba(46, 35, 25, 0.26);
 }
 
-.history-card__confirm-prompt {
-  font-size: 0.78rem;
-  color: var(--danger);
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog::backdrop {
+  background: rgba(38, 31, 25, 0.48);
+  backdrop-filter: blur(3px);
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__content {
+  padding: clamp(1.35rem, 4vw, 2rem);
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog h2 {
+  max-width: 18ch;
+  margin: 0;
+  color: var(--checkin-ink);
+  font-family: 'Steady Sans', 'Satoshi', system-ui, sans-serif;
+  font-size: clamp(1.35rem, 4vw, 1.7rem);
   font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog p {
+  max-width: 38ch;
+  margin: 0.7rem 0 0;
+  color: var(--checkin-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.6rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--checkin-rule);
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__actions button {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  border-radius: 11px;
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__cancel {
+  border: 1px solid var(--checkin-rule);
+  background: var(--checkin-white);
+  color: var(--checkin-ink);
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__cancel:hover:not(:disabled) {
+  border-color: var(--checkin-blue-deep);
+  background: var(--checkin-blue-light);
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__confirm {
+  border: 1px solid var(--danger);
+  background: var(--danger);
+  color: var(--checkin-white);
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__confirm:hover:not(:disabled) {
+  background: #873a32;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__actions button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--checkin-blue-deep) 38%, transparent);
+  outline-offset: 3px;
+}
+
+:is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__actions button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+@media (max-width: 560px) {
+  :is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog {
+    width: calc(100vw - 1rem);
+    border-radius: 14px;
+  }
+
+  :is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__actions {
+    flex-direction: column-reverse;
+  }
+
+  :is(:root, .app-shell--workspace.is-checkin) .reflection-delete-dialog__actions button {
+    width: 100%;
+  }
 }
 
 .history-card__scores {

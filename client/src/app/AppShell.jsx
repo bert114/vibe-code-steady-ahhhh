@@ -27,7 +27,7 @@ function readSidebarPreference() {
 
 function NavIcon({ name }) {
   const common = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' }
-  const paths = {
+  const legacyPaths = {
     grid: <><rect x="3.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="3.5" y="13.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="13.5" width="7" height="7" rx="1.5" /></>,
     checkin: <><path d="M12 3.5v17" /><path d="M3.5 12h17" /><circle cx="12" cy="12" r="9" /></>,
     trend: <><path d="M4 18.5 9 13l3.5 3L20 8" /><path d="M15.5 8H20v4.5" /></>,
@@ -36,7 +36,15 @@ function NavIcon({ name }) {
     settings: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1a1.8 1.8 0 0 1-2.5 2.5l-.1-.1a1.8 1.8 0 0 0-3 .9v.2a1.8 1.8 0 0 1-3.6 0v-.2a1.8 1.8 0 0 0-3-.9l-.1.1a1.8 1.8 0 0 1-2.5-2.5l.1-.1a1.8 1.8 0 0 0-.9-3h-.2a1.8 1.8 0 0 1 0-3.6h.2a1.8 1.8 0 0 0 .9-3l-.1-.1a1.8 1.8 0 0 1 2.5-2.5l.1.1a1.8 1.8 0 0 0 3-.9v-.2a1.8 1.8 0 0 1 3.6 0v.2a1.8 1.8 0 0 0 3 .9l.1-.1a1.8 1.8 0 0 1 2.5 2.5l-.1.1a1.8 1.8 0 0 0 .9 3h.2a1.8 1.8 0 0 1 0 3.6h-.2a1.8 1.8 0 0 0-.9 3Z" /></>,
   }
 
-  return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}>{paths[name]}</svg>
+  const paths = {
+      grid: <><path d="m12 4 7.5 4.2v7.6L12 20l-7.5-4.2V8.2Z" /><path d="m9.5 9.5 5-2.5-2.5 5-5 2.5Z" /></>,
+      checkin: <><path d="M7 4.5h9.5A2.5 2.5 0 0 1 19 7v12.5H7A2.5 2.5 0 0 0 4.5 22V7A2.5 2.5 0 0 1 7 4.5Z" /><path d="m10 14.5 4.8-4.8 1.5 1.5-4.8 4.8-2.2.7Z" /></>,
+      trend: <><path d="M12 4a8 8 0 1 1-5.7 2.3" /><path d="M4 4v5h5" /><path d="M12 8v4l3 2" /></>,
+      spark: <><circle cx="12" cy="12" r="7.5" /><path d="m12 7.5 1.2 3.3 3.3 1.2-3.3 1.2-1.2 3.3-1.2-3.3-3.3-1.2 3.3-1.2Z" /></>,
+      settings: <><path d="M6 7.5h12M6 16.5h12" /><circle cx="9" cy="7.5" r="2" /><circle cx="15" cy="16.5" r="2" /></>,
+  }
+
+  return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}>{paths[name] ?? legacyPaths[name]}</svg>
 }
 
 function BrandMark() {
@@ -182,38 +190,11 @@ export default function AppShell({ children, variant = 'app' }) {
       <div className={`app-shell app-shell--workspace app-shell--landing${sidebarCollapsed ? ' is-collapsed' : ''}`}>
         <aside className="workspace-sidebar workspace-sidebar--landing" aria-label="Main sidebar">
           <div className="workspace-sidebar__head">
-            <Link to="/" className="workspace-brand" aria-label="Steady-Ahh home">
-              <BrandMark />
-              <span>Steady-Ahh</span>
-            </Link>
-            <button
-              type="button"
-              className="workspace-sidebar__toggle"
-              aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              aria-expanded={!sidebarCollapsed}
-              aria-controls="workspace-desktop-navigation"
-              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" /><path d="M9 4.5v15M14.5 9.5 12 12l2.5 2.5" /></svg>
-            </button>
+            <Link to="/" className="workspace-brand" aria-label="Steady-Ahh home"><BrandMark /><span>Steady-Ahh</span></Link>
+            <button type="button" className="workspace-sidebar__toggle" aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-expanded={!sidebarCollapsed} aria-controls="workspace-desktop-navigation" title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" /><path d="M9 4.5v15M14.5 9.5 12 12l2.5 2.5" /></svg></button>
           </div>
-          <SignedInView fallback={<LandingPublicNav id="workspace-desktop-navigation" />}>
-            <SidebarLinks id="workspace-desktop-navigation" />
-          </SignedInView>
-          <SignedInView
-            fallback={
-              <Link to="/sign-up" className="workspace-sidebar__reflection-link" title="Start a reflection">
-                <NavIcon name="checkin" />
-                <span>Start a reflection</span>
-              </Link>
-            }
-          >
-            <Link to="/check-in" className="workspace-sidebar__reflection-link" title="Start a reflection">
-              <NavIcon name="checkin" />
-              <span>Start a reflection</span>
-            </Link>
-          </SignedInView>
+          <SignedInView fallback={<LandingPublicNav id="workspace-desktop-navigation" />}><SidebarLinks id="workspace-desktop-navigation" /></SignedInView>
+          <SignedInView fallback={<Link to="/sign-up" className="workspace-sidebar__reflection-link" title="Start a reflection"><NavIcon name="checkin" /><span>Start a reflection</span></Link>}><Link to="/check-in" className="workspace-sidebar__reflection-link" title="Start a reflection"><NavIcon name="checkin" /><span>Start a reflection</span></Link></SignedInView>
         </aside>
 
         {drawerOpen && <button type="button" className="workspace-drawer-backdrop" aria-label="Close navigation" onClick={() => setDrawerOpen(false)} />}

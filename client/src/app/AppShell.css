@@ -1135,6 +1135,24 @@
   border-radius: 12px;
 }
 
+.app-shell--workspace .workspace-sidebar__nav {
+  gap: 1.1rem;
+}
+
+.app-shell--workspace .workspace-nav__link {
+  gap: 0.88rem;
+}
+
+.app-shell--workspace .workspace-nav__link svg {
+  width: 1.24rem;
+  height: 1.24rem;
+  color: color-mix(in srgb, var(--primary) 72%, var(--primary100));
+}
+
+.app-shell--workspace .workspace-nav__link.is-active {
+  background: color-mix(in srgb, var(--primary100) 72%, transparent);
+}
+
 .app-shell--workspace .workspace-brand {
   color: #242424;
   font-family: 'Steady Sans', 'Satoshi', system-ui, sans-serif;

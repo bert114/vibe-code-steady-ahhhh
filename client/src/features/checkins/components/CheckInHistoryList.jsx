@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { createPortal } from 'react-dom'
+import { useEffect, useRef, useState } from 'react'
+import { observeLiveDialogMode, showDialogForLiveSession } from '../../../lib/ui/liveDialogMode.js'
 import DrainIcon from './DrainIcon.jsx'
 import EnergyIcon from './EnergyIcon.jsx'
 import FaceIcon from './FaceIcon.jsx'
@@ -23,9 +25,87 @@ function scoreLabel(type, val) {
   return { text: String(val), cls: '' }
 }
 
+function DeleteCheckinDialog({ dateStr, timeStr, open, onClose, onConfirm, deleting }) {
+  const dialogRef = useRef(null)
+  const cancelRef = useRef(null)
+
+  useEffect(() => observeLiveDialogMode(dialogRef.current), [])
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+
+    if (open && !dialog.open) {
+      showDialogForLiveSession(dialog)
+      cancelRef.current?.focus()
+    }
+
+    if (!open && dialog.open) {
+      if (typeof dialog.close === 'function') dialog.close()
+      else dialog.removeAttribute('open')
+    }
+  }, [open])
+
+  function closeDialog() {
+    const dialog = dialogRef.current
+    if (dialog?.open) {
+      if (typeof dialog.close === 'function') dialog.close()
+      else dialog.removeAttribute('open')
+    }
+    onClose()
+  }
+
+  return createPortal(
+    <dialog
+      ref={dialogRef}
+      className="reflection-delete-dialog"
+      aria-labelledby="reflection-delete-title"
+      aria-describedby="reflection-delete-description"
+      onClose={() => {
+        if (dialogRef.current?.open) return
+        onClose()
+      }}
+      onCancel={(event) => {
+        event.preventDefault()
+        closeDialog()
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) closeDialog()
+      }}
+    >
+      <div className="reflection-delete-dialog__content">
+        <h2 id="reflection-delete-title">Delete this reflection?</h2>
+        <p id="reflection-delete-description">
+          From {dateStr} at {timeStr}. It will be removed from your reflection history and can’t be undone.
+        </p>
+        <div className="reflection-delete-dialog__actions">
+          <button
+            ref={cancelRef}
+            type="button"
+            className="reflection-delete-dialog__cancel"
+            onClick={closeDialog}
+            disabled={deleting}
+          >
+            Keep reflection
+          </button>
+          <button
+            type="button"
+            className="reflection-delete-dialog__confirm"
+            onClick={onConfirm}
+            disabled={deleting}
+          >
+            {deleting ? 'Deleting…' : 'Delete reflection'}
+          </button>
+        </div>
+      </div>
+    </dialog>,
+    document.body,
+  )
+}
+
 function HistoryCard({ checkin, onDelete }) {
   const [expanded, setExpanded] = useState(false)
-  const [confirming, setConfirming] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
   const mood = scoreLabel('mood', checkin.moodScore)
@@ -52,7 +132,7 @@ function HistoryCard({ checkin, onDelete }) {
       await onDelete(checkin.id)
     } finally {
       setDeleting(false)
-      setConfirming(false)
+      setDeleteOpen(false)
     }
   }
 
@@ -66,36 +146,14 @@ function HistoryCard({ checkin, onDelete }) {
           <span className="history-card__time">{timeStr}</span>
         </div>
         <div className="history-card__actions">
-          {!confirming ? (
-            <button
-              type="button"
-              className="btn-ghost btn-sm history-card__delete-btn"
-              onClick={() => setConfirming(true)}
-              aria-label={`Delete check-in from ${dateStr} ${timeStr}`}
-            >
-              Delete
-            </button>
-          ) : (
-            <div className="history-card__confirm-group" role="alert">
-              <span className="history-card__confirm-prompt">Delete?</span>
-              <button
-                type="button"
-                className="btn-danger btn-sm"
-                onClick={handleDelete}
-                disabled={deleting}
-              >
-                {deleting ? 'Deleting…' : 'Yes'}
-              </button>
-              <button
-                type="button"
-                className="btn-ghost btn-sm"
-                onClick={() => setConfirming(false)}
-                disabled={deleting}
-              >
-                Cancel
-              </button>
-            </div>
-          )}
+          <button
+            type="button"
+            className="btn-ghost btn-sm history-card__delete-btn"
+            onClick={() => setDeleteOpen(true)}
+            aria-label={`Delete check-in from ${dateStr} ${timeStr}`}
+          >
+            Delete
+          </button>
         </div>
       </header>
 
@@ -167,6 +225,17 @@ function HistoryCard({ checkin, onDelete }) {
             </div>
           )}
         </div>
+      )}
+
+      {deleteOpen && (
+        <DeleteCheckinDialog
+          dateStr={dateStr}
+          timeStr={timeStr}
+          open={deleteOpen}
+          onClose={() => setDeleteOpen(false)}
+          onConfirm={handleDelete}
+          deleting={deleting}
+        />
       )}
     </article>
   )
