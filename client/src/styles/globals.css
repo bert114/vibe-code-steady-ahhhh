@@ -275,17 +275,17 @@ main>section {
   align-self: start;
 }
 
-.dashboard-page--insight-first .dashboard-page__featured-insight {
+.dashboard-page--insight-later .dashboard-page__featured-insight {
   margin-top: 0;
   margin-bottom: 1.25rem;
   padding: 0;
 }
 
-.dashboard-page--insight-first .dashboard-page__featured-insight .dashboard-panel--feature h3 {
+.dashboard-page--insight-later .dashboard-page__featured-insight .dashboard-panel--feature h3 {
   font-size: 1.55rem;
 }
 
-.dashboard-page--insight-first .dashboard-page__grid--support {
+.dashboard-page--insight-later .dashboard-page__grid--support {
   grid-template-columns: minmax(0, 1.7fr) minmax(15rem, 1fr);
   grid-template-areas: "signals reminders";
   gap: 1.5rem;
@@ -297,7 +297,7 @@ main>section {
     gap: 1.25rem;
   }
 
-  .dashboard-page--insight-first .dashboard-page__grid--support {
+  .dashboard-page--insight-later .dashboard-page__grid--support {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "signals"

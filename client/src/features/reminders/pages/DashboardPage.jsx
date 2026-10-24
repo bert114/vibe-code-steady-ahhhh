@@ -203,7 +203,7 @@ export default function DashboardPage() {
   const renderInsight = () => (
     <section
       className="dashboard-page__featured-insight reveal"
-      style={{ "--index": 1 }}
+      style={{ "--index": 3 }}
       aria-labelledby="insight-heading-featured"
     >
       <LatestInsight insight={summary?.latestInsight ?? null} />
@@ -269,8 +269,8 @@ export default function DashboardPage() {
         <p>Looking at your recent check-ins…</p>
       ) : summary ? (
         <>
-          {renderInsight()}
           {renderEnergyOverview()}
+          {renderInsight()}
           {renderSupportGrid()}
         </>
       ) : null}
@@ -280,7 +280,7 @@ export default function DashboardPage() {
 
   return (
     <main
-      className="dashboard-page dashboard-page--insight-first dashboard-page--energy-shelf"
+      className="dashboard-page dashboard-page--insight-later dashboard-page--energy-shelf"
       ref={scopeRef}
     >
       {renderDashboardBody()}

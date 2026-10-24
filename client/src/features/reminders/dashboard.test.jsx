@@ -91,6 +91,12 @@ describe('dashboard page', () => {
     expect(duo).not.toBeNull()
     expect(duo.textContent).toMatch(/Current Energy/)
     expect(duo.textContent).toMatch(/Energy Overview/)
+
+    const dashboard = document.querySelector('.dashboard-page')
+    const sections = [...dashboard.children]
+    expect(sections.indexOf(duo)).toBeLessThan(
+      sections.indexOf(document.querySelector('.dashboard-page__featured-insight')),
+    )
   })
 
   it('marks a reminder as read and updates the unread count', async () => {
