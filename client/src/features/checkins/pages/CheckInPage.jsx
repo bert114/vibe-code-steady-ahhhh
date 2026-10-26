@@ -1,0 +1,51 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import CheckInForm from "../components/CheckInForm.jsx";
+import CheckInHistoryList from "../components/CheckInHistoryList.jsx";
+import { useCheckinsStore } from "../store.js";
+
+export default function CheckInPage() {
+  const location = useLocation();
+  const {
+    checkins,
+    status,
+    saveDraft,
+    loadHistory,
+    resetDraft,
+    removeCheckin,
+  } = useCheckinsStore();
+  const saving = status === "saving";
+
+  useEffect(() => {
+    resetDraft();
+    loadHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (location.hash === "#history-heading") {
+      document
+        .getElementById("history-heading")
+        ?.scrollIntoView?.({ behavior: "smooth", block: "start" });
+    }
+  }, [location.hash]);
+
+  return (
+    <main className="checkin-page checkin-layout checkin-layout--flow">
+      <header className="checkin-page__header">
+        <h1>How are you feeling today?</h1>
+        <p className="checkin-page__intro">
+          Three quick questions about your mood, energy, and how drained you
+          feel. Add details if you like.
+        </p>
+      </header>
+      <div className="card checkin-card">
+        <CheckInForm onSubmit={saveDraft} saving={saving} />
+      </div>
+      <section aria-labelledby="history-heading" className="checkin-history">
+        <h2 id="history-heading">Past reflections</h2>
+        <CheckInHistoryList checkins={checkins} onDelete={removeCheckin} />
+      </section>
+    </main>
+  );
+}

@@ -1,0 +1,79 @@
+:root {
+  color-scheme: light;
+
+  /* Shared Steady-Ahh palette: warm paper, grounded ink, restrained apricot. */
+  /* Legacy surface token names remain stable for existing components. */
+  --bg-dark: #e8e2d9;
+  --bg: #f0ebe3;
+  --bg-light: #f7f4ed;
+  --bg-lighter: #fbf9f3;
+  /* Deprecated alias for --bg-lighter (original typo) — kept so existing references don't break. */
+  --bg-lightler: #fbf9f3;
+  --text: #292723;
+  --text-muted: #6f6861;
+  --highlight: #d8cabb;
+  --border: #cfc4b8;
+  --border-muted: #d8d0c5;
+  --primary: #914a2c;
+  --secondary: #80664e;
+  --danger: #a4473b;
+  --warning: #8a6428;
+  --success: #4f7559;
+  --info: #4c6f82;
+
+  /* Shared editorial workspace surfaces. */
+  --surface-ink: #e8e2d9;
+  --surface-panel: #f7f4ed;
+  --surface-raised: #fbf9f3;
+  --line-subtle: #d8d0c5;
+  --text-soft: #292723;
+  --text-faint: #77736d;
+  --accent-pale: #914a2c;
+  --accent-soft: #a85836;
+
+  /* Reflection flow: paper tones and the same grounded apricot accent. */
+  --checkin-blue: #e8e2d9;
+  --checkin-blue-deep: #914a2c;
+  --checkin-blue-light: #f4e4d9;
+  --checkin-paper: #f4f0e8;
+  --checkin-record: #fbf9f3;
+  --checkin-ink: #292723;
+  --checkin-muted: #6f6861;
+  --checkin-rule: #d8d0c5;
+  --checkin-white: #fffdf8;
+
+  --primary100: #f3ded2;
+
+  --inner-shadow-top-color: rgba(67, 57, 45, 0.08);
+  --inner-shadow-top-height: 14px;
+  --inner-shadow-top: linear-gradient(to bottom,
+      var(--inner-shadow-top-color) 0%,
+      transparent 100%);
+
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    0 1px 2px rgba(67, 57, 45, 0.04),
+    0 12px 32px rgba(67, 57, 45, 0.08);
+  --shadow-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    0 2px 4px rgba(67, 57, 45, 0.05),
+    0 16px 40px rgba(67, 57, 45, 0.11);
+}
+
+.bg {
+  background-color: var(--bg);
+}
+
+.bg-dark {
+  background-color: var(--bg-dark);
+}
+
+.bg-light {
+  background-color: var(--bg-light);
+}
+
+.bg-lighter {
+  background-color: var(--bg-lighter);
+}
+
+.elem-muted {
+  background-color: var(--text-muted);
+}

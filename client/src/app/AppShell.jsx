@@ -1,0 +1,312 @@
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
+import './AppShell.css'
+import ToastStack from '../components/ui/Toast.jsx'
+import QuickCheckInDialog from '../features/checkins/components/QuickCheckInDialog.jsx'
+import AccountButton from './AccountButton.jsx'
+import { SignedInView } from './auth.jsx'
+
+const LINKS = [
+  { to: '/', label: 'Home', icon: 'grid' },
+  { to: '/dashboard', label: 'Wellbeing overview', icon: 'grid' },
+  { to: '/check-in', label: 'Daily reflection', icon: 'checkin' },
+  { to: '/check-in#history-heading', label: 'Past reflections', icon: 'trend' },
+  { to: '/insights', label: 'Patterns & boundaries', icon: 'spark' },
+  { to: '/trends', label: 'Energy over time', icon: 'trend' },
+  { to: '/settings', label: 'Privacy & settings', icon: 'settings' },
+]
+const SIDEBAR_PREFERENCE_KEY = 'steady-ahh:workspace-sidebar-collapsed'
+
+function readSidebarPreference() {
+  try {
+    return typeof window !== 'undefined' && window.localStorage.getItem(SIDEBAR_PREFERENCE_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+function NavIcon({ name }) {
+  const common = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' }
+  const legacyPaths = {
+    grid: <><rect x="3.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="3.5" y="13.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="13.5" width="7" height="7" rx="1.5" /></>,
+    checkin: <><path d="M12 3.5v17" /><path d="M3.5 12h17" /><circle cx="12" cy="12" r="9" /></>,
+    trend: <><path d="M4 18.5 9 13l3.5 3L20 8" /><path d="M15.5 8H20v4.5" /></>,
+    spark: <><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z" /><path d="m19 15 .9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z" /></>,
+    signin: <><path d="M14 3.5h3.5A1.5 1.5 0 0 1 19 5v14a1.5 1.5 0 0 1-1.5 1.5H14" /><path d="M10 12h9" /><path d="m16 9 3 3-3 3" /></>,
+    settings: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1a1.8 1.8 0 0 1-2.5 2.5l-.1-.1a1.8 1.8 0 0 0-3 .9v.2a1.8 1.8 0 0 1-3.6 0v-.2a1.8 1.8 0 0 0-3-.9l-.1.1a1.8 1.8 0 0 1-2.5-2.5l.1-.1a1.8 1.8 0 0 0-.9-3h-.2a1.8 1.8 0 0 1 0-3.6h.2a1.8 1.8 0 0 0 .9-3l-.1-.1a1.8 1.8 0 0 1 2.5-2.5l.1.1a1.8 1.8 0 0 0 3-.9v-.2a1.8 1.8 0 0 1 3.6 0v.2a1.8 1.8 0 0 0 3 .9l.1-.1a1.8 1.8 0 0 1 2.5 2.5l-.1.1a1.8 1.8 0 0 0 .9 3h.2a1.8 1.8 0 0 1 0 3.6h-.2a1.8 1.8 0 0 0-.9 3Z" /></>,
+  }
+
+  const paths = {
+      grid: <><path d="m12 4 7.5 4.2v7.6L12 20l-7.5-4.2V8.2Z" /><path d="m9.5 9.5 5-2.5-2.5 5-5 2.5Z" /></>,
+      checkin: <><path d="M7 4.5h9.5A2.5 2.5 0 0 1 19 7v12.5H7A2.5 2.5 0 0 0 4.5 22V7A2.5 2.5 0 0 1 7 4.5Z" /><path d="m10 14.5 4.8-4.8 1.5 1.5-4.8 4.8-2.2.7Z" /></>,
+      trend: <><path d="M12 4a8 8 0 1 1-5.7 2.3" /><path d="M4 4v5h5" /><path d="M12 8v4l3 2" /></>,
+      spark: <><circle cx="12" cy="12" r="7.5" /><path d="m12 7.5 1.2 3.3 3.3 1.2-3.3 1.2-1.2 3.3-1.2-3.3-3.3-1.2 3.3-1.2Z" /></>,
+      settings: <><path d="M6 7.5h12M6 16.5h12" /><circle cx="9" cy="7.5" r="2" /><circle cx="15" cy="16.5" r="2" /></>,
+  }
+
+  return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}>{paths[name] ?? legacyPaths[name]}</svg>
+}
+
+function BrandMark() {
+  return <span className="workspace-brand__mark" aria-hidden="true"><span /></span>
+}
+
+function SidebarLinks({ onNavigate, id }) {
+  const location = useLocation()
+  const historySectionActive = location.pathname === '/check-in'
+    && location.hash === '#history-heading'
+
+  return (
+    <nav id={id} aria-label="Workspace" className="workspace-sidebar__nav">
+      {LINKS.map((link) => (
+        <NavLink
+          key={link.to}
+          to={link.to}
+          end={link.to === '/' || link.to === '/check-in'}
+          onClick={onNavigate}
+          aria-label={link.label}
+          data-tooltip={link.label}
+          className={({ isActive }) => {
+            const isHistoryLink = link.to === '/check-in#history-heading'
+            const active = isHistoryLink
+              ? historySectionActive
+              : link.to === '/check-in'
+                ? isActive && !historySectionActive
+                : isActive
+            return `workspace-nav__link${active ? ' is-active' : ''}`
+          }}
+        >
+          <NavIcon name={link.icon} />
+          <span>{link.label}</span>
+        </NavLink>
+      ))}
+    </nav>
+  )
+}
+
+// Public landing navigation for signed-out visitors: only Home and Sign in.
+// Private destinations require a session, so they are never advertised here.
+function LandingPublicNav({ onNavigate, id }) {
+  return (
+    <nav id={id} aria-label="Workspace" className="workspace-sidebar__nav">
+      <NavLink
+        to="/"
+        end
+        onClick={onNavigate}
+        aria-label="Home"
+        data-tooltip="Home"
+        className={({ isActive }) => `workspace-nav__link${isActive ? ' is-active' : ''}`}
+      >
+        <NavIcon name="grid" />
+        <span>Home</span>
+      </NavLink>
+      <Link
+        to="/sign-in"
+        onClick={onNavigate}
+        aria-label="Sign in"
+        data-tooltip="Sign in"
+        className="workspace-nav__link"
+      >
+        <NavIcon name="signin" />
+        <span>Sign in</span>
+      </Link>
+    </nav>
+  )
+}
+
+export default function AppShell({ children, variant = 'app' }) {
+  const [quickCheckInOpen, setQuickCheckInOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(readSidebarPreference)
+  const drawerRef = useRef(null)
+  const menuToggleRef = useRef(null)
+  const wasDrawerOpen = useRef(false)
+  const location = useLocation()
+  const currentPage = variant === 'landing'
+    ? 'Home'
+    : location.pathname === '/check-in' && location.hash === '#history-heading'
+      ? 'Past reflections'
+      : LINKS.find((link) => link.to === location.pathname)?.label ?? 'Wellbeing overview'
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(SIDEBAR_PREFERENCE_KEY, String(sidebarCollapsed))
+    } catch {
+      // The shell remains usable when the browser blocks local storage.
+    }
+  }, [sidebarCollapsed])
+
+  useEffect(() => {
+    setDrawerOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!drawerOpen) return undefined
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setDrawerOpen(false)
+        return
+      }
+      if (event.key === 'Tab') {
+        const focusable = drawerRef.current?.querySelectorAll('a[href], button:not(:disabled)')
+        if (!focusable?.length) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (!drawerRef.current?.contains(document.activeElement)) {
+          event.preventDefault()
+          first.focus()
+        } else if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault()
+          last.focus()
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault()
+          first.focus()
+        }
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [drawerOpen])
+
+  useLayoutEffect(() => {
+    if (drawerOpen) {
+      wasDrawerOpen.current = true
+      drawerRef.current?.querySelector('.workspace-drawer__close')?.focus()
+    } else if (wasDrawerOpen.current) {
+      wasDrawerOpen.current = false
+      menuToggleRef.current?.focus()
+    }
+  }, [drawerOpen])
+
+  function openMobileDrawer() {
+    setDrawerOpen(true)
+    window.setTimeout(() => {
+      drawerRef.current?.querySelector('.workspace-drawer__close')?.focus()
+    }, 0)
+  }
+
+  if (variant === 'landing') {
+    return (
+      <div className={`app-shell app-shell--workspace app-shell--landing${sidebarCollapsed ? ' is-collapsed' : ''}`}>
+        <aside className="workspace-sidebar workspace-sidebar--landing" aria-label="Main sidebar">
+          <div className="workspace-sidebar__head">
+            <Link to="/" className="workspace-brand" aria-label="Steady-Ahh home"><BrandMark /><span>Steady-Ahh</span></Link>
+            <button type="button" className="workspace-sidebar__toggle" aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-expanded={!sidebarCollapsed} aria-controls="workspace-desktop-navigation" title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" /><path d="M9 4.5v15M14.5 9.5 12 12l2.5 2.5" /></svg></button>
+          </div>
+          <SignedInView fallback={<LandingPublicNav id="workspace-desktop-navigation" />}><SidebarLinks id="workspace-desktop-navigation" /></SignedInView>
+          <SignedInView fallback={<Link to="/sign-up" className="workspace-sidebar__reflection-link" title="Start a reflection"><NavIcon name="checkin" /><span>Start a reflection</span></Link>}><Link to="/check-in" className="workspace-sidebar__reflection-link" title="Start a reflection"><NavIcon name="checkin" /><span>Start a reflection</span></Link></SignedInView>
+        </aside>
+
+        {drawerOpen && <button type="button" className="workspace-drawer-backdrop" aria-label="Close navigation" onClick={() => setDrawerOpen(false)} />}
+
+        <div className="workspace-main">
+          <header className="workspace-topbar workspace-topbar--landing">
+            <div className="workspace-topbar__leading">
+              <button ref={menuToggleRef} type="button" className="workspace-menu-toggle" aria-label="Open navigation" aria-expanded={drawerOpen} aria-controls="workspace-mobile-navigation" onClick={openMobileDrawer}>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+              </button>
+              <span className="workspace-topbar__page">Home</span>
+            </div>
+            <div className="workspace-topbar__actions">
+              <AccountButton id="workspace-topbar-account-landing" />
+            </div>
+          </header>
+          <div className="workspace-content">{children}</div>
+        </div>
+
+        <div ref={drawerRef} id="workspace-mobile-navigation" className={`workspace-drawer workspace-drawer--landing${drawerOpen ? ' is-open' : ''}`} aria-hidden={!drawerOpen} inert={!drawerOpen}>
+          <div className="workspace-drawer__head">
+            <Link to="/" className="workspace-brand" onClick={() => setDrawerOpen(false)}><BrandMark /><span>Steady-Ahh</span></Link>
+            <button type="button" className="workspace-drawer__close" aria-label="Close navigation" onClick={() => setDrawerOpen(false)}>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+            </button>
+          </div>
+          <SignedInView fallback={<LandingPublicNav onNavigate={() => setDrawerOpen(false)} />}>
+            <SidebarLinks onNavigate={() => setDrawerOpen(false)} />
+          </SignedInView>
+          <SignedInView
+            fallback={
+              <Link to="/sign-up" className="workspace-sidebar__reflection-link" onClick={() => setDrawerOpen(false)}>
+                <NavIcon name="checkin" />
+                <span>Start a reflection</span>
+              </Link>
+            }
+          >
+            <Link to="/check-in" className="workspace-sidebar__reflection-link" onClick={() => setDrawerOpen(false)}>
+              <NavIcon name="checkin" />
+              <span>Start a reflection</span>
+            </Link>
+          </SignedInView>
+        </div>
+        <ToastStack />
+      </div>
+    )
+  }
+
+  return (
+    <div className={`app-shell app-shell--workspace${sidebarCollapsed ? ' is-collapsed' : ''}${location.pathname === '/check-in' ? ' is-checkin' : ''}`}>
+      <aside className="workspace-sidebar" aria-label="Main sidebar">
+        <div className="workspace-sidebar__head">
+          <Link to="/dashboard" className="workspace-brand" aria-label="Steady-Ahh dashboard">
+            <BrandMark />
+            <span>Steady-Ahh</span>
+          </Link>
+          <button
+            type="button"
+            className="workspace-sidebar__toggle"
+            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!sidebarCollapsed}
+            aria-controls="workspace-desktop-navigation"
+            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" /><path d="M9 4.5v15M14.5 9.5 12 12l2.5 2.5" /></svg>
+          </button>
+        </div>
+        <SidebarLinks id="workspace-desktop-navigation" />
+        <Link to="/check-in" className="workspace-sidebar__reflection-link" title="Start a reflection">
+          <NavIcon name="checkin" />
+          <span>Start a reflection</span>
+        </Link>
+      </aside>
+
+      {drawerOpen && <button type="button" className="workspace-drawer-backdrop" aria-label="Close navigation" onClick={() => setDrawerOpen(false)} />}
+
+      <div className="workspace-main">
+        <header className="workspace-topbar">
+          <div className="workspace-topbar__leading">
+            <button ref={menuToggleRef} type="button" className="workspace-menu-toggle" aria-label="Open navigation" aria-expanded={drawerOpen} aria-controls="workspace-mobile-navigation" onClick={openMobileDrawer}>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+            </button>
+            <span className="workspace-topbar__page">{currentPage}</span>
+          </div>
+          <div className="workspace-topbar__actions">
+            <button type="button" className="workspace-quick-action" aria-label="Quick check-in" onClick={() => setQuickCheckInOpen(true)}>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+              <span>Quick check-in</span>
+            </button>
+            <AccountButton id="workspace-topbar-account" />
+          </div>
+        </header>
+
+        <div ref={drawerRef} id="workspace-mobile-navigation" className={`workspace-drawer${drawerOpen ? ' is-open' : ''}`} aria-hidden={!drawerOpen} inert={!drawerOpen}>
+          <div className="workspace-drawer__head">
+            <Link to="/dashboard" className="workspace-brand" onClick={() => setDrawerOpen(false)}><BrandMark /><span>Steady-Ahh</span></Link>
+            <button type="button" className="workspace-drawer__close" aria-label="Close navigation" onClick={() => setDrawerOpen(false)}>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+            </button>
+          </div>
+          <SidebarLinks onNavigate={() => setDrawerOpen(false)} />
+          <Link to="/check-in" className="workspace-sidebar__reflection-link" onClick={() => setDrawerOpen(false)}>
+            <NavIcon name="checkin" />
+            <span>Start a reflection</span>
+          </Link>
+        </div>
+
+        <div className="workspace-content">{children}</div>
+      </div>
+      <QuickCheckInDialog open={quickCheckInOpen} onClose={() => setQuickCheckInOpen(false)} />
+      <ToastStack />
+    </div>
+  )
+}

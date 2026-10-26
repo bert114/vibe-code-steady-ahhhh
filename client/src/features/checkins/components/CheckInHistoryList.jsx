@@ -1,0 +1,263 @@
+import { createPortal } from 'react-dom'
+import { useEffect, useRef, useState } from 'react'
+import { observeLiveDialogMode, showDialogForLiveSession } from '../../../lib/ui/liveDialogMode.js'
+import DrainIcon from './DrainIcon.jsx'
+import EnergyIcon from './EnergyIcon.jsx'
+import FaceIcon from './FaceIcon.jsx'
+
+function scoreLabel(type, val) {
+  const num = Number(val)
+  if (type === 'mood') {
+    if (num <= 1) return { text: 'Low', cls: 'badge--mood-rough' }
+    if (num <= 3) return { text: 'Okay', cls: 'badge--mood-okay' }
+    return { text: 'Good', cls: 'badge--mood-great' }
+  }
+  if (type === 'energy') {
+    if (num <= 1) return { text: 'Very little', cls: 'badge--energy-low' }
+    if (num <= 3) return { text: 'Some', cls: 'badge--energy-mid' }
+    return { text: 'A lot', cls: 'badge--energy-high' }
+  }
+  if (type === 'drain') {
+    if (num <= 1) return { text: 'Not at all', cls: 'badge--drain-light' }
+    if (num <= 3) return { text: 'A little', cls: 'badge--drain-mid' }
+    return { text: 'A lot', cls: 'badge--drain-heavy' }
+  }
+  return { text: String(val), cls: '' }
+}
+
+function DeleteCheckinDialog({ dateStr, timeStr, open, onClose, onConfirm, deleting }) {
+  const dialogRef = useRef(null)
+  const cancelRef = useRef(null)
+
+  useEffect(() => observeLiveDialogMode(dialogRef.current), [])
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+
+    if (open && !dialog.open) {
+      showDialogForLiveSession(dialog)
+      cancelRef.current?.focus()
+    }
+
+    if (!open && dialog.open) {
+      if (typeof dialog.close === 'function') dialog.close()
+      else dialog.removeAttribute('open')
+    }
+  }, [open])
+
+  function closeDialog() {
+    const dialog = dialogRef.current
+    if (dialog?.open) {
+      if (typeof dialog.close === 'function') dialog.close()
+      else dialog.removeAttribute('open')
+    }
+    onClose()
+  }
+
+  return createPortal(
+    <dialog
+      ref={dialogRef}
+      className="reflection-delete-dialog"
+      aria-labelledby="reflection-delete-title"
+      aria-describedby="reflection-delete-description"
+      onClose={() => {
+        if (dialogRef.current?.open) return
+        onClose()
+      }}
+      onCancel={(event) => {
+        event.preventDefault()
+        closeDialog()
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) closeDialog()
+      }}
+    >
+      <div className="reflection-delete-dialog__content">
+        <h2 id="reflection-delete-title">Delete this reflection?</h2>
+        <p id="reflection-delete-description">
+          From {dateStr} at {timeStr}. It will be removed from your reflection history and can’t be undone.
+        </p>
+        <div className="reflection-delete-dialog__actions">
+          <button
+            ref={cancelRef}
+            type="button"
+            className="reflection-delete-dialog__cancel"
+            onClick={closeDialog}
+            disabled={deleting}
+          >
+            Keep reflection
+          </button>
+          <button
+            type="button"
+            className="reflection-delete-dialog__confirm"
+            onClick={onConfirm}
+            disabled={deleting}
+          >
+            {deleting ? 'Deleting…' : 'Delete reflection'}
+          </button>
+        </div>
+      </div>
+    </dialog>,
+    document.body,
+  )
+}
+
+function HistoryCard({ checkin, onDelete }) {
+  const [expanded, setExpanded] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
+  const mood = scoreLabel('mood', checkin.moodScore)
+  const energy = scoreLabel('energy', checkin.energyScore)
+  const drain = scoreLabel('drain', checkin.drainScore)
+
+  const hasEmotions = checkin.emotions && checkin.emotions.length > 0
+  const hasContextTags = checkin.contextTags && checkin.contextTags.length > 0
+  const isLongNote = checkin.note && checkin.note.length > 120
+
+  const dateStr = new Date(checkin.occurredAt).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+  const timeStr = new Date(checkin.occurredAt).toLocaleTimeString(undefined, {
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    try {
+      await onDelete(checkin.id)
+    } finally {
+      setDeleting(false)
+      setDeleteOpen(false)
+    }
+  }
+
+  return (
+    <article className="history-card">
+      <header className="history-card__header">
+        <div className="history-card__meta">
+          <time className="history-card__date" dateTime={checkin.occurredAt}>
+            {dateStr}
+          </time>
+          <span className="history-card__time">{timeStr}</span>
+        </div>
+        <div className="history-card__actions">
+          <button
+            type="button"
+            className="btn-ghost btn-sm history-card__delete-btn"
+            onClick={() => setDeleteOpen(true)}
+            aria-label={`Delete check-in from ${dateStr} ${timeStr}`}
+          >
+            Delete
+          </button>
+        </div>
+      </header>
+
+      <div className="history-card__scores">
+        <div className="history-card__score-box" aria-label={`Mood: ${mood.text}`}>
+          <span className={`history-card__score-icon ${mood.cls}`}>
+            <FaceIcon score={checkin.moodScore} />
+          </span>
+          <span className="history-card__score-sub">{mood.text}</span>
+        </div>
+        <div className="history-card__score-box" aria-label={`Energy: ${energy.text}`}>
+          <span className={`history-card__score-icon ${energy.cls}`}>
+            <EnergyIcon score={checkin.energyScore} />
+          </span>
+          <span className="history-card__score-sub">{energy.text}</span>
+        </div>
+        <div className="history-card__score-box" aria-label={`Feeling drained: ${drain.text}`}>
+          <span className={`history-card__score-icon ${drain.cls}`}>
+            <DrainIcon score={checkin.drainScore} />
+          </span>
+          <span className="history-card__score-sub">{drain.text}</span>
+        </div>
+      </div>
+
+      {checkin.note && (
+        <div className="history-card__note-lines">
+          {expanded ? (
+            <p className="history-card__note">{checkin.note}</p>
+          ) : (
+            <p className="history-card__note-preview">
+              {checkin.note.length > 120
+                ? `${checkin.note.slice(0, 120)}…`
+                : checkin.note}
+            </p>
+          )}
+        </div>
+      )}
+
+      {(hasEmotions || hasContextTags || isLongNote) && (
+        <div className="history-card__optionals">
+          {hasEmotions && (
+            <div className="history-card__optional-box">
+              {checkin.emotions.map((e, idx) => (
+                <span key={`emo-${idx}`} className="chip chip--emotion">
+                  {e}
+                </span>
+              ))}
+            </div>
+          )}
+          {hasContextTags && (
+            <div className="history-card__optional-box">
+              {checkin.contextTags.map((tag, idx) => (
+                <span key={`tag-${idx}`} className="chip chip--context">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+          {isLongNote && (
+            <div className="history-card__optional-box history-card__optional-box--action">
+              <button
+                type="button"
+                className="btn-link history-card__expand-btn"
+                onClick={() => setExpanded(!expanded)}
+                aria-expanded={expanded}
+              >
+                {expanded ? 'Show less' : 'Read full note'}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {deleteOpen && (
+        <DeleteCheckinDialog
+          dateStr={dateStr}
+          timeStr={timeStr}
+          open={deleteOpen}
+          onClose={() => setDeleteOpen(false)}
+          onConfirm={handleDelete}
+          deleting={deleting}
+        />
+      )}
+    </article>
+  )
+}
+
+export default function CheckInHistoryList({ checkins = [], onDelete }) {
+  if (!checkins || checkins.length === 0) {
+    return (
+      <div className="checkin-history__empty-card">
+        <p className="checkin-history__empty-title">No reflections yet</p>
+        <p className="checkin-history__empty-desc">
+          Save your first reflection above to build your history.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="checkin-history__timeline" role="feed" aria-label="Past reflections">
+      {checkins.map((checkin) => (
+        <HistoryCard key={checkin.id} checkin={checkin} onDelete={onDelete} />
+      ))}
+    </div>
+  )
+}

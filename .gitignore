@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Builds
+dist/
+client/dist/
+server/dist/
+build/
+coverage/
+
+# Env files — never commit real secrets
+.env
+.env.*
+!.env.example
+.env.local
+.env.production
+
+# Test output
+playwright-report/
+test-results/
+e2e/artifacts/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Vite
+.vite/

@@ -1,0 +1,20 @@
+# Root build context — keep it small and secret-free.
+# Service Dockerfiles COPY only manifests + their service dir; compose injects
+# real env at runtime via env_file, never baked into images.
+node_modules/
+client/node_modules/
+server/node_modules/
+build/
+coverage/
+playwright-report/
+test-results/
+.env
+.env.*
+*.log
+npm-debug.log*
+.git/
+.vite/
+
+# Allow dist folders for production Dockerfile COPY --from=builder
+!client/dist/
+!server/dist/
