@@ -2561,13 +2561,11 @@ article>ul li {
 }
 
 .insights-hero__copy {
->>>>>>> new
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-<<<<<<< HEAD
 .insights-page__lead {
   font-size: 0.98rem;
   color: var(--text-muted);
