@@ -8,7 +8,7 @@ name: render-redeploy
 
 on:
   push:
-    branches: [sm4.1]
+    branches: [sm4.2]
   workflow_dispatch: {}
 
 concurrency:
