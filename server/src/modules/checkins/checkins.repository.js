@@ -39,6 +39,34 @@ export async function listCheckins(userId, { limit, offset }) {
   return rows;
 }
 
+// All-time totals for the user's own history — one row, indexed by
+// (user_id, occurred_at), used by the Insights overview.
+export async function getCheckinStats(userId) {
+  const { rows } = await dbQuery(
+    `SELECT
+       COUNT(*)::int AS total,
+       MIN(occurred_at) AS first_checkin_at
+     FROM checkins
+     WHERE user_id = $1`,
+    [userId],
+  )
+  return rows[0]
+}
+
+// Average drain and check-in volume inside a rolling window — used by the
+// Insights overview's quiet weekly stat.
+export async function getDrainAverageSince(userId, sinceDate) {
+  const { rows } = await dbQuery(
+    `SELECT
+       AVG(drain_score)::float AS avg_drain,
+       COUNT(*)::int AS checkins
+     FROM checkins
+     WHERE user_id = $1 AND occurred_at >= $2`,
+    [userId, sinceDate],
+  )
+  return rows[0]
+}
+
 export async function findCheckinById(userId, id) {
   const { rows } = await dbQuery(
     `SELECT ${COLUMNS} FROM checkins WHERE id = $1 AND user_id = $2`,

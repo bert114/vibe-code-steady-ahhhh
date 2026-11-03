@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useInsightsStore } from '../store.js'
+import WeeklyBurnout from '../components/WeeklyBurnout.jsx'
 import './InsightsPage.css'
 
 function IconClock({ size = 16 }) {
@@ -75,6 +76,53 @@ function TypeLabel(type) {
     general: 'General Trend',
   }
   return labels[type] || labels.general
+}
+
+function CheckinTotal({ total, firstCheckinAt }) {
+  if (!total) return null
+
+  const since = firstCheckinAt
+    ? new Date(firstCheckinAt).toLocaleDateString(undefined, {
+        month: 'long',
+        year: 'numeric',
+      })
+    : null
+
+  return (
+    <p className="insights-hero__total">
+      <span className="insights-hero__total-value">{total.toLocaleString()}</span>{' '}
+      <span className="insights-hero__total-label">
+        {total === 1 ? 'check-in' : 'check-ins'} logged{since ? ` since ${since}` : ''}
+      </span>
+    </p>
+  )
+}
+
+function WeeklyDrain({ weeklyDrain }) {
+  const average = weeklyDrain?.averageDrain
+  if (typeof average !== 'number') return null
+
+  return (
+    <p className="insights-hero__total insights-hero__total--drain">
+      <span className="insights-hero__total-value">{average}</span>{' '}
+      <span className="insights-hero__total-label">
+        / 5 average interaction drain, last 7 days
+      </span>
+    </p>
+  )
+}
+
+function HeroLedger({ total, firstCheckinAt, weeklyDrain }) {
+  const hasTotal = Boolean(total)
+  const hasDrain = typeof weeklyDrain?.averageDrain === 'number'
+  if (!hasTotal && !hasDrain) return null
+
+  return (
+    <div className="insights-hero__ledger">
+      <CheckinTotal total={total} firstCheckinAt={firstCheckinAt} />
+      <WeeklyDrain weeklyDrain={weeklyDrain} />
+    </div>
+  )
 }
 
 function BetaBanner({ status, notice }) {
@@ -281,7 +329,18 @@ function CloserLook({ insights }) {
 }
 
 export default function InsightsPage() {
-  const { insights, lastInsight, status, notice, load, analyze } = useInsightsStore()
+  const {
+    insights,
+    lastInsight,
+    totalCheckins,
+    firstCheckinAt,
+    weeklyDrain,
+    weeklyBurnout,
+    status,
+    notice,
+    load,
+    analyze,
+  } = useInsightsStore()
   const [activeTab, setActiveTab] = useState('all')
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const busy = status === 'analyzing'
@@ -317,6 +376,11 @@ export default function InsightsPage() {
             Gentle observations from your check-ins, to help you notice what&rsquo;s been taking
             shape.
           </p>
+          <HeroLedger
+            total={totalCheckins}
+            firstCheckinAt={firstCheckinAt}
+            weeklyDrain={weeklyDrain}
+          />
           <p className="insights-hero__note">
             <IconClock size={15} />
             <span>These are reflections on your check-ins, never medical diagnoses.</span>
@@ -340,6 +404,8 @@ export default function InsightsPage() {
 
       <div className="insights-layout">
         <div className="insights-feed-col">
+          <WeeklyBurnout weeklyBurnout={weeklyBurnout} />
+
           <div className="insights-section-head">
             <div className="insights-section-head__text">
               <p className="insights-section-head__eyebrow">Your reflections</p>

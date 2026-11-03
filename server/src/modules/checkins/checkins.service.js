@@ -34,11 +34,34 @@ export async function getCheckinById(userId, id) {
   return toApi(await repository.findCheckinById(userId, id))
 }
 
+// All-time history size for the user — factual count only, no scoring.
+export async function getCheckinStats(userId) {
+  const row = await repository.getCheckinStats(userId)
+  return {
+    totalCheckins: row?.total ?? 0,
+    firstCheckinAt: row?.first_checkin_at ?? null,
+  }
+}
+
 export async function removeCheckin(userId, id) {
   return repository.deleteCheckinById(userId, id)
 }
 
 const TOP_TAGS_LIMIT = 5
+const WEEK_DAYS = 7
+
+// Rolling weekly drain average: check-in level (each check-in weighted
+// equally), not daily-bucket level. Null when the window has no check-ins.
+export async function getWeeklyDrain(userId) {
+  const sinceDate = new Date(Date.now() - WEEK_DAYS * 24 * 60 * 60 * 1000)
+  const row = await repository.getDrainAverageSince(userId, sinceDate)
+  const checkins = row?.checkins ?? 0
+  return {
+    windowDays: WEEK_DAYS,
+    averageDrain: checkins > 0 ? round1(row.avg_drain) : null,
+    checkins,
+  }
+}
 
 function round1(n) {
   return Math.round(n * 10) / 10

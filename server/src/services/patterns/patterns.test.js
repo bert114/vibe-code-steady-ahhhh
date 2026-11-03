@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { detectBoundarySignals } from './boundary.rules.js'
-import { detectBurnoutSignals } from './burnout.rules.js'
+import { detectBurnoutSignals, summarizeWeeklyBurnout } from './burnout.rules.js'
 
 // Fixtures mirror repository rows (snake_case). Dates are relative to "now"
 // so the rolling window logic is exercised, not wall-clock values.
@@ -67,6 +67,44 @@ describe('burnout rules', () => {
     expect(detectBurnoutSignals(rows)).toEqual([])
     const signals = detectBurnoutSignals(rows, { minCheckins: 2 })
     expect(signals.map((s) => s.type)).toContain('low_energy_streak')
+  })
+})
+
+describe('weekly burnout summary', () => {
+  const signal = (type) => ({ type, evidence: {} })
+
+  it('is elevated when two burnout signals overlap', () => {
+    const summary = summarizeWeeklyBurnout(
+      [
+        signal('low_energy_streak'),
+        signal('high_drain_repeat'),
+        signal('repeated_draining_context'),
+      ],
+      { checkins: 4 },
+    )
+    expect(summary.level).toBe('elevated')
+    expect(summary.checkins).toBe(4)
+    expect(summary.minimumCheckins).toBe(3)
+    expect(summary.signals.map((s) => s.type)).toEqual([
+      'low_energy_streak',
+      'high_drain_repeat',
+    ])
+  })
+
+  it('is some strain for one burnout signal', () => {
+    expect(summarizeWeeklyBurnout([signal('repeated_emotions')], { checkins: 3 }).level).toBe(
+      'some_strain',
+    )
+  })
+
+  it('is steady without burnout signals', () => {
+    expect(summarizeWeeklyBurnout([], { checkins: 3 }).level).toBe('steady')
+  })
+
+  it('is insufficient below the check-in minimum even when signals exist', () => {
+    const summary = summarizeWeeklyBurnout([signal('low_energy_streak')], { checkins: 2 })
+    expect(summary.level).toBe('insufficient')
+    expect(summary.checkins).toBe(2)
   })
 })
 

@@ -1,11 +1,8 @@
 // HTTP only: read validated data, call services, return responses.
 // No SQL here, no business rules here.
-import {
-  analyzeRecentCheckins,
-  getInsightById,
-  getLatestInsights,
-} from "../../services/ai/ai.service.js";
+import { getInsightById } from "../../services/ai/ai.service.js";
 import { analyzeUserPatterns } from "../../services/patterns/pattern.service.js";
+import { analyzeInsights, getInsightsOverview } from "./insights.service.js";
 
 export async function getSignals(req, res, next) {
   try {
@@ -27,7 +24,7 @@ export async function getSignals(req, res, next) {
 
 export async function postAnalyze(req, res, next) {
   try {
-    const result = await analyzeRecentCheckins(req.user.id);
+    const result = await analyzeInsights(req.user.id);
     // Audit enrichment: what the analysis produced (counts/flags only).
     // What was sent externally is logged by the AI provider itself.
     if (req.audit) {
@@ -37,6 +34,10 @@ export async function postAnalyze(req, res, next) {
         fresh: result.fresh,
         hasLastInsight: Boolean(result.lastInsight),
         messageChars: typeof result.message === 'string' ? result.message.length : 0,
+        totalCheckins: result.totalCheckins,
+        weeklyDrainCheckins: result.weeklyDrain?.checkins,
+        weeklyBurnoutLevel: result.weeklyBurnout?.level,
+        weeklyBurnoutSignals: result.weeklyBurnout?.signals?.length ?? 0,
       };
     }
     res.status(202).json(result);
@@ -47,7 +48,7 @@ export async function postAnalyze(req, res, next) {
 
 export async function getInsights(req, res, next) {
   try {
-    res.json({ insights: await getLatestInsights(req.user.id) });
+    res.json(await getInsightsOverview(req.user.id));
   } catch (err) {
     next(err);
   }

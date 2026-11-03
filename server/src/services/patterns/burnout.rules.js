@@ -78,4 +78,34 @@ export function detectBurnoutSignals(allRows, overrides = {}) {
   return signals
 }
 
+const BURNOUT_SIGNAL_TYPES = new Set([
+  'low_energy_streak',
+  'high_drain_repeat',
+  'repeated_emotions',
+])
+
+export function summarizeWeeklyBurnout(signals, { checkins = 0, minCheckins, windowDays } = {}) {
+  const t = thresholds()
+  const minimum = minCheckins ?? t.minCheckins
+  const days = windowDays ?? t.windowDays
+  const parsedCheckins = Number(checkins)
+  const count = Number.isFinite(parsedCheckins) ? parsedCheckins : 0
+  const burnoutSignals = (signals ?? []).filter((signal) =>
+    BURNOUT_SIGNAL_TYPES.has(signal?.type),
+  )
+
+  let level = 'steady'
+  if (count < minimum) level = 'insufficient'
+  else if (burnoutSignals.length >= 2) level = 'elevated'
+  else if (burnoutSignals.length === 1) level = 'some_strain'
+
+  return {
+    windowDays: days,
+    checkins: count,
+    minimumCheckins: minimum,
+    level,
+    signals: burnoutSignals,
+  }
+}
+
 export { thresholds }

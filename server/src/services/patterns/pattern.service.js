@@ -4,22 +4,19 @@
 // No AI, no persistence, no external calls.
 import { listCheckins } from '../../modules/checkins/checkins.repository.js'
 import { detectBoundarySignals } from './boundary.rules.js'
-import { detectBurnoutSignals } from './burnout.rules.js'
-
-function analysisWindowDays() {
-  return Number(process.env.BURNOUT_SIGNAL_WINDOW_DAYS ?? 7)
-}
+import { detectBurnoutSignals, thresholds } from './burnout.rules.js'
 
 export async function analyzeUserPatterns(userId) {
   // Fetch generously; rules apply the window themselves.
   const rows = await listCheckins(userId, { limit: 100, offset: 0 })
-  const windowDays = analysisWindowDays()
+  const { windowDays, minCheckins } = thresholds()
   return {
     windowDays,
+    minCheckins,
     checkinsConsidered: rows.length,
     signals: [
-      ...detectBurnoutSignals(rows, { windowDays }),
-      ...detectBoundarySignals(rows, { windowDays }),
+      ...detectBurnoutSignals(rows, { windowDays, minCheckins }),
+      ...detectBoundarySignals(rows, { windowDays, minCheckins }),
     ],
   }
 }

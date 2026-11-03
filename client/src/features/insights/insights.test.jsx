@@ -70,6 +70,194 @@ describe('insights page', () => {
     expect(items.join(' ')).not.toMatch(/you must|toxic|diagnos/i)
   })
 
+  it('shows the all-time check-in total with the insights', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            insights: [],
+            totalCheckins: 128,
+            firstCheckinAt: '2026-03-04T10:00:00.000Z',
+            weeklyDrain: { windowDays: 7, averageDrain: 3.4, checkins: 6 },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      ),
+    )
+    render(
+      <MemoryRouter>
+        <InsightsPage />
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText('128')).toBeInTheDocument()
+    expect(screen.getByText(/check-ins logged since \w+ \d{4}/)).toBeInTheDocument()
+    expect(screen.getByText('3.4')).toBeInTheDocument()
+    expect(screen.getByText(/\/ 5 average interaction drain, last 7 days/)).toBeInTheDocument()
+  })
+
+  it('hides the weekly drain when the last 7 days have no check-ins', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            insights: [],
+            totalCheckins: 128,
+            firstCheckinAt: '2026-03-04T10:00:00.000Z',
+            weeklyDrain: { windowDays: 7, averageDrain: null, checkins: 0 },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      ),
+    )
+    render(
+      <MemoryRouter>
+        <InsightsPage />
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText('128')).toBeInTheDocument()
+    expect(screen.queryByText(/average interaction drain/i)).not.toBeInTheDocument()
+  })
+
+  it('shows the weekly burnout level with its evidence', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            insights: [],
+            weeklyBurnout: {
+              windowDays: 7,
+              checkins: 5,
+              minimumCheckins: 3,
+              level: 'elevated',
+              signals: [
+                {
+                  type: 'low_energy_streak',
+                  evidence: { checkins: 5, lowEnergyCount: 3 },
+                },
+                {
+                  type: 'high_drain_repeat',
+                  evidence: { checkins: 5, highDrainCount: 3 },
+                },
+                {
+                  type: 'repeated_emotions',
+                  evidence: { checkins: 5, repeated: [{ tag: 'tired', count: 3 }] },
+                },
+              ],
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      ),
+    )
+    render(
+      <MemoryRouter>
+        <InsightsPage />
+      </MemoryRouter>,
+    )
+
+    expect(
+      await screen.findByRole('heading', { name: 'Burnout signals this week' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Elevated')).toBeInTheDocument()
+    expect(screen.getByText('Several strain signals overlapped this week.')).toBeInTheDocument()
+    expect(screen.getByText('Low energy in 3 of your last 5 check-ins.')).toBeInTheDocument()
+    expect(screen.getByText('High drain in 3 of your last 5 check-ins.')).toBeInTheDocument()
+    expect(screen.getByText('Repeated feelings: tired.')).toBeInTheDocument()
+    expect(
+      screen.getByText(/Based on 5 check-ins in the last 7 days\. Observation, not a diagnosis\./),
+    ).toBeInTheDocument()
+  })
+
+  it('shows a gathering state when the week has too few check-ins', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            insights: [],
+            weeklyBurnout: {
+              windowDays: 7,
+              checkins: 2,
+              minimumCheckins: 3,
+              level: 'insufficient',
+              signals: [],
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      ),
+    )
+    render(
+      <MemoryRouter>
+        <InsightsPage />
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText('Not enough yet')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'A weekly pattern needs at least 3 check-ins. You have 2 check-ins in the last 7 days.',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/Low energy in/)).not.toBeInTheDocument()
+    expect(screen.getByText(/Observation, not a diagnosis\./)).toBeInTheDocument()
+  })
+
+  it('shows a steady week without an evidence list', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            insights: [],
+            weeklyBurnout: {
+              windowDays: 7,
+              checkins: 4,
+              minimumCheckins: 3,
+              level: 'steady',
+              signals: [],
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      ),
+    )
+    render(
+      <MemoryRouter>
+        <InsightsPage />
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText('Steady')).toBeInTheDocument()
+    expect(screen.getByText(/No burnout signals stood out/)).toBeInTheDocument()
+    expect(screen.queryByRole('list', { name: /Burnout signals/ })).not.toBeInTheDocument()
+  })
+
+  it('hides the total until there is check-in history', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            insights: [],
+            totalCheckins: 0,
+            firstCheckinAt: null,
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      ),
+    )
+    render(
+      <MemoryRouter>
+        <InsightsPage />
+      </MemoryRouter>,
+    )
+
+    expect(
+      await screen.findByRole('heading', { name: 'Your check-ins will shape this space' }),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/check-ins logged/i)).not.toBeInTheDocument()
+  })
+
   it('filters insights by category tabs', async () => {
     vi.stubGlobal('fetch', () =>
       Promise.resolve(
