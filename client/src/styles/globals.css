@@ -5260,4 +5260,1187 @@ dialog[data-impeccable-live-open] {
   }
 }
 
+/* ==========================================================================
+   Steady Mind Recovery Breaks — Warm cream cards, segmented timers, tactile tiles
+   ========================================================================== */
+
+.recovery-modal {
+  border: 1px solid #ded5c8;
+  border-radius: 20px;
+  background: #fbf9f4;
+  color: #292723;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+  max-width: 580px;
+  width: calc(100vw - 2rem);
+  padding: 0;
+  margin: auto;
+  animation: modal-fade-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.recovery-modal::backdrop {
+  background: rgba(24, 22, 19, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+.recovery-modal__content {
+  padding: 1.6rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.recovery-modal__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.recovery-modal__top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.recovery-stepper-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+
+.recovery-stepper-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #ded6cb;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.recovery-stepper-dot.is-active {
+  width: 20px;
+  background: #914a2c;
+  box-shadow: 0 1px 4px rgba(145, 74, 44, 0.3);
+}
+
+.recovery-modal__close-btn {
+  background: transparent;
+  border: none;
+  color: #7b736a;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 140ms ease;
+}
+
+.recovery-modal__close-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.recovery-modal__close-btn:hover {
+  background: #ede5da;
+  color: #292723;
+}
+
+.recovery-modal__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8b5638;
+  background: #f4ede3;
+  padding: 0.24rem 0.65rem;
+  border-radius: 999px;
+  width: fit-content;
+  border: 1px solid rgba(139, 86, 56, 0.12);
+}
+
+.recovery-modal__eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e9946c;
+  box-shadow: 0 0 0 2px rgba(233, 148, 108, 0.25);
+}
+
+/* 7-Segment Arched Energy Gauge */
+.recovery-arch-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0.25rem auto 0.5rem;
+  position: relative;
+  width: fit-content;
+}
+
+.recovery-arch-svg {
+  width: 175px;
+  height: 90px;
+  overflow: visible;
+}
+
+.recovery-arch-segment--active {
+  filter: drop-shadow(0 2px 4px rgba(224, 122, 95, 0.25));
+  transition: all 300ms ease;
+}
+
+.recovery-arch-center-note {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.recovery-arch-center-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #914a2c;
+  background: #f4e4d9;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(145, 74, 44, 0.15);
+}
+
+.recovery-step-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  animation: recovery-step-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes recovery-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recovery-step-pane--notice {
+  text-align: center;
+  align-items: center;
+}
+
+.recovery-step-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.recovery-step-pane--notice .recovery-step-copy {
+  align-items: center;
+}
+
+.recovery-modal__title {
+  font-family: 'Steady Sans', Satoshi, system-ui, sans-serif;
+  font-size: clamp(1.4rem, 3.8vw, 1.85rem);
+  font-weight: 300;
+  line-height: 1.25;
+  color: #292723;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.recovery-modal__lead {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #6f6861;
+  margin: 0;
+  max-width: 48ch;
+}
+
+.recovery-modal__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.recovery-modal__label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7b736a;
+}
+
+.recovery-activities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+}
+
+.recovery-activity-tile {
+  background: #f5efe6;
+  border: 1px solid #e7ded2;
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  cursor: pointer;
+  transition: all 180ms ease;
+  position: relative;
+}
+
+.recovery-activity-tile:hover {
+  background: #ece4d6;
+  border-color: #d8cebf;
+  transform: translateY(-1px);
+}
+
+.recovery-activity-tile.is-selected {
+  border-color: #914a2c;
+  background: #fffdf9;
+  box-shadow: 0 0 0 2px rgba(145, 74, 44, 0.35);
+}
+
+.recovery-activity-tile__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.recovery-activity-tile__icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #ede5da;
+  display: grid;
+  place-items: center;
+  color: #914a2c;
+}
+
+.recovery-activity-tile__icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.recovery-activity-tile__badge {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: #8b5638;
+  background: #faeee2;
+  border: 1px solid rgba(233, 148, 108, 0.3);
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.recovery-activity-tile__name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #292723;
+}
+
+.recovery-activity-tile__hint {
+  font-size: 0.76rem;
+  line-height: 1.35;
+  color: #6f6861;
+}
+
+.recovery-duration-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+}
+
+.recovery-duration-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.85rem 0.5rem;
+  border-radius: 14px;
+  border: 1px solid #e7ded2;
+  background: #f5efe6;
+  color: #292723;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.recovery-duration-pill__mins {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.recovery-duration-pill__nuance {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.recovery-duration-pill:hover {
+  background: #ece4d6;
+  border-color: #d8cebf;
+}
+
+.recovery-duration-pill.is-selected {
+  background: #914a2c;
+  color: #fffdf8;
+  border-color: #914a2c;
+  box-shadow: 0 4px 12px -2px rgba(145, 74, 44, 0.35);
+}
+
+.recovery-duration-pill.is-selected .recovery-duration-pill__mins {
+  color: #fffdf8;
+}
+
+.recovery-duration-pill.is-selected .recovery-duration-pill__nuance {
+  color: rgba(255, 253, 248, 0.85);
+}
+
+.recovery-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.4rem;
+}
+
+.recovery-modal__actions--center {
+  justify-content: center;
+}
+
+.recovery-modal__start-btn {
+  background: #914a2c;
+  color: #fffdf8;
+  border-radius: 999px;
+  padding: 0.75rem 1.6rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 180ms ease;
+  box-shadow: 0 4px 14px -3px rgba(145, 74, 44, 0.35);
+}
+
+.recovery-modal__start-btn:hover {
+  background: #7a3d24;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px -3px rgba(145, 74, 44, 0.45);
+}
+
+.recovery-modal__back-btn {
+  background: transparent;
+  border: 1px solid #d8d0c5;
+  color: #6f6861;
+  border-radius: 999px;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.recovery-modal__back-btn:hover {
+  background: #ede5da;
+  color: #292723;
+  border-color: #cfc4b8;
+}
+
+.recovery-modal__dismiss-btn {
+  background: transparent;
+  border: none;
+  color: #7b736a;
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0.4rem;
+}
+
+.recovery-modal__dismiss-btn:hover {
+  color: #292723;
+}
+
+/* Distilled Recovery Modal (Calm Sanctuary) */
+.recovery-modal__content--calm {
+  padding: 1.75rem 2rem 1.6rem;
+  gap: 1.25rem;
+  background: #fbf9f4;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.recovery-modal__header--end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.recovery-modal__calm-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.recovery-modal__calm-activities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+}
+
+@media (max-width: 520px) {
+  .recovery-modal__calm-activities {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.recovery-modal__calm-activity-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #f5efe6;
+  border: 1px solid #e7ded2;
+  border-radius: 12px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: #3d3934;
+  cursor: pointer;
+  text-align: left;
+  transition: all 140ms ease;
+}
+
+.recovery-modal__calm-activity-chip:hover {
+  background: #ede5da;
+  border-color: #d8cebf;
+}
+
+.recovery-modal__calm-activity-chip.is-selected {
+  background: #f4e8dc;
+  border-color: #914a2c;
+  color: #914a2c;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(145, 74, 44, 0.15);
+}
+
+.recovery-modal__calm-activity-icon {
+  width: 17px;
+  height: 17px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.recovery-modal__calm-activity-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.recovery-modal__calm-activity-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recovery-modal__calm-activity-badge {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #8b5638;
+  background: #faeee2;
+  border: 1px solid rgba(233, 148, 108, 0.3);
+  border-radius: 999px;
+  padding: 0.1rem 0.35rem;
+  letter-spacing: 0.03em;
+}
+
+.recovery-modal__calm-custom-trigger {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.35rem;
+}
+
+.recovery-modal__add-custom-link {
+  background: transparent;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #8b5638;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  transition: color 140ms ease;
+}
+
+.recovery-modal__add-custom-link:hover {
+  color: #914a2c;
+  text-decoration: underline;
+}
+
+.recovery-custom-form--calm {
+  width: 100%;
+  background: #f5efe6;
+  border: 1px solid #e7ded2;
+  border-radius: 12px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  text-align: left;
+}
+
+.recovery-modal__calm-durations {
+  display: inline-flex;
+  background: #f3ece1;
+  padding: 3px;
+  border-radius: 999px;
+  gap: 2px;
+  margin: 0.5rem 0;
+}
+
+.recovery-modal__calm-dur-chip {
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #6f6861;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.recovery-modal__calm-dur-chip.is-selected {
+  background: #ffffff;
+  color: #292723;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.recovery-modal__actions--column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.recovery-modal__start-btn--calm {
+  width: 100%;
+  max-width: 320px;
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+}
+
+.recovery-modal__skip-link {
+  background: transparent;
+  border: none;
+  color: #7b736a;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0.4rem 0.8rem;
+}
+
+.recovery-modal__skip-link:hover {
+  color: #292723;
+}
+
+/* Floating Break Timer Pill */
+.recovery-timer-pill {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 900;
+  background: #22201d;
+  color: #fbf9f3;
+  border-radius: 999px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  animation: modal-fade-in 220ms ease both;
+}
+
+.recovery-timer-pill__progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: rgba(233, 148, 108, 0.25);
+  pointer-events: none;
+  transition: width 1s linear;
+}
+
+.recovery-timer-pill__content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 1.25rem;
+}
+
+.recovery-timer-pill__indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e9946c;
+  box-shadow: 0 0 0 3px rgba(233, 148, 108, 0.3);
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+.recovery-timer-pill__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.recovery-timer-pill__name {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #fffdfa;
+}
+
+.recovery-timer-pill__countdown {
+  font-size: 0.74rem;
+  color: #cfc6bc;
+  font-variant-numeric: tabular-nums;
+}
+
+.recovery-timer-pill__btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fffdfa;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 160ms ease;
+  white-space: nowrap;
+}
+
+.recovery-timer-pill__btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Helped Prompt Choices */
+.recovery-outcomes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.recovery-outcome-btn {
+  background: #f5efe6;
+  border: 1px solid #e7ded2;
+  border-radius: 16px;
+  padding: 1.1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.recovery-outcome-btn:hover {
+  background: #ece4d6;
+  border-color: #d8cebf;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px -3px rgba(41, 39, 35, 0.1);
+}
+
+.recovery-outcome-btn--helped:hover {
+  border-color: #e9946c;
+}
+
+.recovery-outcome-btn__emoji {
+  font-size: 1.4rem;
+  margin-bottom: 0.1rem;
+}
+
+.recovery-outcome-btn strong {
+  font-size: 0.95rem;
+  color: #292723;
+}
+
+.recovery-outcome-btn span:last-child {
+  font-size: 0.76rem;
+  color: #6f6861;
+  line-height: 1.3;
+}
+
+.recovery-thankyou-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  background: #eef5f0;
+  border: 1px solid #c8e0d0;
+  color: #3b6b4e;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.recovery-thankyou-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #3b6b4e;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+}
+
+/* Dashboard Pattern Observation Card */
+.recovery-suggestion-card {
+  background: #fcfbf8;
+  border: 1px solid #ded5c8;
+  border-radius: 18px;
+  padding: 1.35rem 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 18px -6px rgba(41, 39, 35, 0.05);
+}
+
+.recovery-suggestion-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.recovery-suggestion-card__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8b5638;
+  background: #f4ede3;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  width: fit-content;
+  border: 1px solid rgba(139, 86, 56, 0.12);
+}
+
+.recovery-suggestion-card__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e9946c;
+}
+
+.recovery-suggestion-card__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #292723;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.recovery-suggestion-card__desc {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #6f6861;
+  margin: 0;
+  max-width: 58ch;
+}
+
+.recovery-suggestion-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.35rem;
+}
+
+.recovery-suggestion-card__cta {
+  background: #22201d;
+  color: #fbf9f3;
+  border-radius: 999px;
+  padding: 0.6rem 1.35rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 180ms ease;
+  box-shadow: 0 4px 12px -3px rgba(34, 32, 29, 0.2);
+}
+
+.recovery-suggestion-card__cta:hover {
+  background: #000000;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.recovery-suggestion-card__dismiss {
+  background: transparent;
+  border: none;
+  color: #7b736a;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0.4rem;
+}
+
+.recovery-suggestion-card__dismiss:hover {
+  color: #292723;
+}
+
+/* Draining Activity Alert in Modal */
+.recovery-draining-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.95rem;
+  background: #fdf5ec;
+  border: 1px solid #f2d2ba;
+  border-radius: 12px;
+  margin: 0.2rem 0;
+}
+
+.recovery-draining-alert__badge {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.recovery-draining-alert__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.recovery-draining-alert__label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: #a8582d;
+}
+
+.recovery-draining-alert__activity {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: #432b1d;
+}
+
+/* Floating Draining Activity Chip across pages */
+.recovery-draining-chip {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 850;
+  background: #fbf9f4;
+  border: 1px solid #e2d9cd;
+  border-radius: 999px;
+  box-shadow: 0 10px 32px rgba(41, 39, 35, 0.15);
+  animation: modal-fade-in 220ms ease both;
+  overflow: hidden;
+}
+
+.recovery-draining-chip__content {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.65rem 0.45rem 0.85rem;
+}
+
+.recovery-draining-chip__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e9946c;
+  animation: pulse-ring 2s infinite ease-out;
+}
+
+.recovery-draining-chip__info {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+}
+
+.recovery-draining-chip__label {
+  color: #7b736a;
+  font-size: 0.78rem;
+}
+
+.recovery-draining-chip__name {
+  color: #292723;
+  font-weight: 700;
+}
+
+.recovery-draining-chip__action {
+  background: #22201d;
+  color: #fbf9f3;
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.recovery-draining-chip__action:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+
+.recovery-draining-chip__close {
+  background: transparent;
+  border: none;
+  color: #a0978c;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.2rem 0.3rem;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.recovery-draining-chip__close:hover {
+  color: #292723;
+}
+
+/* Custom Activity Creation Form & Badges */
+.recovery-modal__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.recovery-modal__add-custom-btn {
+  background: transparent;
+  border: none;
+  color: #9c5c37;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+}
+
+.recovery-modal__add-custom-btn:hover {
+  color: #432b1d;
+}
+
+.recovery-custom-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.15rem;
+  background: #f4eee5;
+  border: 1px dashed #d6c8b7;
+  border-radius: 14px;
+  animation: modal-fade-in 180ms ease both;
+}
+
+.recovery-custom-form__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.recovery-custom-form__head strong {
+  font-size: 0.88rem;
+  color: #292723;
+}
+
+.recovery-custom-form__head span {
+  font-size: 0.76rem;
+  color: #7b736a;
+}
+
+.recovery-custom-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.recovery-custom-form__field label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #5d564f;
+}
+
+.recovery-custom-form__field input {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #dcd4c7;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 0.86rem;
+  color: #292723;
+}
+
+.recovery-custom-form__field input:focus {
+  outline: 2px solid #e9946c;
+  border-color: transparent;
+}
+
+.recovery-custom-form__error {
+  color: #b33924;
+  font-size: 0.78rem;
+  margin: 0;
+}
+
+.recovery-custom-form__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+
+.recovery-custom-form__save-btn {
+  background: #22201d;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.recovery-custom-form__save-btn:hover {
+  background: #000000;
+}
+
+.recovery-custom-form__cancel-btn {
+  background: transparent;
+  border: none;
+  color: #7b736a;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.45rem 0.65rem;
+}
+
+.recovery-activity-tile__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: flex-end;
+}
+
+.recovery-activity-tile__custom-tag {
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #734f37;
+  background: #eedfd2;
+  padding: 0.18rem 0.45rem;
+  border-radius: 999px;
+}
+
+.recovery-timer-pill__title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.recovery-timer-pill__draining-tag {
+  font-size: 0.72rem;
+  color: #d1bba7;
+  font-weight: 500;
+}
+
+.recovery-suggestion-card__draining-tag {
+  font-size: 0.68rem;
+  color: #9c5c37;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.recovery-followup-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+@media (max-width: 560px) {
+  .recovery-activities-grid {
+    grid-template-columns: 1fr;
+  }
+  .recovery-outcomes-grid {
+    grid-template-columns: 1fr;
+  }
+  .recovery-modal__actions {
+    flex-direction: column-reverse;
+  }
+  .recovery-modal__actions button {
+    width: 100%;
+    text-align: center;
+  }
+  .recovery-timer-pill {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+  }
+  .recovery-timer-pill__content {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .recovery-draining-chip {
+    bottom: 5.5rem;
+    left: 1rem;
+    right: 1rem;
+    border-radius: 16px;
+  }
+  .recovery-draining-chip__content {
+    flex-wrap: wrap;
+  }
+}
+
+
+
 

@@ -11,6 +11,7 @@ import { errorHandler, notFound } from "./middleware/error.js";
 import { checkinsRouter } from "./modules/checkins/checkins.routes.js";
 import { dashboardRouter } from "./modules/dashboard/dashboard.routes.js";
 import { insightsRouter } from "./modules/insights/insights.routes.js";
+import { recoveryRouter } from "./modules/recovery/recovery.routes.js";
 import { remindersRouter } from "./modules/reminders/reminders.routes.js";
 import { usersRouter } from "./modules/users/users.routes.js";
 import { clerkWebhookRouter } from "./modules/users/users.webhook.routes.js";
@@ -74,6 +75,7 @@ export function createApp() {
   app.use("/api/insights", insightsRouter);
   app.use("/api/reminders", remindersRouter);
   app.use("/api/dashboard", dashboardRouter);
+  app.use("/api/recovery", recoveryRouter);
   app.use("/api/users", usersRouter);
 
   app.get("/api/admin/overview", requireUser, requireRole("admin"), (req, res) => {

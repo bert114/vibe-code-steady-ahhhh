@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { hasCheckedInToday } from "./energyBattery.helpers.js";
+import { useRecoveryStore } from "../../recovery/api.js";
+import {
+  hasCheckedInToday,
+  isRecentDrainInteraction,
+  latestCheckin,
+} from "./energyBattery.helpers.js";
 
 const MOOD_CHOICES = [
   { value: 1, label: "Low", to: "/check-in?mood=1" },
@@ -52,8 +57,18 @@ function MoodFace({ score }) {
 
 export default function CheckInGuide({ checkins }) {
   const [dismissed, setDismissed] = useState(false);
+  const checkedInToday = hasCheckedInToday(checkins);
+  const latest = latestCheckin(checkins);
+  const isRecentDrain = isRecentDrainInteraction(latest);
+  const isDraining = useRecoveryStore(
+    (s) =>
+      Boolean(s.state?.drainingStatus?.isDraining) ||
+      Boolean(s.state?.suggestBreak) ||
+      Boolean(s.state?.activeBreak) ||
+      Boolean(s.state?.dueBreak)
+  );
 
-  if (dismissed || hasCheckedInToday(checkins)) {
+  if (dismissed || checkedInToday || isRecentDrain || isDraining) {
     return null;
   }
 

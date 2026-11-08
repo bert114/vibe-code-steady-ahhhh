@@ -11,6 +11,21 @@ export function hasCheckedInToday(checkins, now = new Date()) {
   return sameDay(new Date(latest.occurredAt), new Date(now))
 }
 
+export function isDrainedOrLowEnergy(checkin) {
+  if (!checkin) return false
+  const energy = Number(checkin.energyScore)
+  const mood = Number(checkin.moodScore)
+  const drain = Number(checkin.drainScore)
+  return drain === 1 || drain >= 4 || (energy > 0 && energy <= 2) || (mood > 0 && mood <= 2)
+}
+
+export function isRecentDrainInteraction(checkin, now = new Date()) {
+  if (!checkin?.occurredAt) return false
+  if (!isDrainedOrLowEnergy(checkin)) return false
+  const diffHours = (new Date(now).getTime() - new Date(checkin.occurredAt).getTime()) / (1000 * 60 * 60)
+  return diffHours >= 0 && diffHours <= 12
+}
+
 export function statusFor(energy) {
   if (energy <= 2) return { label: 'Low', className: 'tag tag--red', stroke: '#b85c3c' }
   if (energy === 3) return { label: 'Steady', className: 'tag tag--yellow', stroke: '#9a712b' }

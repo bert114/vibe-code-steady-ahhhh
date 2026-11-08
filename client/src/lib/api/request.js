@@ -27,7 +27,7 @@ function toastError(code, message, details) {
   }
 }
 
-export async function request(path, { method = "GET", body } = {}) {
+export async function request(path, { method = "GET", body, silent = false } = {}) {
   const token = await getApiToken();
   let res;
   try {
@@ -45,7 +45,7 @@ export async function request(path, { method = "GET", body } = {}) {
       "Could not reach the server.",
       [],
     );
-    toastError(err.code, err.message, err.details);
+    if (!silent) toastError(err.code, err.message, err.details);
     throw err;
   }
 
@@ -58,7 +58,7 @@ export async function request(path, { method = "GET", body } = {}) {
       err.message ?? "Something went wrong.",
       err.details ?? [],
     );
-    toastError(apiError.code, apiError.message, apiError.details);
+    if (!silent) toastError(apiError.code, apiError.message, apiError.details);
     throw apiError;
   }
 

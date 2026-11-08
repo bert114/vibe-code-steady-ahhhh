@@ -5,7 +5,12 @@ import {
   observeLiveDialogMode,
   showDialogForLiveSession,
 } from "../../../lib/ui/liveDialogMode.js";
-import { hasCheckedInToday } from "./energyBattery.helpers.js";
+import { useRecoveryStore } from "../../recovery/api.js";
+import {
+  hasCheckedInToday,
+  isRecentDrainInteraction,
+  latestCheckin,
+} from "./energyBattery.helpers.js";
 
 const MOOD_CHOICES = [
   {
@@ -81,11 +86,21 @@ export default function DailyCheckInModal({ checkins, defaultOpen }) {
   const dialogRef = useRef(null);
   const [open, setOpen] = useState(false);
   const checkedInToday = hasCheckedInToday(checkins);
+  const latest = latestCheckin(checkins);
+  const isRecentDrain = isRecentDrainInteraction(latest);
+  const isDraining = useRecoveryStore(
+    (s) =>
+      Boolean(s.state?.drainingStatus?.isDraining) ||
+      Boolean(s.state?.suggestBreak) ||
+      Boolean(s.state?.activeBreak) ||
+      Boolean(s.state?.dueBreak)
+  );
+  const shouldSuppress = checkedInToday || isRecentDrain || isDraining;
 
   useEffect(() => observeLiveDialogMode(dialogRef.current), []);
 
   useEffect(() => {
-    if (checkedInToday) {
+    if (shouldSuppress) {
       setOpen(false);
       return;
     }
@@ -105,7 +120,7 @@ export default function DailyCheckInModal({ checkins, defaultOpen }) {
     } catch {
       setOpen(true);
     }
-  }, [checkedInToday, defaultOpen]);
+  }, [shouldSuppress, defaultOpen]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -138,7 +153,7 @@ export default function DailyCheckInModal({ checkins, defaultOpen }) {
     }
   }
 
-  if (checkedInToday && !open) {
+  if ((shouldSuppress || checkedInToday) && !open) {
     return null;
   }
 

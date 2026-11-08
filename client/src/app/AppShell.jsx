@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import './AppShell.css'
 import ToastStack from '../components/ui/Toast.jsx'
 import QuickReflectionDialog from '../features/checkins/components/QuickReflectionDialog.jsx'
+import { RecoveryHost } from '../features/recovery/api.js'
 import AccountButton from './AccountButton.jsx'
 import { SignedInView } from './auth.jsx'
 
@@ -239,6 +240,7 @@ export default function AppShell({ children, variant = 'app' }) {
             </Link>
           </SignedInView>
         </div>
+        <RecoveryHost />
         <ToastStack />
       </div>
     )
@@ -307,6 +309,7 @@ export default function AppShell({ children, variant = 'app' }) {
         <div className="workspace-content">{children}</div>
       </div>
       <QuickReflectionDialog open={quickReflectionOpen} onClose={() => setQuickReflectionOpen(false)} />
+      <RecoveryHost />
       <ToastStack />
     </div>
   )

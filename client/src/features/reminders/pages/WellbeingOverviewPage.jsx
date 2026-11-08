@@ -2,7 +2,11 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import CheckInGuide from "../components/CheckInGuide.jsx";
 import DailyCheckInModal from "../components/DailyCheckInModal.jsx";
-import { latestCheckin } from "../components/energyBattery.helpers.js";
+import { BreakSuggestionCard, useRecoveryStore } from "../../recovery/api.js";
+import {
+  isRecentDrainInteraction,
+  latestCheckin,
+} from "../components/energyBattery.helpers.js";
 import EnergyBattery from "../components/EnergyBattery.jsx";
 import EnergyOverview from "../components/EnergyOverview.jsx";
 import FeedbackLink from "../components/FeedbackLink.jsx";
@@ -49,9 +53,7 @@ function CurrentBattery({ checkins }) {
         aria-labelledby="battery-label"
       >
         <div className="battery-head">
-          <h2 id="battery-label">
-            Current Energy
-          </h2>
+          <h2 id="battery-label">Current Energy</h2>
         </div>
         <div className="battery-body">
           <EnergyBattery checkins={checkins} />
@@ -76,9 +78,7 @@ function CurrentBattery({ checkins }) {
       aria-labelledby="battery-label"
     >
       <div className="battery-head">
-        <h2 id="battery-label">
-          Current Energy
-        </h2>
+        <h2 id="battery-label">Current Energy</h2>
         <p className="battery-updated">Updated {updated}</p>
       </div>
       <div className="battery-body">
@@ -132,7 +132,14 @@ function LatestPattern({ insight }) {
   );
 }
 
-function Reminders({ reminders, unreadReminders, markingId, onMarkRead }) {
+function Reminders({ reminders, unreadReminders, markingId, onMarkRead, isDraining }) {
+  if (isDraining) {
+    return (
+      <p className="dashboard-panel__empty">
+        Reminders are quieted right now while you take time to rest and recharge.
+      </p>
+    );
+  }
   if (reminders.length === 0) {
     return <p className="dashboard-panel__empty">No reminders right now.</p>;
   }
@@ -170,10 +177,20 @@ function Reminders({ reminders, unreadReminders, markingId, onMarkRead }) {
 }
 
 export default function WellbeingOverviewPage() {
-  const { summary, status, markingId, load, markRead } =
-    useDashboardStore();
+  const { summary, status, markingId, load, markRead } = useDashboardStore();
   const loading = status === "loading" || status === "idle";
   const scopeRef = useReveal([status, summary]);
+
+  const latest = latestCheckin(summary?.recentCheckins ?? []);
+  const isRecentDrain = isRecentDrainInteraction(latest);
+  const isRecoveryDraining = useRecoveryStore(
+    (s) =>
+      Boolean(s.state?.drainingStatus?.isDraining) ||
+      Boolean(s.state?.suggestBreak) ||
+      Boolean(s.state?.activeBreak) ||
+      Boolean(s.state?.dueBreak)
+  );
+  const isDraining = isRecentDrain || isRecoveryDraining;
 
   useEffect(() => {
     load();
@@ -234,6 +251,7 @@ export default function WellbeingOverviewPage() {
         unreadReminders={summary?.unreadReminders ?? 0}
         markingId={markingId}
         onMarkRead={(id) => markRead(id).catch(() => {})}
+        isDraining={isDraining}
       />
     </section>
   );
@@ -273,6 +291,7 @@ export default function WellbeingOverviewPage() {
         <>
           <DailyCheckInModal checkins={summary?.recentCheckins ?? []} />
           <CheckInGuide checkins={summary?.recentCheckins ?? []} />
+          <BreakSuggestionCard />
           {renderEnergyOverview()}
           {renderInsight()}
           {renderSupportGrid()}
@@ -291,4 +310,3 @@ export default function WellbeingOverviewPage() {
     </main>
   );
 }
-

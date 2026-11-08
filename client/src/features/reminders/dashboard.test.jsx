@@ -215,6 +215,34 @@ describe('wellbeing overview page', () => {
     expect(await screen.findByRole('heading', { name: 'Energy Overview' })).toBeInTheDocument()
     expect(screen.queryByRole('dialog', { name: /Welcome in/i })).not.toBeInTheDocument()
   })
+
+  it('suppresses check-in reminder modal, guide, and active reminder messages during a drain interaction', async () => {
+    const drainInteractionPayload = {
+      ...summaryPayload,
+      recentCheckins: [
+        {
+          id: 'c-drain',
+          occurredAt: new Date().toISOString(),
+          moodScore: 2,
+          energyScore: 1,
+          drainScore: 1, // Drain score 1 per user requirement
+        },
+      ],
+    }
+    renderPage(() => Promise.resolve(jsonResponse(drainInteractionPayload)))
+
+    expect(await screen.findByRole('heading', { name: 'Energy Overview' })).toBeInTheDocument()
+    // Daily check-in reminder popup must NOT show
+    expect(screen.queryByRole('dialog', { name: /Welcome in/i })).not.toBeInTheDocument()
+    // Daily check-in guide must NOT show
+    expect(screen.queryByRole('heading', { name: 'How are you feeling today?' })).not.toBeInTheDocument()
+    // Reminders are quieted — no unread reminder badge or reminder list messages shown
+    expect(screen.queryByText(/1 unread reminder/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/notice what overtime does/i)).not.toBeInTheDocument()
+    expect(
+      screen.getByText(/reminders are quieted right now while you take time to rest/i),
+    ).toBeInTheDocument()
+  })
 })
 
 describe('feedback link', () => {

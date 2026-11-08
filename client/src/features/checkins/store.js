@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { useToastStore } from "../../components/ui/toastStore.js";
+import { useRecoveryStore } from "../recovery/api.js";
 import { createCheckin, deleteCheckin, listCheckins } from "./api.js";
 
 const emptyDraft = {
@@ -41,6 +42,11 @@ export const useCheckinsStore = create((set, get) => ({
         draft: { ...emptyDraft },
       }));
       useToastStore.getState().success("Saved. Thank you for reflecting.");
+      try {
+        useRecoveryStore.getState().refresh();
+      } catch {
+        // Safe fail-open: recovery prompt check should never block save
+      }
       return saved;
     } catch (err) {
       set({ status: "failed", error: err?.message ?? "Could not save your reflection." });
@@ -59,6 +65,11 @@ export const useCheckinsStore = create((set, get) => ({
     });
     set((s) => ({ checkins: [saved, ...s.checkins] }));
     useToastStore.getState().success('Saved. Thank you for reflecting.');
+    try {
+      useRecoveryStore.getState().refresh();
+    } catch {
+      // Safe fail-open
+    }
     return saved;
   },
 

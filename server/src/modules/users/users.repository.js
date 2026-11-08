@@ -62,13 +62,13 @@ export async function updateUserRole(userId, role) {
 }
 
 export async function deleteUser(userId) {
-  // Cascades to checkins, insights, reminders, analysis_runs, auth_identities.
+  // Cascades to checkins, insights, reminders, recovery_breaks, analysis_runs, auth_identities.
   const { rowCount } = await dbQuery('DELETE FROM users WHERE clerk_id = $1', [userId])
   return rowCount > 0
 }
 
 export async function exportUserData(userId) {
-  const [checkinsRes, insightsRes, remindersRes] = await Promise.all([
+  const [checkinsRes, insightsRes, remindersRes, recoveryRes, customActRes] = await Promise.all([
     dbQuery(
       `SELECT id, occurred_at, mood_score, energy_score, drain_score, emotions, context_tags, note, created_at
        FROM checkins WHERE user_id = $1 ORDER BY occurred_at DESC`,
@@ -84,12 +84,24 @@ export async function exportUserData(userId) {
        FROM reminders WHERE user_id = $1 ORDER BY created_at DESC`,
       [userId],
     ),
+    dbQuery(
+      `SELECT id, checkin_id, trigger_reason, activity, duration_minutes, started_at, ends_at, outcome, answered_at
+       FROM recovery_breaks WHERE user_id = $1 ORDER BY started_at DESC`,
+      [userId],
+    ),
+    dbQuery(
+      `SELECT id, name, hint, created_at
+       FROM user_recovery_activities WHERE user_id = $1 ORDER BY created_at ASC`,
+      [userId],
+    ),
   ])
 
   return {
     checkins: checkinsRes.rows,
     insights: insightsRes.rows,
     reminders: remindersRes.rows,
+    recoveryBreaks: recoveryRes.rows,
+    customRecoveryActivities: customActRes.rows,
   }
 }
 

@@ -245,10 +245,47 @@ export default function ReflectionHistoryList({ checkins = [], onDelete }) {
   if (!checkins || checkins.length === 0) {
     return (
       <div className="checkin-history__empty-card">
+        <div className="checkin-history__empty-meter" aria-hidden="true">
+          <div className="empty-meter-col">
+            <span className="empty-meter-label">Mood</span>
+            <div className="empty-meter-bar">
+              <span className="empty-meter-segment is-active" />
+              <span className="empty-meter-segment is-active" />
+              <span className="empty-meter-segment is-active" />
+              <span className="empty-meter-segment" />
+              <span className="empty-meter-segment" />
+            </div>
+          </div>
+          <div className="empty-meter-col">
+            <span className="empty-meter-label">Energy</span>
+            <div className="empty-meter-bar">
+              <span className="empty-meter-segment is-active" />
+              <span className="empty-meter-segment is-active" />
+              <span className="empty-meter-segment is-active" />
+              <span className="empty-meter-segment is-active" />
+              <span className="empty-meter-segment" />
+            </div>
+          </div>
+          <div className="empty-meter-col">
+            <span className="empty-meter-label">Drain</span>
+            <div className="empty-meter-bar">
+              <span className="empty-meter-segment is-active-drain" />
+              <span className="empty-meter-segment" />
+              <span className="empty-meter-segment" />
+              <span className="empty-meter-segment" />
+              <span className="empty-meter-segment" />
+            </div>
+          </div>
+        </div>
         <p className="checkin-history__empty-title">No reflections yet</p>
         <p className="checkin-history__empty-desc">
           Save your first reflection above to build your history.
         </p>
+        <div className="checkin-history__empty-tags" aria-hidden="true">
+          <span className="empty-preview-tag">Focus</span>
+          <span className="empty-preview-tag">Rest</span>
+          <span className="empty-preview-tag">Boundaries</span>
+        </div>
       </div>
     )
   }

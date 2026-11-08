@@ -70,10 +70,20 @@ async function seedUser(userId) {
     userId,
     userId,
   ])
+  await dbQuery(
+    `INSERT INTO recovery_breaks (user_id, trigger_reason, activity, duration_minutes, ends_at)
+     VALUES ($1, 'latest_checkin', 'walk', 5, now() + interval '5 minutes')`,
+    [userId],
+  )
+  await dbQuery(
+    `INSERT INTO user_recovery_activities (user_id, name, hint)
+     VALUES ($1, 'Pet my cat', 'Spend a moment with pets')`,
+    [userId],
+  )
 }
 
 async function countOwned(userId) {
-  const tables = ['checkins', 'analysis_runs', 'insights', 'reminders', 'auth_identities']
+  const tables = ['checkins', 'analysis_runs', 'insights', 'reminders', 'auth_identities', 'recovery_breaks', 'user_recovery_activities']
   const counts = {}
   for (const table of tables) {
     const { rows } = await dbQuery(`SELECT COUNT(*)::int AS c FROM ${table} WHERE user_id = $1`, [
@@ -111,6 +121,8 @@ describe.skipIf(!HAS_DB)('users delete (db)', () => {
         insights: 0,
         reminders: 0,
         auth_identities: 0,
+        recovery_breaks: 0,
+        user_recovery_activities: 0,
       })
 
       // Isolation: B's rows are untouched by A's deletion.
@@ -148,6 +160,8 @@ describe.skipIf(!HAS_DB)('users delete (db)', () => {
       expect(resA.body.data.checkins.length).toBeGreaterThanOrEqual(1)
       expect(resA.body.data.insights.length).toBeGreaterThanOrEqual(1)
       expect(resA.body.data.reminders.length).toBeGreaterThanOrEqual(1)
+      expect(resA.body.data.recoveryBreaks).toHaveLength(1)
+      expect(resA.body.data.recoveryBreaks[0].activity).toBe('walk')
 
       // Verify records are scoped to USER_A, not USER_B
       for (const c of resA.body.data.checkins) {
