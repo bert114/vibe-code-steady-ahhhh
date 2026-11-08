@@ -3,11 +3,11 @@ export function signalText(signal, concise = false) {
   const e = signal.evidence ?? {}
   switch (signal.type) {
     case 'low_energy_streak':
-      if (concise) return `Low energy in ${e.lowEnergyCount} of your last ${e.checkins} check-ins.`
-      return `Low energy showed up in ${e.lowEnergyCount} of your last ${e.checkins} check-ins. Rest might be worth protecting.`
+      if (concise) return `Low energy in ${e.lowEnergyCount} of your last ${e.checkins} reflections.`
+      return `Low energy showed up in ${e.lowEnergyCount} of your last ${e.checkins} reflections. Rest might be worth protecting.`
     case 'high_drain_repeat':
-      if (concise) return `High drain in ${e.highDrainCount} of your last ${e.checkins} check-ins.`
-      return `High drain showed up in ${e.highDrainCount} of your last ${e.checkins} check-ins. Notice what those moments have in common.`
+      if (concise) return `High drain in ${e.highDrainCount} of your last ${e.checkins} reflections.`
+      return `High drain showed up in ${e.highDrainCount} of your last ${e.checkins} reflections. Notice what those moments have in common.`
     case 'repeated_emotions':
       if (concise) return `Repeated feelings: ${(e.repeated ?? []).map((r) => r.tag).join(', ')}.`
       return `These feelings keep coming up: ${(e.repeated ?? []).map((r) => r.tag).join(', ')}. There may be a pattern worth a closer look.`

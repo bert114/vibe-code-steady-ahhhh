@@ -117,7 +117,7 @@ export default function HomePage() {
     <main className="landing-page landing-page--calm">
       <section className="calm-hero" aria-labelledby="landing-title">
         <div className="calm-hero__copy calm-hero__copy--trust">
-          <p className="calm-hero__eyebrow">A private space to check in</p>
+          <p className="calm-hero__eyebrow">A private space to reflect</p>
           <h1 id="landing-title">Understand what you’re feeling.</h1>
           <p className="calm-hero__subtitle">Name the moment, notice what repeats, and stay in control of your reflections.</p>
           <AuthGatedLink to="/check-in" className="calm-hero__cta">Begin a reflection</AuthGatedLink>
@@ -125,7 +125,7 @@ export default function HomePage() {
         <div className="calm-hero__visual">
           <img
             src={landingReference}
-            alt="Three calm mobile app screens showing a simple dashboard, an insight, and a discovery view"
+            alt="Three calm mobile app screens showing a wellbeing overview, a pattern reflection, and a discovery view"
           />
         </div>
       </section>
@@ -137,12 +137,12 @@ export default function HomePage() {
             <div className="privacy-assurance__editor-actions"><button type="button" onClick={() => setIsEditing((current) => !current)}>{isEditing ? "Done editing" : "Edit layout"}</button>{isEditing && <button type="button" onClick={resetLayout}>Reset layout</button>}</div>
           </div>
         )}
-        <div className="privacy-assurance__intro-row" data-testid="privacy-intro-row"><div className="privacy-assurance__copy"><p className="privacy-assurance__eyebrow">A clearer way to check in</p><h2 id="privacy-assurance-title">What Steady-Ahh helps you do</h2></div><p className="privacy-assurance__note">Record what happened, notice what repeats, and decide what to do with your reflections.</p></div>
+        <div className="privacy-assurance__intro-row" data-testid="privacy-intro-row"><div className="privacy-assurance__copy"><p className="privacy-assurance__eyebrow">A clearer way to reflect</p><h2 id="privacy-assurance-title">What Steady-Ahh helps you do</h2></div><p className="privacy-assurance__note">Record what happened, notice what repeats, and decide what to do with your reflections.</p></div>
         <div className="privacy-assurance__panel" data-testid="privacy-card-panel">
           <div className={"privacy-assurance__visual" + (isEditing ? " privacy-assurance__card--editing" : "") + (draggedCard === "image" ? " is-dragging" : "")} data-testid="privacy-card-image" data-layout-card="image" style={cardStyle("image")} onDragOver={(event) => isEditing && event.preventDefault()} onDrop={(event) => handleDrop("image", event)} onPointerUp={(event) => saveResizedSize("image", event)}>{isEditing && <button type="button" className="privacy-assurance__card-drag-handle" draggable="true" aria-label="Drag image card to reorder" onDragStart={(event) => handleDragStart("image", event)} onDragEnd={() => setDraggedCard(null)}>⠿ Drag</button>}<img src={privacyIllustration} alt="A cream reflection journal wrapped with an apricot ribbon inside a gentle open boundary" /></div>
               <div className={"privacy-assurance__content privacy-assurance__content--summary privacy-assurance__content--headed-top privacy-assurance__content--hierarchy-airy" + (isEditing ? " privacy-assurance__card--editing" : "") + (draggedCard === "privacy" ? " is-dragging" : "")} data-testid="privacy-card-proof" data-layout-card="privacy" style={cardStyle("privacy")} onDragOver={(event) => isEditing && event.preventDefault()} onDrop={(event) => handleDrop("privacy", event)} onPointerUp={(event) => saveResizedSize("privacy", event)}>{isEditing && <button type="button" className="privacy-assurance__card-drag-handle" draggable="true" aria-label="Drag privacy card to reorder" onDragStart={(event) => handleDragStart("privacy", event)} onDragEnd={() => setDraggedCard(null)}>⠿ Drag</button>}
-                <h3 className="privacy-assurance__support-heading">Start with one moment.</h3><p className="privacy-assurance__support-copy">A quick check-in is enough.</p>
-                <ul className="privacy-assurance__capabilities-list privacy-assurance__capabilities-list--summary" aria-label="What Steady-Ahh can help you do"><li><span className="privacy-assurance__mark" aria-hidden="true">↗</span><span className="privacy-assurance__promise-copy"><strong>Check in</strong></span></li><li><span className="privacy-assurance__mark" aria-hidden="true">◌</span><span className="privacy-assurance__promise-copy"><strong>Notice patterns</strong></span></li><li><span className="privacy-assurance__mark" aria-hidden="true">⌁</span><span className="privacy-assurance__promise-copy"><strong>Reflect on boundaries</strong></span></li><li><span className="privacy-assurance__mark" aria-hidden="true">×</span><span className="privacy-assurance__promise-copy"><strong>Control your data</strong></span></li></ul>
+                <h3 className="privacy-assurance__support-heading">Start with one moment.</h3><p className="privacy-assurance__support-copy">A brief reflection is enough.</p>
+                <ul className="privacy-assurance__capabilities-list privacy-assurance__capabilities-list--summary" aria-label="What Steady-Ahh can help you do"><li><span className="privacy-assurance__mark" aria-hidden="true">↗</span><span className="privacy-assurance__promise-copy"><strong>Reflect daily</strong></span></li><li><span className="privacy-assurance__mark" aria-hidden="true">◌</span><span className="privacy-assurance__promise-copy"><strong>Notice patterns</strong></span></li><li><span className="privacy-assurance__mark" aria-hidden="true">⌁</span><span className="privacy-assurance__promise-copy"><strong>Reflect on boundaries</strong></span></li><li><span className="privacy-assurance__mark" aria-hidden="true">×</span><span className="privacy-assurance__promise-copy"><strong>Control your data</strong></span></li></ul>
                 <Link to="/settings" className="privacy-assurance__link">Review privacy &amp; settings <span aria-hidden="true">→</span></Link></div>
         </div>
       </section>

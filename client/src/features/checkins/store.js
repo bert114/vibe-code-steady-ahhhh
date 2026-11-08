@@ -40,10 +40,10 @@ export const useCheckinsStore = create((set, get) => ({
         checkins: [saved, ...s.checkins],
         draft: { ...emptyDraft },
       }));
-      useToastStore.getState().success("Saved. Thank you for checking in.");
+      useToastStore.getState().success("Saved. Thank you for reflecting.");
       return saved;
     } catch (err) {
-      set({ status: "failed", error: err?.message ?? "Could not save your check-in." });
+      set({ status: "failed", error: err?.message ?? "Could not save your reflection." });
       throw err;
     }
   },
@@ -58,7 +58,7 @@ export const useCheckinsStore = create((set, get) => ({
       note: toTrimmedNote(draft.note),
     });
     set((s) => ({ checkins: [saved, ...s.checkins] }));
-    useToastStore.getState().success('Saved. Thank you for checking in.');
+    useToastStore.getState().success('Saved. Thank you for reflecting.');
     return saved;
   },
 
@@ -68,9 +68,9 @@ export const useCheckinsStore = create((set, get) => ({
       set((s) => ({
         checkins: s.checkins.filter((c) => c.id !== id),
       }));
-      useToastStore.getState().success("Check-in removed.");
+      useToastStore.getState().success("Reflection removed.");
     } catch (err) {
-      useToastStore.getState().error(err.message || "Failed to remove check-in.");
+      useToastStore.getState().error(err.message || "Failed to remove reflection.");
       throw err;
     }
   },

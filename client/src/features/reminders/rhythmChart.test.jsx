@@ -13,12 +13,12 @@ const three = [
 ]
 
 describe('rhythm chart', () => {
-  it('renders trend lines plus hidden data table for screen readers', () => {
+  it('renders rhythm lines plus hidden data table for screen readers', () => {
     const { container } = render(<RhythmChart checkins={three} />)
-    expect(screen.getByRole('img', { name: /last 3 check-ins/i })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /last 3 reflections/i })).toBeInTheDocument()
     // 3 mood + 3 energy + 3 drain dots
     expect(container.querySelectorAll('circle').length).toBe(9)
-    expect(screen.getByText('Recent check-in scores')).toBeInTheDocument()
+    expect(screen.getByText('Recent reflection scores')).toBeInTheDocument()
   })
 
   it('marks high drain points distinctly', () => {

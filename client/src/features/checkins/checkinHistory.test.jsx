@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import CheckInHistoryList from './components/CheckInHistoryList.jsx'
+import ReflectionHistoryList from './components/ReflectionHistoryList.jsx'
 
 const sampleCheckins = [
   {
@@ -25,17 +25,17 @@ const sampleCheckins = [
   },
 ]
 
-describe('check-in history list', () => {
-  it('renders an empty state card when there are no check-ins', () => {
-    render(<CheckInHistoryList checkins={[]} onDelete={() => {}} />)
+describe('reflection history list', () => {
+  it('renders an empty state card when there are no reflections', () => {
+    render(<ReflectionHistoryList checkins={[]} onDelete={() => {}} />)
     expect(screen.getByText('No reflections yet')).toBeInTheDocument()
     expect(
       screen.getByText(/Save your first reflection above to build your history/i),
     ).toBeInTheDocument()
   })
 
-  it('renders check-in cards with scores, tags, and notes', () => {
-    render(<CheckInHistoryList checkins={sampleCheckins} onDelete={() => {}} />)
+  it('renders reflection cards with scores, tags, and notes', () => {
+    render(<ReflectionHistoryList checkins={sampleCheckins} onDelete={() => {}} />)
 
     // Scores rendered as value-only subs with full labels on the boxes
     expect(screen.getByText('Good')).toBeInTheDocument()
@@ -62,7 +62,7 @@ describe('check-in history list', () => {
 
   it('lays out groups in wireframe order: header, 3 score boxes, note lines, bottom optionals', () => {
     const { container } = render(
-      <CheckInHistoryList checkins={[sampleCheckins[0]]} onDelete={() => {}} />,
+      <ReflectionHistoryList checkins={[sampleCheckins[0]]} onDelete={() => {}} />,
     )
     const card = container.querySelector('.history-card')
     expect(card).not.toBeNull()
@@ -90,7 +90,7 @@ describe('check-in history list', () => {
   it('expands long notes from the bottom optionals row', () => {
     const longNote = `${'word '.repeat(40)}end`
     render(
-      <CheckInHistoryList
+      <ReflectionHistoryList
         checkins={[{ ...sampleCheckins[0], note: longNote }]}
         onDelete={() => {}}
       />,
@@ -103,7 +103,7 @@ describe('check-in history list', () => {
 
   it('collapses missing optionals with no empty boxes', () => {
     const { container } = render(
-      <CheckInHistoryList
+      <ReflectionHistoryList
         checkins={[
           {
             id: 'c3',
@@ -127,9 +127,9 @@ describe('check-in history list', () => {
 
   it('opens a modal before deleting a reflection', async () => {
     const onDelete = vi.fn().mockResolvedValue()
-    render(<CheckInHistoryList checkins={[sampleCheckins[0]]} onDelete={onDelete} />)
+    render(<ReflectionHistoryList checkins={[sampleCheckins[0]]} onDelete={onDelete} />)
 
-    const deleteBtn = screen.getByRole('button', { name: /delete check-in/i })
+    const deleteBtn = screen.getByRole('button', { name: /delete reflection/i })
     fireEvent.click(deleteBtn)
 
     expect(screen.getByRole('dialog')).toBeInTheDocument()
@@ -142,7 +142,7 @@ describe('check-in history list', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Keep reflection' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: /delete check-in/i }))
+    fireEvent.click(screen.getByRole('button', { name: /delete reflection/i }))
     fireEvent.click(screen.getByRole('button', { name: 'Delete reflection' }))
 
     expect(onDelete).toHaveBeenCalledWith('c1')

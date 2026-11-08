@@ -1,12 +1,12 @@
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import SignInPage from '../features/auth/pages/SignInPage.jsx'
 import SignUpPage from '../features/auth/pages/SignUpPage.jsx'
-import CheckInPage from '../features/checkins/pages/CheckInPage.jsx'
+import ReflectionPage from '../features/checkins/pages/ReflectionPage.jsx'
 import HomePage from '../features/home/pages/HomePage.jsx'
-import InsightsPage from '../features/insights/pages/InsightsPage.jsx'
-import DashboardPage from '../features/reminders/pages/DashboardPage.jsx'
-import TrendsPage from '../features/trends/pages/TrendsPage.jsx'
-import SettingsPage from '../features/users/pages/SettingsPage.jsx'
+import PatternsAndBoundariesPage from '../features/insights/pages/PatternsAndBoundariesPage.jsx'
+import WellbeingOverviewPage from '../features/reminders/pages/WellbeingOverviewPage.jsx'
+import EnergyOverTimePage from '../features/trends/pages/EnergyOverTimePage.jsx'
+import PrivacyAndSettingsPage from '../features/users/pages/PrivacyAndSettingsPage.jsx'
 import AppShell from './AppShell.jsx'
 import { AuthProvider, RequireAuth } from './auth.jsx'
 
@@ -16,7 +16,7 @@ function Placeholder({ title, hint }) {
       <h1>{title}</h1>
       {hint ? <p>{hint}</p> : null}
       <p>
-        <Link to="/dashboard">Go to your dashboard</Link>
+        <Link to="/dashboard">Go to your wellbeing overview</Link>
       </p>
     </main>
   )
@@ -50,7 +50,15 @@ export default function AppRouter() {
             path="/dashboard"
             element={
               <Shell needsAuth>
-                <DashboardPage />
+                <WellbeingOverviewPage />
+              </Shell>
+            }
+          />
+          <Route
+            path="/wellbeing"
+            element={
+              <Shell needsAuth>
+                <WellbeingOverviewPage />
               </Shell>
             }
           />
@@ -58,7 +66,15 @@ export default function AppRouter() {
             path="/trends"
             element={
               <Shell needsAuth>
-                <TrendsPage />
+                <EnergyOverTimePage />
+              </Shell>
+            }
+          />
+          <Route
+            path="/energy-over-time"
+            element={
+              <Shell needsAuth>
+                <EnergyOverTimePage />
               </Shell>
             }
           />
@@ -66,7 +82,15 @@ export default function AppRouter() {
             path="/check-in"
             element={
               <Shell needsAuth>
-                <CheckInPage />
+                <ReflectionPage />
+              </Shell>
+            }
+          />
+          <Route
+            path="/reflection"
+            element={
+              <Shell needsAuth>
+                <ReflectionPage />
               </Shell>
             }
           />
@@ -74,7 +98,15 @@ export default function AppRouter() {
             path="/insights"
             element={
               <Shell needsAuth>
-                <InsightsPage />
+                <PatternsAndBoundariesPage />
+              </Shell>
+            }
+          />
+          <Route
+            path="/patterns"
+            element={
+              <Shell needsAuth>
+                <PatternsAndBoundariesPage />
               </Shell>
             }
           />
@@ -82,7 +114,15 @@ export default function AppRouter() {
             path="/settings"
             element={
               <Shell needsAuth>
-                <SettingsPage />
+                <PrivacyAndSettingsPage />
+              </Shell>
+            }
+          />
+          <Route
+            path="/privacy"
+            element={
+              <Shell needsAuth>
+                <PrivacyAndSettingsPage />
               </Shell>
             }
           />

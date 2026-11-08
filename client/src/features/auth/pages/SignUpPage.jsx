@@ -21,7 +21,7 @@ export default function SignUpPage() {
           <p>Your session is automatically provisioned for local testing.</p>
           <p>
             <Link to="/dashboard" className="btn-primary">
-              Go to Dashboard
+              Go to Wellbeing overview
             </Link>
           </p>
         </div>

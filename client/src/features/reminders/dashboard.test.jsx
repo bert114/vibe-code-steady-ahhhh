@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import ToastStack from '../../components/ui/Toast.jsx'
 import { useToastStore } from '../../components/ui/toastStore.js'
 import FeedbackLink from './components/FeedbackLink.jsx'
-import DashboardPage from './pages/DashboardPage.jsx'
+import WellbeingOverviewPage from './pages/WellbeingOverviewPage.jsx'
 
 afterEach(() => {
   // No globals: true in vite.config.js, so RTL auto-cleanup never registers.
@@ -60,17 +60,17 @@ function renderPage(fetchImpl) {
   vi.stubGlobal('fetch', fetchImpl)
   return render(
     <MemoryRouter>
-      <DashboardPage />
+      <WellbeingOverviewPage />
     </MemoryRouter>,
   )
 }
 
-describe('dashboard page', () => {
+describe('wellbeing overview page', () => {
   it('renders the summary sections from one payload', async () => {
     renderPage(() => Promise.resolve(jsonResponse(summaryPayload)))
 
     expect(await screen.findByRole('heading', { name: 'Energy Overview' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Latest insight' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Latest pattern' })).toBeInTheDocument()
     expect(screen.getByText('Overtime keeps draining you')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Noticing lately' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Reminders' })).toBeInTheDocument()
@@ -127,7 +127,7 @@ describe('dashboard page', () => {
     vi.stubGlobal('fetch', () => Promise.reject(new TypeError('fetch failed')))
     render(
       <MemoryRouter>
-        <DashboardPage />
+        <WellbeingOverviewPage />
         <ToastStack />
       </MemoryRouter>,
     )

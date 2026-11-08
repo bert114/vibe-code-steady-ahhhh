@@ -21,7 +21,7 @@ export default function SignInPage() {
           <p>Your session is automatically authenticated.</p>
           <p>
             <Link to="/dashboard" className="btn-primary">
-              Go to Dashboard
+              Go to Wellbeing overview
             </Link>
           </p>
         </div>

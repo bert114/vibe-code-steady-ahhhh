@@ -18,7 +18,7 @@ describe('home page', () => {
 
     // Hero
     expect(screen.getByRole('heading', { name: 'Understand what you’re feeling.' })).toBeInTheDocument()
-    expect(screen.getByText('A private space to check in')).toBeInTheDocument()
+    expect(screen.getByText('A private space to reflect')).toBeInTheDocument()
     expect(screen.getByText(/Name the moment, notice what repeats, and stay in control/i)).toBeInTheDocument()
     expect(
       screen.getByRole('img', { name: /Three calm mobile app screens/i }),
@@ -41,9 +41,9 @@ describe('home page', () => {
       screen.getByText(/Record what happened, notice what repeats, and decide what to do/i),
     ).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Start with one moment.' })).toBeInTheDocument()
-    expect(screen.getByText('A quick check-in is enough.')).toBeInTheDocument()
+    expect(screen.getByText('A brief reflection is enough.')).toBeInTheDocument()
     expect(screen.queryByText(/pattern awareness, not diagnosis/i)).not.toBeInTheDocument()
-    expect(screen.getByText('Check in')).toBeInTheDocument()
+    expect(screen.getByText('Reflect daily')).toBeInTheDocument()
     expect(screen.getByText('Notice patterns')).toBeInTheDocument()
     expect(screen.getByText('Reflect on boundaries')).toBeInTheDocument()
     expect(screen.getByText('Control your data')).toBeInTheDocument()

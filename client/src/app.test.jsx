@@ -5,21 +5,21 @@ import App from './app/App.jsx'
 describe('foundation', () => {
   it('renders the public landing page: brand, Home + Sign in, and account access only', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1, name: 'Make room for what you need.' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Understand what you’re feeling.' })).toBeInTheDocument()
     expect(screen.getByRole('navigation', { name: 'Workspace' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Steady-Ahh home' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/')
     expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/sign-in')
     // Private destinations must never be advertised to a signed-out visitor.
-    expect(screen.queryByRole('link', { name: 'Dashboard' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: 'Daily Reflection' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: 'Reflection History' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: 'Personal Insights' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: 'Profile & Settings' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Wellbeing overview' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Daily reflection' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Past reflections' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Patterns & boundaries' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Privacy & settings' })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Profile options' })).toBeInTheDocument()
     // Account lives in the topbar now; the sidebar footer is note-only so it
     // can never overlap or clip the account menu at short viewport heights.
-    expect(document.querySelector('.workspace-topbar__account')).toBeInTheDocument()
+    expect(document.querySelector('#workspace-topbar-account-landing')).toBeInTheDocument()
     expect(screen.queryByText('Your account')).not.toBeInTheDocument()
   })
 

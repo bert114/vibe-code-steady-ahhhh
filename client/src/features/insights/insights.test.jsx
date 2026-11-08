@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import ToastStack from '../../components/ui/Toast.jsx'
 import { useToastStore } from '../../components/ui/toastStore.js'
-import InsightsPage from './pages/InsightsPage.jsx'
+import PatternsAndBoundariesPage from './pages/PatternsAndBoundariesPage.jsx'
 
 afterEach(() => {
   // No globals: true in vite.config.js, so RTL auto-cleanup never registers.
@@ -12,21 +12,21 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-describe('insights page', () => {
-  it('renders the analyze trigger and handles the unreachable-server state', async () => {
+describe('patterns & boundaries page', () => {
+  it('renders the reflect trigger and handles the unreachable-server state', async () => {
     // Simulate an unreachable server explicitly: the suite must not depend
     // on whether something happens to listen on :5000 in the dev environment.
     vi.stubGlobal('fetch', () => Promise.reject(new TypeError('fetch failed')))
     render(
       <MemoryRouter>
-        <InsightsPage />
+        <PatternsAndBoundariesPage />
         <ToastStack />
       </MemoryRouter>,
     )
 
-    expect(screen.getByRole('heading', { name: 'Insights' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Patterns & boundaries' })).toBeInTheDocument()
     expect(
-      screen.getByRole('button', { name: /analyze my recent check-ins/i }),
+      screen.getByRole('button', { name: /reflect on recent entries/i }),
     ).toBeInTheDocument()
     // Unreachable server: the shared request helper surfaces the failure as
     // an error toast — the page itself renders no inline alert.
@@ -35,7 +35,7 @@ describe('insights page', () => {
     expect(alert.closest('.toast-stack')).not.toBeNull()
   })
 
-  it('frames boundary insights as Observed / Reflection', async () => {
+  it('frames boundary patterns as Observed / Reflection', async () => {
     vi.stubGlobal('fetch', () =>
       Promise.resolve(
         new Response(
@@ -45,7 +45,7 @@ describe('insights page', () => {
                 id: 'i1',
                 type: 'boundary',
                 title: 'Overtime keeps draining you',
-                summary: 'Observed over three check-ins.',
+                summary: 'Observed over three reflections.',
                 evidence: ['Time around overtime has felt draining 3 times lately.'],
                 confidence: 'medium',
                 suggestions: ['You may want to notice whether you are saying yes too often.'],
@@ -58,7 +58,7 @@ describe('insights page', () => {
     )
     render(
       <MemoryRouter>
-        <InsightsPage />
+        <PatternsAndBoundariesPage />
       </MemoryRouter>,
     )
 
@@ -70,7 +70,7 @@ describe('insights page', () => {
     expect(items.join(' ')).not.toMatch(/you must|toxic|diagnos/i)
   })
 
-  it('shows the all-time check-in total with the insights', async () => {
+  it('shows the all-time reflection total with the patterns', async () => {
     vi.stubGlobal('fetch', () =>
       Promise.resolve(
         new Response(
@@ -86,17 +86,17 @@ describe('insights page', () => {
     )
     render(
       <MemoryRouter>
-        <InsightsPage />
+        <PatternsAndBoundariesPage />
       </MemoryRouter>,
     )
 
-    expect(await screen.findByText(/You have 128 check-ins logged since \w+ \d{4}\./)).toBeInTheDocument()
+    expect(await screen.findByText(/You have 128 reflections logged since \w+ \d{4}\./)).toBeInTheDocument()
     expect(screen.getByText('3.4')).toBeInTheDocument()
     // The drain number is explained in place, not left as a bare metric.
     expect(screen.getByText(/out of 5 \(1 is light, 5 is heavy\)/)).toBeInTheDocument()
   })
 
-  it('hides the weekly drain when the last 7 days have no check-ins', async () => {
+  it('hides the weekly drain when the last 7 days have no reflections', async () => {
     vi.stubGlobal('fetch', () =>
       Promise.resolve(
         new Response(
@@ -112,11 +112,11 @@ describe('insights page', () => {
     )
     render(
       <MemoryRouter>
-        <InsightsPage />
+        <PatternsAndBoundariesPage />
       </MemoryRouter>,
     )
 
-    expect(await screen.findByText(/You have 128 check-ins logged/)).toBeInTheDocument()
+    expect(await screen.findByText(/You have 128 reflections logged/)).toBeInTheDocument()
     expect(screen.queryByText(/average drain/i)).not.toBeInTheDocument()
   })
 
@@ -153,7 +153,7 @@ describe('insights page', () => {
     )
     render(
       <MemoryRouter>
-        <InsightsPage />
+        <PatternsAndBoundariesPage />
       </MemoryRouter>,
     )
 
@@ -162,15 +162,15 @@ describe('insights page', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Elevated')).toBeInTheDocument()
     expect(screen.getByText('Several strain signals overlapped this week.')).toBeInTheDocument()
-    expect(screen.getByText('Low energy in 3 of your last 5 check-ins.')).toBeInTheDocument()
-    expect(screen.getByText('High drain in 3 of your last 5 check-ins.')).toBeInTheDocument()
+    expect(screen.getByText('Low energy in 3 of your last 5 reflections.')).toBeInTheDocument()
+    expect(screen.getByText('High drain in 3 of your last 5 reflections.')).toBeInTheDocument()
     expect(screen.getByText('Repeated feelings: tired.')).toBeInTheDocument()
     expect(
-      screen.getByText(/Based on 5 check-ins in the last 7 days\./),
+      screen.getByText(/Based on 5 reflections in the last 7 days\./),
     ).toBeInTheDocument()
   })
 
-  it('shows a gathering state when the week has too few check-ins', async () => {
+  it('shows a gathering state when the week has too few reflections', async () => {
     vi.stubGlobal('fetch', () =>
       Promise.resolve(
         new Response(
@@ -190,14 +190,14 @@ describe('insights page', () => {
     )
     render(
       <MemoryRouter>
-        <InsightsPage />
+        <PatternsAndBoundariesPage />
       </MemoryRouter>,
     )
 
     expect(await screen.findByText('Not enough yet')).toBeInTheDocument()
     expect(
       screen.getByText(
-        'A weekly pattern needs at least 3 check-ins. You have 2 check-ins in the last 7 days.',
+        'A weekly pattern needs at least 3 reflections. You have 2 reflections in the last 7 days.',
       ),
     ).toBeInTheDocument()
     expect(screen.queryByText(/Low energy in/)).not.toBeInTheDocument()
@@ -225,7 +225,7 @@ describe('insights page', () => {
     )
     render(
       <MemoryRouter>
-        <InsightsPage />
+        <PatternsAndBoundariesPage />
       </MemoryRouter>,
     )
 
@@ -234,7 +234,7 @@ describe('insights page', () => {
     expect(screen.queryByRole('list', { name: /Signals from/ })).not.toBeInTheDocument()
   })
 
-  it('hides the total until there is check-in history', async () => {
+  it('hides the total until there is reflection history', async () => {
     vi.stubGlobal('fetch', () =>
       Promise.resolve(
         new Response(
@@ -249,17 +249,17 @@ describe('insights page', () => {
     )
     render(
       <MemoryRouter>
-        <InsightsPage />
+        <PatternsAndBoundariesPage />
       </MemoryRouter>,
     )
 
     expect(
-      await screen.findByRole('heading', { name: 'Your check-ins will shape this space' }),
+      await screen.findByRole('heading', { name: 'Your reflections will shape this space' }),
     ).toBeInTheDocument()
-    expect(screen.queryByText(/check-ins logged/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/reflections logged/i)).not.toBeInTheDocument()
   })
 
-  it('explains every insight in one list with plain confidence labels', async () => {
+  it('explains every pattern in one list with plain confidence labels', async () => {
     vi.stubGlobal('fetch', () =>
       Promise.resolve(
         new Response(
@@ -291,7 +291,7 @@ describe('insights page', () => {
     )
     render(
       <MemoryRouter>
-        <InsightsPage />
+        <PatternsAndBoundariesPage />
       </MemoryRouter>,
     )
 
@@ -318,7 +318,7 @@ describe('insights page', () => {
                 id: 'recent-1',
                 type: 'burnout',
                 title: 'Recent week strain',
-                summary: 'Recent check-ins felt heavy.',
+                summary: 'Recent reflections felt heavy.',
                 evidence: ['Low energy 3 times.'],
                 confidence: 'high',
                 suggestions: ['Protect a rest block.'],
@@ -369,7 +369,7 @@ describe('insights page', () => {
 
     render(
       <MemoryRouter>
-        <InsightsPage />
+        <PatternsAndBoundariesPage />
       </MemoryRouter>,
     )
 

@@ -26,7 +26,7 @@ export default function SignalsPanel({ signals, concise = false }) {
     <section aria-labelledby="signals-heading">
       <h2 id="signals-heading">Noticing lately</h2>
       {shown.length === 0 ? (
-        <p>No patterns standing out right now. Keep checking in and we&apos;ll keep an eye out.</p>
+        <p>No patterns standing out right now. Keep reflecting and we&apos;ll keep an eye out.</p>
       ) : (
         <ul className="signal-list">
           {shown.map((s, i) => {

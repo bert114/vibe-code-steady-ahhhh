@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { useToastStore } from '../../components/ui/toastStore.js'
 import { analyzeInsights, getInsights } from './api.js'
 
-// Small feature-scoped store: insight list + analysis request state.
+// Small feature-scoped store: pattern & boundary list + analysis request state.
 export const useInsightsStore = create((set) => ({
   insights: [],
   lastInsight: null,
@@ -56,7 +56,7 @@ export const useInsightsStore = create((set) => ({
       if (fallbackMessage) {
         useToastStore.getState().error(fallbackMessage)
       } else {
-        useToastStore.getState().success('Analysis complete. Your insights are up to date.')
+        useToastStore.getState().success('Reflection complete. Your patterns & boundaries are up to date.')
       }
     } catch (err) {
       set({ status: 'failed', error: err.message })

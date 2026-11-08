@@ -26,7 +26,7 @@ function TrendingDownIcon() {
   )
 }
 
-function TrendGlyph({ direction }) {
+function RhythmGlyph({ direction }) {
   if (direction === 'up') {
     return (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -54,7 +54,7 @@ function TrendGlyph({ direction }) {
 
 const DIRECTION_WORD = { up: 'rising', down: 'falling', flat: 'steady' }
 
-function trendClass(direction, invert) {
+function rhythmClass(direction, invert) {
   if (direction === 'flat') {
     return 'glance-card__trend--flat'
   }
@@ -75,11 +75,11 @@ function GlanceCard({ name, TileIcon, metric, line }) {
           <span className="glance-card__scale">/5</span>
         </p>
         <span
-          className={`glance-card__trend ${trendClass(metric.direction, metric.invert)}`}
+          className={`glance-card__trend ${rhythmClass(metric.direction, metric.invert)}`}
           role="img"
-          aria-label={`${name} trend: ${DIRECTION_WORD[metric.direction]}`}
+          aria-label={`${name} rhythm: ${DIRECTION_WORD[metric.direction]}`}
         >
-          <TrendGlyph direction={metric.direction} />
+          <RhythmGlyph direction={metric.direction} />
         </span>
       </div>
       <p className="glance-card__line">{line}</p>
@@ -96,7 +96,7 @@ export default function AtAGlance({ data }) {
       <div className="glance__header">
         <h2 id="glance-heading">At a glance</h2>
         <p className="glance__count">
-          {count} check-in{count === 1 ? '' : 's'} logged
+          {count} reflection{count === 1 ? '' : 's'} logged
         </p>
       </div>
       <div className="glance__grid">

@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import TrendsPage from './pages/TrendsPage.jsx'
+import EnergyOverTimePage from './pages/EnergyOverTimePage.jsx'
 
 afterEach(() => {
   // No globals: true in vite.config.js, so RTL auto-cleanup never registers.
@@ -18,26 +18,26 @@ function jsonResponse(body) {
   )
 }
 
-describe('trends page', () => {
-  it('renders the time-range dropdown and an empty state with no check-ins', async () => {
+describe('energy over time page', () => {
+  it('renders the time-range dropdown and an empty state with no reflections', async () => {
     vi.stubGlobal('fetch', () =>
       jsonResponse({ windowDays: 30, days: [], totalCheckins: 0, topDrainingTags: [] }),
     )
     render(
       <MemoryRouter>
-        <TrendsPage />
+        <EnergyOverTimePage />
       </MemoryRouter>,
     )
 
-    expect(screen.getByRole('heading', { name: 'Overview' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Energy over time' })).toBeInTheDocument()
     expect(screen.getByRole('combobox', { name: 'Time range' })).toHaveValue('30')
     expect(screen.getByRole('option', { name: 'Week' })).toHaveValue('7')
     expect(screen.getByRole('option', { name: 'Month' })).toHaveValue('30')
     expect(screen.queryByRole('option', { name: '90 days' })).not.toBeInTheDocument()
-    expect(await screen.findByText('No check-ins in this window')).toBeInTheDocument()
+    expect(await screen.findByText('No reflections in this window')).toBeInTheDocument()
   })
 
-  it('renders the chart and draining tags once trend data loads', async () => {
+  it('renders the chart and draining tags once rhythm data loads', async () => {
     vi.stubGlobal('fetch', () =>
       jsonResponse({
         windowDays: 30,
@@ -51,17 +51,17 @@ describe('trends page', () => {
     )
     render(
       <MemoryRouter>
-        <TrendsPage />
+        <EnergyOverTimePage />
       </MemoryRouter>,
     )
 
-    expect(await screen.findByRole('img', { name: /mood and energy trend/i })).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: /mood and energy rhythm/i })).toBeInTheDocument()
     expect(screen.getByText("What's come up most on draining days")).toBeInTheDocument()
     expect(screen.getByText('work')).toBeInTheDocument()
     expect(screen.getByText('2×')).toBeInTheDocument()
   })
 
-  it('renders the At a glance summary from the same trend payload', async () => {
+  it('renders the At a glance summary from the same rhythm payload', async () => {
     vi.stubGlobal('fetch', () =>
       jsonResponse({
         windowDays: 30,
@@ -75,19 +75,19 @@ describe('trends page', () => {
     )
     render(
       <MemoryRouter>
-        <TrendsPage />
+        <EnergyOverTimePage />
       </MemoryRouter>,
     )
 
     expect(await screen.findByRole('heading', { name: 'At a glance' })).toBeInTheDocument()
-    expect(screen.getByText('3 check-ins logged')).toBeInTheDocument()
+    expect(screen.getByText('3 reflections logged')).toBeInTheDocument()
     // Weighted means: (3*2 + 5) / 3 = 3.7 for all three metrics.
     expect(screen.getByText('Above your middle ground')).toBeInTheDocument()
     expect(screen.getByText('Following the same rhythm as mood')).toBeInTheDocument()
     expect(screen.getByText('Work shows up most often here')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'Mood trend: rising' })).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'Energy trend: rising' })).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'Drain trend: falling' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Mood rhythm: rising' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Energy rhythm: rising' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Drain rhythm: falling' })).toBeInTheDocument()
   })
 
   it('re-fetches with the newly selected window when the range changes', async () => {
@@ -97,11 +97,11 @@ describe('trends page', () => {
     vi.stubGlobal('fetch', fetchSpy)
     render(
       <MemoryRouter>
-        <TrendsPage />
+        <EnergyOverTimePage />
       </MemoryRouter>,
     )
 
-    await screen.findByText('No check-ins in this window')
+    await screen.findByText('No reflections in this window')
     const range = screen.getByRole('combobox', { name: 'Time range' })
     fireEvent.change(range, { target: { value: '7' } })
 

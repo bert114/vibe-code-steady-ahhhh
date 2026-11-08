@@ -1,4 +1,4 @@
-// Pure presentational trend visual for the dashboard.
+// Pure presentational rhythm visual for the wellbeing overview.
 // No fetching, no store, no business rules — props only.
 const WIDTH = 320
 const HEIGHT = 120
@@ -31,7 +31,7 @@ export default function RhythmChart({ checkins }) {
   if (ordered.length < 2) {
     return (
       <p className="rhythm-chart__empty">
-        Record a couple more check-ins and your rhythm will take shape here.
+        Record a couple more reflections and your rhythm will take shape here.
       </p>
     )
   }
@@ -50,7 +50,7 @@ export default function RhythmChart({ checkins }) {
       <svg
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         role="img"
-        aria-label={`Mood, energy and drain over last ${ordered.length} check-ins`}
+        aria-label={`Mood, energy and drain over last ${ordered.length} reflections`}
       >
         {[1, 2, 3, 4, 5].map((level) => (
           <line
@@ -96,7 +96,7 @@ export default function RhythmChart({ checkins }) {
         <span className="tag tag--red">High drain</span>
       </figcaption>
       <table className="visually-hidden">
-        <caption>Recent check-in scores</caption>
+        <caption>Recent reflection scores</caption>
         <thead>
           <tr>
             <th scope="col">Date</th>

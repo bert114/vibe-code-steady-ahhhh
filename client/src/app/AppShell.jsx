@@ -2,18 +2,18 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import './AppShell.css'
 import ToastStack from '../components/ui/Toast.jsx'
-import QuickCheckInDialog from '../features/checkins/components/QuickCheckInDialog.jsx'
+import QuickReflectionDialog from '../features/checkins/components/QuickReflectionDialog.jsx'
 import AccountButton from './AccountButton.jsx'
 import { SignedInView } from './auth.jsx'
 
 const LINKS = [
   { to: '/', label: 'Home', icon: 'grid' },
-  { to: '/dashboard', label: 'Wellbeing overview', icon: 'grid' },
-  { to: '/check-in', label: 'Daily reflection', icon: 'checkin' },
+  { to: '/dashboard', aliases: ['/wellbeing'], label: 'Wellbeing overview', icon: 'grid' },
+  { to: '/check-in', aliases: ['/reflection'], label: 'Daily reflection', icon: 'checkin' },
   { to: '/check-in#history-heading', label: 'Past reflections', icon: 'trend' },
-  { to: '/insights', label: 'Patterns & boundaries', icon: 'spark' },
-  { to: '/trends', label: 'Energy over time', icon: 'trend' },
-  { to: '/settings', label: 'Privacy & settings', icon: 'settings' },
+  { to: '/insights', aliases: ['/patterns'], label: 'Patterns & boundaries', icon: 'spark' },
+  { to: '/trends', aliases: ['/energy-over-time'], label: 'Energy over time', icon: 'trend' },
+  { to: '/settings', aliases: ['/privacy'], label: 'Privacy & settings', icon: 'settings' },
 ]
 const SIDEBAR_PREFERENCE_KEY = 'steady-ahh:workspace-sidebar-collapsed'
 
@@ -115,18 +115,19 @@ function LandingPublicNav({ onNavigate, id }) {
 }
 
 export default function AppShell({ children, variant = 'app' }) {
-  const [quickCheckInOpen, setQuickCheckInOpen] = useState(false)
+  const [quickReflectionOpen, setQuickReflectionOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(readSidebarPreference)
   const drawerRef = useRef(null)
   const menuToggleRef = useRef(null)
   const wasDrawerOpen = useRef(false)
   const location = useLocation()
+  const isReflectionRoute = location.pathname === '/check-in' || location.pathname === '/reflection'
   const currentPage = variant === 'landing'
     ? 'Home'
-    : location.pathname === '/check-in' && location.hash === '#history-heading'
+    : isReflectionRoute && location.hash === '#history-heading'
       ? 'Past reflections'
-      : LINKS.find((link) => link.to === location.pathname)?.label ?? 'Wellbeing overview'
+      : LINKS.find((link) => link.to === location.pathname || link.aliases?.includes(location.pathname))?.label ?? 'Wellbeing overview'
 
   useEffect(() => {
     try {
@@ -244,10 +245,10 @@ export default function AppShell({ children, variant = 'app' }) {
   }
 
   return (
-    <div className={`app-shell app-shell--workspace${sidebarCollapsed ? ' is-collapsed' : ''}${location.pathname === '/check-in' ? ' is-checkin' : ''}`}>
+    <div className={`app-shell app-shell--workspace${sidebarCollapsed ? ' is-collapsed' : ''}${isReflectionRoute ? ' is-checkin' : ''}`}>
       <aside className="workspace-sidebar" aria-label="Main sidebar">
         <div className="workspace-sidebar__head">
-          <Link to="/dashboard" className="workspace-brand" aria-label="Steady-Ahh dashboard">
+          <Link to="/dashboard" className="workspace-brand" aria-label="Steady-Ahh wellbeing overview">
             <BrandMark />
             <span>Steady-Ahh</span>
           </Link>
@@ -281,9 +282,9 @@ export default function AppShell({ children, variant = 'app' }) {
             <span className="workspace-topbar__page">{currentPage}</span>
           </div>
           <div className="workspace-topbar__actions">
-            <button type="button" className="workspace-quick-action" aria-label="Quick check-in" onClick={() => setQuickCheckInOpen(true)}>
+            <button type="button" className="workspace-quick-action" aria-label="Quick reflection" onClick={() => setQuickReflectionOpen(true)}>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
-              <span>Quick check-in</span>
+              <span>Quick reflection</span>
             </button>
             <AccountButton id="workspace-topbar-account" />
           </div>
@@ -305,7 +306,7 @@ export default function AppShell({ children, variant = 'app' }) {
 
         <div className="workspace-content">{children}</div>
       </div>
-      <QuickCheckInDialog open={quickCheckInOpen} onClose={() => setQuickCheckInOpen(false)} />
+      <QuickReflectionDialog open={quickReflectionOpen} onClose={() => setQuickReflectionOpen(false)} />
       <ToastStack />
     </div>
   )
