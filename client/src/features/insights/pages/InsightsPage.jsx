@@ -4,6 +4,77 @@ import { useInsightsStore } from '../store.js'
 import WeeklyBurnout from '../components/WeeklyBurnout.jsx'
 import './InsightsPage.css'
 
+const RANGE_OPTIONS = [
+  { value: 'week', label: 'Last 7 days', days: 7 },
+  { value: 'month', label: 'Last 30 days', days: 30 },
+  { value: 'quarter', label: 'Last 3 months', days: 90 },
+]
+
+function daysAgo(days) {
+  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
+}
+
+// Shown only when the insights API is unreachable, so the page still has a
+// complete layout to look at. Never mixed with real user data.
+const DEMO_DATA = {
+  totalCheckins: 128,
+  firstCheckinAt: '2026-03-04T10:00:00.000Z',
+  weeklyDrain: { windowDays: 7, averageDrain: 3.4, checkins: 6 },
+  weeklyBurnout: {
+    windowDays: 7,
+    checkins: 6,
+    minimumCheckins: 3,
+    level: 'some_strain',
+    signals: [
+      { type: 'low_energy_streak', evidence: { checkins: 6, lowEnergyCount: 3 } },
+      { type: 'high_drain_repeat', evidence: { checkins: 6, highDrainCount: 3 } },
+    ],
+  },
+  insights: [
+    {
+      id: 'demo-burnout',
+      createdAt: daysAgo(1),
+      type: 'burnout',
+      title: 'Low energy after back-to-back calls',
+      summary:
+        'Your recent check-ins show energy dipping on days with several calls in a row.',
+      evidence: [
+        'Energy scored 2 or lower on 3 of the last 5 days.',
+        'Calls appeared in 4 of those check-ins.',
+      ],
+      suggestions: ['A short gap between calls might be worth testing this week.'],
+      confidence: 'high',
+    },
+    {
+      id: 'demo-boundary',
+      createdAt: daysAgo(5),
+      type: 'boundary',
+      title: 'Saying yes when you mean maybe',
+      summary:
+        'You have noted agreeing to plans, then feeling drained afterwards.',
+      evidence: [
+        '#work appeared in 3 draining check-ins.',
+        'Drain averaged 4.2 after unplanned requests.',
+      ],
+      suggestions: ['Notice what happens just before you say yes.'],
+      confidence: 'medium',
+    },
+    {
+      id: 'demo-pattern',
+      createdAt: daysAgo(24),
+      type: 'pattern',
+      title: 'Mornings are your steadiest window',
+      summary: 'Check-ins logged before noon read calmer than evenings.',
+      evidence: [
+        'Morning check-ins averaged 3.8 / 5 energy.',
+        'Evening check-ins averaged 2.1 / 5.',
+      ],
+      suggestions: ['Consider protecting one slow morning this week.'],
+      confidence: 'medium',
+    },
+  ],
+}
+
 function IconClock({ size = 16 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -59,15 +130,6 @@ function IconHeart({ size = 16 }) {
   )
 }
 
-function IconEye({ size = 20 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M2 12s3.6-6.8 10-6.8S22 12 22 12s-3.6 6.8-10 6.8S2 12 2 12Z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  )
-}
-
 function TypeLabel(type) {
   const labels = {
     pattern: 'Pattern',
@@ -89,9 +151,9 @@ function CheckinTotal({ total, firstCheckinAt }) {
     : null
 
   return (
-    <p className="insights-hero__total">
-      <span className="insights-hero__total-value">{total.toLocaleString()}</span>{' '}
-      <span className="insights-hero__total-label">
+    <p className="insights-meta__line">
+      <span className="insights-meta__value">{total.toLocaleString()}</span>{' '}
+      <span className="insights-meta__label">
         {total === 1 ? 'check-in' : 'check-ins'} logged{since ? ` since ${since}` : ''}
       </span>
     </p>
@@ -103,22 +165,22 @@ function WeeklyDrain({ weeklyDrain }) {
   if (typeof average !== 'number') return null
 
   return (
-    <p className="insights-hero__total insights-hero__total--drain">
-      <span className="insights-hero__total-value">{average}</span>{' '}
-      <span className="insights-hero__total-label">
+    <p className="insights-meta__line">
+      <span className="insights-meta__value">{average}</span>{' '}
+      <span className="insights-meta__label">
         / 5 average interaction drain, last 7 days
       </span>
     </p>
   )
 }
 
-function HeroLedger({ total, firstCheckinAt, weeklyDrain }) {
+function HeaderMeta({ total, firstCheckinAt, weeklyDrain }) {
   const hasTotal = Boolean(total)
   const hasDrain = typeof weeklyDrain?.averageDrain === 'number'
   if (!hasTotal && !hasDrain) return null
 
   return (
-    <div className="insights-hero__ledger">
+    <div className="insights-meta">
       <CheckinTotal total={total} firstCheckinAt={firstCheckinAt} />
       <WeeklyDrain weeklyDrain={weeklyDrain} />
     </div>
@@ -254,76 +316,185 @@ function LoadingState({ message }) {
   )
 }
 
-function CloserLook({ insights }) {
-  const boundaryInsights = insights.filter((i) => i.type === 'boundary')
-
-  const repeatedTags = new Map()
-  boundaryInsights.forEach((insight) => {
-    insight.evidence?.forEach((item) => {
-      const tags = item.match(/#(\w+)/g) || []
-      tags.forEach((tag) => repeatedTags.set(tag, (repeatedTags.get(tag) || 0) + 1))
+function topTags(insights) {
+  const repeated = new Map()
+  insights
+    .filter((insight) => insight.type === 'boundary')
+    .forEach((insight) => {
+      insight.evidence?.forEach((item) => {
+        ;(item.match(/#(\w+)/g) || []).forEach((tag) =>
+          repeated.set(tag, (repeated.get(tag) || 0) + 1),
+        )
+      })
     })
-  })
-  const topTags = Array.from(repeatedTags.entries())
+  return Array.from(repeated.entries())
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
+}
 
-  const firstReflection = boundaryInsights
-    .flatMap((i) => i.suggestions || [])[0]
-  const question = firstReflection || 'Where might a little more space around your yes or no feel supportive?'
+function ContextCard({ insights }) {
+  const tags = topTags(insights)
 
   return (
-    <section className="closer-look" aria-labelledby="closer-look-title">
-      <header className="closer-look__head">
+    <section className="insights-tile insights-tile--context" aria-labelledby="context-title">
+      <header className="insights-tile__head">
         <span className="insight-card__tile" aria-hidden="true">
           <IconWaves />
         </span>
-        <p className="closer-look__eyebrow">A closer look</p>
+        <p className="insights-tile__eyebrow">A closer look</p>
       </header>
 
-      <h2 id="closer-look-title" className="closer-look__title">
-        Boundary <em>awareness</em>
+      <h2 id="context-title" className="insights-tile__title">
+        Repeated contexts
       </h2>
-      <p className="closer-look__lead">
-        Noticing where your energy goes can offer a little more room to choose.
+      <p className="insights-tile__lead">
+        Situations your check-ins keep returning to, when there is enough history to notice.
       </p>
 
-      <hr className="closer-look__rule" />
-
-      <div className="closer-look__meta">
-        <span>Repeated contexts</span>
-        <span>when present</span>
-      </div>
-
-      {topTags.length > 0 ? (
-        <ul className="closer-look__tags" aria-label="Repeated situation tags">
-          {topTags.map(([tag, count]) => (
-            <li key={tag} className="closer-look__tag">
-              <span className="closer-look__tag-name">{tag}</span>
-              <span className="closer-look__tag-count" aria-hidden="true">{count}</span>
+      {tags.length > 0 ? (
+        <ul className="insights-tags" aria-label="Repeated situation tags">
+          {tags.map(([tag, count]) => (
+            <li key={tag} className="insights-tags__item">
+              <span>{tag}</span>
+              <span className="insights-tags__count" aria-hidden="true">{count}</span>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="closer-look__hint">
+        <p className="insights-tile__hint">
           <IconWaves size={17} />
-          <span>
-            Repeated context tags may appear here when there's enough recent check-in history to
-            notice a pattern.
-          </span>
+          <span>Context tags may appear here once a pattern repeats.</span>
         </p>
       )}
 
-      <p className="closer-look__note">No assumptions, just what your check-ins show.</p>
+      <p className="insights-tile__note">No assumptions, just what your check-ins show.</p>
+    </section>
+  )
+}
 
-      <div className="closer-look__reflect">
-        <span className="closer-look__reflect-icon" aria-hidden="true">
+function ReflectCard({ insights }) {
+  const question =
+    insights
+      .filter((insight) => insight.type === 'boundary')
+      .flatMap((insight) => insight.suggestions || [])[0] ||
+    'Where might a little more space around your yes or no feel supportive?'
+
+  return (
+    <section className="insights-tile insights-tile--reflect" aria-labelledby="reflect-title">
+      <header className="insights-tile__head">
+        <span className="insight-card__tile" aria-hidden="true">
           <IconHeart />
         </span>
-        <p className="closer-look__reflect-eyebrow">A moment to reflect</p>
-        <p className="closer-look__reflect-question">{question}</p>
-        <p className="closer-look__reflect-note">Only if it feels useful to you.</p>
-      </div>
+        <p className="insights-tile__eyebrow">A moment to reflect</p>
+      </header>
+
+      <h2 id="reflect-title" className="insights-tile__title">
+        One question
+      </h2>
+      <p className="insights-tile__question">{question}</p>
+      <p className="insights-tile__note">Only if it feels useful to you.</p>
+    </section>
+  )
+}
+
+function FeedPanel({
+  insights,
+  activeTab,
+  onTabChange,
+  busy,
+  isLoading,
+  isInitialLoad,
+  showEmptyState,
+  filtered,
+  usingDemo,
+  rangeLabel,
+  rangeValue,
+  onRangeChange,
+}) {
+  return (
+    <section className="insights-panel" aria-labelledby="feed-title">
+      <header className="insights-panel__head">
+        <div>
+          <p className="insights-panel__eyebrow">Your reflections</p>
+          <h2 id="feed-title" className="insights-panel__title">
+            What&rsquo;s been showing up
+          </h2>
+        </div>
+        <p className="insights-panel__meta">
+          <IconClock size={14} />
+          <span>
+            {usingDemo ? 'Preview data' : 'Your latest check-ins'} &middot; {rangeLabel}
+          </span>
+        </p>
+      </header>
+
+      {insights.length > 0 && (
+        <div className="insights-filter" role="tablist" aria-label="Insight categories">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'all'}
+            className={`insights-filter__item ${activeTab === 'all' ? 'insights-filter__item--active' : ''}`}
+            onClick={() => onTabChange('all')}
+          >
+            All Patterns
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'boundary'}
+            className={`insights-filter__item ${activeTab === 'boundary' ? 'insights-filter__item--active' : ''}`}
+            onClick={() => onTabChange('boundary')}
+          >
+            Boundaries
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'burnout'}
+            className={`insights-filter__item ${activeTab === 'burnout' ? 'insights-filter__item--active' : ''}`}
+            onClick={() => onTabChange('burnout')}
+          >
+            Burnout Signals
+          </button>
+        </div>
+      )}
+
+      {busy && <LoadingState message="Analyzing your recent check-ins…" />}
+      {isLoading && !isInitialLoad && <LoadingState message="Loading insights…" />}
+
+      {!busy && !isLoading && showEmptyState && <InsightSpace loading={isInitialLoad} />}
+
+      {!busy && !isLoading && !showEmptyState && filtered.length === 0 && (
+        <div className="insights-filtered">
+          <p>
+            {insights.length === 0
+              ? `Nothing has been captured in the ${rangeLabel.toLowerCase()} yet.`
+              : 'No insights found under this category filter.'}
+          </p>
+          {insights.length === 0 && rangeValue !== 'quarter' ? (
+            <button type="button" className="btn-ghost" onClick={() => onRangeChange('quarter')}>
+              Show last 3 months
+            </button>
+          ) : (
+            <button type="button" className="btn-ghost" onClick={() => onTabChange('all')}>
+              View all insights
+            </button>
+          )}
+        </div>
+      )}
+
+      {!busy && !isLoading && !showEmptyState && filtered.length > 0 && (
+        <div className="insights-feed" role="feed" aria-label="Your insights">
+          {filtered.map((insight) => (
+            <InsightCard key={insight.id} insight={insight} />
+          ))}
+        </div>
+      )}
+
+      <p className="insights-panel__foot">
+        Observations, not answers. Nothing here diagnoses you &mdash; you decide what fits.
+      </p>
     </section>
   )
 }
@@ -342,31 +513,89 @@ export default function InsightsPage() {
     analyze,
   } = useInsightsStore()
   const [activeTab, setActiveTab] = useState('all')
+  const [rangeValue, setRangeValue] = useState('week')
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const busy = status === 'analyzing'
   const isLoading = status === 'loading'
+  const usingDemo = status === 'failed'
+  const range = RANGE_OPTIONS.find((option) => option.value === rangeValue) ?? RANGE_OPTIONS[0]
 
   useEffect(() => {
     load().finally(() => setIsInitialLoad(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const rawShown = insights.length > 0 ? insights : lastInsight ? [lastInsight] : []
-  const hasInsights = rawShown.length > 0
+  const shownInsights = usingDemo
+    ? DEMO_DATA.insights
+    : insights.length > 0
+      ? insights
+      : lastInsight
+        ? [lastInsight]
+        : []
+  const shownTotal = usingDemo ? DEMO_DATA.totalCheckins : totalCheckins
+  const shownFirst = usingDemo ? DEMO_DATA.firstCheckinAt : firstCheckinAt
+  const shownDrain = usingDemo ? DEMO_DATA.weeklyDrain : weeklyDrain
+  const shownBurnout = usingDemo ? DEMO_DATA.weeklyBurnout : weeklyBurnout
 
-  const filteredShown = rawShown.filter((item) => {
+  const hasInsights = shownInsights.length > 0
+  const cutoff = Date.now() - range.days * 24 * 60 * 60 * 1000
+  const rangedShown = shownInsights.filter((item) => {
+    const iso = item.createdAt || item.created_at
+    if (!iso) return true
+    const created = new Date(iso).getTime()
+    return Number.isNaN(created) ? true : created >= cutoff
+  })
+
+  const filteredShown = rangedShown.filter((item) => {
     const type = item.type || item.insight_type
     if (activeTab === 'burnout') return type === 'burnout'
     if (activeTab === 'boundary') return type === 'boundary'
     return true
   })
 
-  const showEmptyState = !isLoading && !busy && !hasInsights
+  const showEmptyState = !usingDemo && !isLoading && !busy && !hasInsights
 
   return (
     <main className="insights-page">
-      <header className="insights-hero">
-        <div className="insights-hero__copy">
+      <div className="insights-topbar">
+        <div className="insights-topbar__actions">
+          {usingDemo && <span className="insights-topbar__tag">Preview data</span>}
+          <label className="insights-range">
+            <span className="insights-range__label">Show</span>
+            <select
+              className="insights-range__select"
+              aria-label="Insight time range"
+              value={rangeValue}
+              onChange={(event) => setRangeValue(event.target.value)}
+            >
+              {RANGE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <span className="insights-range__chevron" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </span>
+          </label>
+          <button
+            type="button"
+            className="insights-run"
+            onClick={analyze}
+            disabled={busy || isLoading}
+            aria-busy={busy || isLoading}
+          >
+            <IconSparkle />
+            <span>{busy ? 'Analyzing…' : 'Analyze my recent check-ins'}</span>
+            <IconArrow />
+          </button>
+        </div>
+      </div>
+
+      <header className="insights-header">
+        <div className="insights-header__copy">
           <p className="insights-hero__eyebrow">
             <span className="insights-hero__rule" aria-hidden="true" />
             A pause for perspective
@@ -376,122 +605,37 @@ export default function InsightsPage() {
             Gentle observations from your check-ins, to help you notice what&rsquo;s been taking
             shape.
           </p>
-          <HeroLedger
-            total={totalCheckins}
-            firstCheckinAt={firstCheckinAt}
-            weeklyDrain={weeklyDrain}
-          />
           <p className="insights-hero__note">
             <IconClock size={15} />
             <span>These are reflections on your check-ins, never medical diagnoses.</span>
           </p>
         </div>
 
-        <button
-          type="button"
-          className="insights-run"
-          onClick={analyze}
-          disabled={busy || isLoading}
-          aria-busy={busy || isLoading}
-        >
-          <IconSparkle />
-          <span>{busy ? 'Analyzing…' : 'Analyze my recent check-ins'}</span>
-          <IconArrow />
-        </button>
+        <HeaderMeta total={shownTotal} firstCheckinAt={shownFirst} weeklyDrain={shownDrain} />
       </header>
 
-      <BetaBanner status={status} notice={notice} />
+      <BetaBanner status={usingDemo ? 'failed' : status} notice={notice} />
 
-      <div className="insights-layout">
-        <div className="insights-feed-col">
-          <WeeklyBurnout weeklyBurnout={weeklyBurnout} />
-
-          <div className="insights-section-head">
-            <div className="insights-section-head__text">
-              <p className="insights-section-head__eyebrow">Your reflections</p>
-              <h2 className="insights-section-head__title">What&rsquo;s been showing up</h2>
-            </div>
-            <p className="insights-section-head__meta">
-              <IconClock size={14} />
-              <span>Your latest check-ins</span>
-            </p>
-          </div>
-
-          {hasInsights && (
-            <div className="insights-filter" role="tablist" aria-label="Insight categories">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'all'}
-                className={`insights-filter__item ${activeTab === 'all' ? 'insights-filter__item--active' : ''}`}
-                onClick={() => setActiveTab('all')}
-              >
-                All Patterns
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'boundary'}
-                className={`insights-filter__item ${activeTab === 'boundary' ? 'insights-filter__item--active' : ''}`}
-                onClick={() => setActiveTab('boundary')}
-              >
-                Boundaries
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'burnout'}
-                className={`insights-filter__item ${activeTab === 'burnout' ? 'insights-filter__item--active' : ''}`}
-                onClick={() => setActiveTab('burnout')}
-              >
-                Burnout Signals
-              </button>
-            </div>
-          )}
-
-          {busy && <LoadingState message="Analyzing your recent check-ins…" />}
-
-          {isLoading && !isInitialLoad && <LoadingState message="Loading insights…" />}
-
-          {!busy && !isLoading && showEmptyState && <InsightSpace loading={isInitialLoad} />}
-
-          {!busy && !isLoading && !showEmptyState && filteredShown.length === 0 && (
-            <div className="insights-filtered">
-              <p>No insights found under this category filter.</p>
-              <button type="button" className="btn-ghost" onClick={() => setActiveTab('all')}>
-                View all insights
-              </button>
-            </div>
-          )}
-
-          {!busy && !isLoading && !showEmptyState && filteredShown.length > 0 && (
-            <div className="insights-feed" role="feed" aria-label="Your insights">
-              {filteredShown.map((insight) => (
-                <InsightCard key={insight.id} insight={insight} />
-              ))}
-            </div>
-          )}
-        </div>
-
-        <aside className="insights-aside">
-          <CloserLook insights={rawShown} />
-
-          <section className="aside-note" aria-labelledby="aside-note-title">
-            <span className="insight-card__tile" aria-hidden="true">
-              <IconEye />
-            </span>
-            <div>
-              <h2 id="aside-note-title" className="aside-note__title">
-                Observations, not answers
-              </h2>
-              <p className="aside-note__text">
-                Insights rephrase what your check-ins already show, with uncertainty stated.
-                Nothing here diagnoses you &mdash; you decide what fits.
-              </p>
-            </div>
-          </section>
-        </aside>
+      <div className="insights-tiles">
+        <WeeklyBurnout weeklyBurnout={shownBurnout} />
+        <ContextCard insights={rangedShown} />
+        <ReflectCard insights={rangedShown} />
       </div>
+
+      <FeedPanel
+        insights={rangedShown}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        busy={busy}
+        isLoading={isLoading}
+        isInitialLoad={isInitialLoad}
+        showEmptyState={showEmptyState}
+        filtered={filteredShown}
+        usingDemo={usingDemo}
+        rangeLabel={range.label}
+        rangeValue={rangeValue}
+        onRangeChange={setRangeValue}
+      />
     </main>
   )
 }
