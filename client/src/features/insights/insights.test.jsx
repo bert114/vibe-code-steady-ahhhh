@@ -90,10 +90,10 @@ describe('insights page', () => {
       </MemoryRouter>,
     )
 
-    expect(await screen.findByText('128')).toBeInTheDocument()
-    expect(screen.getByText(/check-ins logged since \w+ \d{4}/)).toBeInTheDocument()
+    expect(await screen.findByText(/You have 128 check-ins logged since \w+ \d{4}\./)).toBeInTheDocument()
     expect(screen.getByText('3.4')).toBeInTheDocument()
-    expect(screen.getByText(/\/ 5 average interaction drain, last 7 days/)).toBeInTheDocument()
+    // The drain number is explained in place, not left as a bare metric.
+    expect(screen.getByText(/out of 5 \(1 is light, 5 is heavy\)/)).toBeInTheDocument()
   })
 
   it('hides the weekly drain when the last 7 days have no check-ins', async () => {
@@ -116,8 +116,8 @@ describe('insights page', () => {
       </MemoryRouter>,
     )
 
-    expect(await screen.findByText('128')).toBeInTheDocument()
-    expect(screen.queryByText(/average interaction drain/i)).not.toBeInTheDocument()
+    expect(await screen.findByText(/You have 128 check-ins logged/)).toBeInTheDocument()
+    expect(screen.queryByText(/average drain/i)).not.toBeInTheDocument()
   })
 
   it('shows the weekly burnout level with its evidence', async () => {
@@ -158,7 +158,7 @@ describe('insights page', () => {
     )
 
     expect(
-      await screen.findByRole('heading', { name: 'Burnout signals this week' }),
+      await screen.findByRole('heading', { name: 'This week' }),
     ).toBeInTheDocument()
     expect(screen.getByText('Elevated')).toBeInTheDocument()
     expect(screen.getByText('Several strain signals overlapped this week.')).toBeInTheDocument()
@@ -166,7 +166,7 @@ describe('insights page', () => {
     expect(screen.getByText('High drain in 3 of your last 5 check-ins.')).toBeInTheDocument()
     expect(screen.getByText('Repeated feelings: tired.')).toBeInTheDocument()
     expect(
-      screen.getByText(/Based on 5 check-ins in the last 7 days\. Observation, not a diagnosis\./),
+      screen.getByText(/Based on 5 check-ins in the last 7 days\./),
     ).toBeInTheDocument()
   })
 
@@ -201,7 +201,8 @@ describe('insights page', () => {
       ),
     ).toBeInTheDocument()
     expect(screen.queryByText(/Low energy in/)).not.toBeInTheDocument()
-    expect(screen.getByText(/Observation, not a diagnosis\./)).toBeInTheDocument()
+    // The non-diagnosis framing is stated once, in the page footer.
+    expect(screen.getAllByText(/not a diagnosis/)).toHaveLength(1)
   })
 
   it('shows a steady week without an evidence list', async () => {
@@ -230,7 +231,7 @@ describe('insights page', () => {
 
     expect(await screen.findByText('Steady')).toBeInTheDocument()
     expect(screen.getByText(/No burnout signals stood out/)).toBeInTheDocument()
-    expect(screen.queryByRole('list', { name: /Burnout signals/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('list', { name: /Signals from/ })).not.toBeInTheDocument()
   })
 
   it('hides the total until there is check-in history', async () => {
@@ -258,7 +259,7 @@ describe('insights page', () => {
     expect(screen.queryByText(/check-ins logged/i)).not.toBeInTheDocument()
   })
 
-  it('filters insights by category tabs', async () => {
+  it('explains every insight in one list with plain confidence labels', async () => {
     vi.stubGlobal('fetch', () =>
       Promise.resolve(
         new Response(
@@ -294,21 +295,109 @@ describe('insights page', () => {
       </MemoryRouter>,
     )
 
-    // Both appear on All Patterns
     expect(await screen.findByText('Boundary pressure at work')).toBeInTheDocument()
     expect(screen.getByText('Consecutive draining days')).toBeInTheDocument()
+    expect(screen.getByText(/Boundary · Possible pattern/)).toBeInTheDocument()
+    expect(screen.getByText(/Burnout signal · Clear pattern/)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'What this is based on' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Something to consider' })).toBeInTheDocument()
+    expect(screen.queryByRole('tablist')).not.toBeInTheDocument()
+  })
 
-    // Switch to Boundaries tab
-    const boundariesTab = screen.getByRole('tab', { name: 'Boundaries' })
-    fireEvent.click(boundariesTab)
-    expect(screen.getByText('Boundary pressure at work')).toBeInTheDocument()
-    expect(screen.queryByText('Consecutive draining days')).not.toBeInTheDocument()
+  it('displays mood/energy/drain averages, interactions, most draining interaction, and switches between Week and Month', async () => {
+    const now = Date.now()
+    const twoDaysAgo = new Date(now - 2 * 24 * 60 * 60 * 1000).toISOString()
+    const twentyDaysAgo = new Date(now - 20 * 24 * 60 * 60 * 1000).toISOString()
 
-    // Switch to Burnout Signals tab
-    const burnoutTab = screen.getByRole('tab', { name: 'Burnout Signals' })
-    fireEvent.click(burnoutTab)
-    expect(screen.queryByText('Boundary pressure at work')).not.toBeInTheDocument()
-    expect(screen.getByText('Consecutive draining days')).toBeInTheDocument()
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            insights: [
+              {
+                id: 'recent-1',
+                type: 'burnout',
+                title: 'Recent week strain',
+                summary: 'Recent check-ins felt heavy.',
+                evidence: ['Low energy 3 times.'],
+                confidence: 'high',
+                suggestions: ['Protect a rest block.'],
+                createdAt: twoDaysAgo,
+              },
+              {
+                id: 'month-1',
+                type: 'boundary',
+                title: 'Earlier month boundary',
+                summary: 'From earlier this month.',
+                evidence: ['Overtime 3 times.'],
+                confidence: 'medium',
+                suggestions: ['Notice when you say yes.'],
+                createdAt: twentyDaysAgo,
+              },
+            ],
+            periods: {
+              week: {
+                windowDays: 7,
+                checkins: 4,
+                averageMood: 3.8,
+                averageEnergy: 2.2,
+                averageDrain: 3.5,
+                interactions: [
+                  { tag: 'work', count: 3, averageDrain: 4.3 },
+                  { tag: 'calls', count: 2, averageDrain: 3.0 },
+                ],
+                mostDrainingInteraction: { tag: 'work', count: 3, averageDrain: 4.3 },
+              },
+              month: {
+                windowDays: 30,
+                checkins: 10,
+                averageMood: 3.2,
+                averageEnergy: 3.1,
+                averageDrain: 2.8,
+                interactions: [
+                  { tag: 'work', count: 5, averageDrain: 3.8 },
+                  { tag: 'family dinner', count: 4, averageDrain: 4.5 },
+                ],
+                mostDrainingInteraction: { tag: 'family dinner', count: 4, averageDrain: 4.5 },
+              },
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      ),
+    )
+
+    render(
+      <MemoryRouter>
+        <InsightsPage />
+      </MemoryRouter>,
+    )
+
+    // Defaults to Week (7 days)
+    expect(await screen.findByRole('heading', { name: 'This week' })).toBeInTheDocument()
+    expect(screen.getByText('3.8')).toBeInTheDocument()
+    expect(screen.getByText('2.2')).toBeInTheDocument()
+    expect(screen.getByText('3.5')).toBeInTheDocument()
+    expect(screen.getByText('Most draining interaction')).toBeInTheDocument()
+    expect(screen.getByText(/4\.3 \/ 5 drain/)).toBeInTheDocument()
+    expect(screen.getByRole('list', { name: 'Interactions logged' })).toHaveTextContent('work')
+    expect(screen.getByRole('list', { name: 'Interactions logged' })).toHaveTextContent('calls')
+    expect(screen.getByText('Recent week strain')).toBeInTheDocument()
+    expect(screen.queryByText('Earlier month boundary')).not.toBeInTheDocument()
+
+    // Switch dropdown to Month (30 days)
+    const select = screen.getByLabelText('Time range')
+    fireEvent.change(select, { target: { value: 'month' } })
+
+    expect(screen.getByRole('heading', { name: 'This month' })).toBeInTheDocument()
+    expect(screen.getByText('3.2')).toBeInTheDocument()
+    expect(screen.getByText('3.1')).toBeInTheDocument()
+    expect(screen.getByText('2.8')).toBeInTheDocument()
+    expect(screen.getByText(/4\.5 \/ 5 drain/)).toBeInTheDocument()
+    expect(screen.getByRole('list', { name: 'Interactions logged' })).toHaveTextContent(
+      'family dinner',
+    )
+    expect(screen.getByText('Earlier month boundary')).toBeInTheDocument()
   })
 })
 

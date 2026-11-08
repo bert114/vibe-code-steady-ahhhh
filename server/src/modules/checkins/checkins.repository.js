@@ -67,6 +67,39 @@ export async function getDrainAverageSince(userId, sinceDate) {
   return rows[0]
 }
 
+// Rolling window averages for mood, energy, and drain plus total check-ins.
+export async function getWindowAveragesSince(userId, sinceDate) {
+  const { rows } = await dbQuery(
+    `SELECT
+       AVG(mood_score)::float AS avg_mood,
+       AVG(energy_score)::float AS avg_energy,
+       AVG(drain_score)::float AS avg_drain,
+       COUNT(*)::int AS checkins
+     FROM checkins
+     WHERE user_id = $1 AND occurred_at >= $2`,
+    [userId, sinceDate],
+  )
+  return rows[0]
+}
+
+// Most frequent context_tags (interactions/situations) logged in the window,
+// along with each tag's average drain score.
+export async function getTopInteractionsSince(userId, sinceDate, limit = 20) {
+  const { rows } = await dbQuery(
+    `SELECT
+       tag,
+       COUNT(*)::int AS count,
+       AVG(drain_score)::float AS avg_drain
+     FROM checkins, unnest(context_tags) AS tag
+     WHERE user_id = $1 AND occurred_at >= $2
+     GROUP BY tag
+     ORDER BY count DESC, tag ASC
+     LIMIT $3`,
+    [userId, sinceDate, limit],
+  )
+  return rows
+}
+
 export async function findCheckinById(userId, id) {
   const { rows } = await dbQuery(
     `SELECT ${COLUMNS} FROM checkins WHERE id = $1 AND user_id = $2`,

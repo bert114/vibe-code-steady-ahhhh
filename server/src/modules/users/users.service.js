@@ -1,4 +1,5 @@
 // Business rules live here — never in controllers, routes, or React.
+import { purgeUserCache } from '../../services/cache/cache.service.js'
 import * as repository from './users.repository.js'
 
 // Resolve a Clerk subject to the same user key, provisioning on first sight.
@@ -38,7 +39,10 @@ export async function getUserProfile(userId) {
 }
 
 export async function deleteUser(userId) {
-  return repository.deleteUser(userId)
+  const deleted = await repository.deleteUser(userId)
+  // Cached read models embed check-in notes: drop them with the account.
+  await purgeUserCache(userId)
+  return deleted
 }
 
 export async function exportUserData(userId) {

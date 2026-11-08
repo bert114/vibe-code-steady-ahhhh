@@ -1,5 +1,6 @@
 // Business rules live here — never in controllers, routes, or React.
 // Single mapping point: snake_case rows -> camelCase API objects.
+import { invalidateUserCache } from '../../services/cache/cache.service.js'
 import * as repository from './reminders.repository.js'
 
 function toApi(row) {
@@ -20,7 +21,9 @@ export async function getReminders(userId, paging) {
 }
 
 export async function markReminderRead(userId, id) {
-  return toApi(await repository.markReminderRead(userId, id))
+  const row = await repository.markReminderRead(userId, id)
+  if (row) await invalidateUserCache(userId)
+  return toApi(row)
 }
 
 export async function countUnreadReminders(userId) {

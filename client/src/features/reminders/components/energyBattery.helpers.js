@@ -6,9 +6,9 @@ export function latestCheckin(checkins) {
 }
 
 export function statusFor(energy) {
-  if (energy <= 2) return { label: 'Low', className: 'tag tag--red', stroke: 'oklch(0.7 0.05 30)' }
-  if (energy === 3) return { label: 'Steady', className: 'tag tag--yellow', stroke: 'oklch(0.7 0.05 100)' }
-  return { label: 'Charged', className: 'tag tag--green', stroke: 'oklch(0.7 0.05 160)' }
+  if (energy <= 2) return { label: 'Low', className: 'tag tag--red', stroke: '#b85c3c' }
+  if (energy === 3) return { label: 'Steady', className: 'tag tag--yellow', stroke: '#9a712b' }
+  return { label: 'Charged', className: 'tag tag--green', stroke: '#2f6b4e' }
 }
 
 function startOfDay(date) {

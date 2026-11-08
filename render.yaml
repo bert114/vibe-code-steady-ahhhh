@@ -25,6 +25,8 @@ services:
         sync: false
       - key: AI_ANALYSIS_RATE_LIMIT
         value: 5
+      - key: REDIS_URL
+        sync: false # optional read cache (rediss:// with password); empty = cache off
 
   - type: web
     name: steady-ahh-client

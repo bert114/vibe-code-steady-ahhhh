@@ -8,3 +8,7 @@
 process.env.DEV_AUTH_BYPASS = 'false'
 process.env.OPEN_ACCESS = 'false'
 process.env.AUDIT_ENABLED = 'false'
+// Redis cache off in tests: db-backed suites write rows with raw SQL and then
+// read through the API, so a shared cache would serve stale payloads.
+// cache.service.test.js injects an in-memory store instead.
+process.env.REDIS_URL = ''

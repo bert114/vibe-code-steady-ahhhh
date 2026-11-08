@@ -24,8 +24,21 @@ export const env = {
   // Set AUDIT_ENABLED=false to silence (tests do this).
   AUDIT_ENABLED: process.env.AUDIT_ENABLED !== "false",
 
-  // AI provider
-  AI_PROVIDER: process.env.AI_PROVIDER ?? "cloudflare",
+  // Optional Redis read cache (dashboard/insights/trends). Unset REDIS_URL =
+  // cache off, every read goes to Postgres. Redis failures always fail open.
+  REDIS_URL: process.env.REDIS_URL ?? "",
+  CACHE_TTL_SECONDS: Number(process.env.CACHE_TTL_SECONDS ?? 120),
+  CACHE_TIMEOUT_MS: Number(process.env.CACHE_TIMEOUT_MS ?? 250),
+
+  // AI provider: prefer explicit AI_PROVIDER, otherwise auto-select whichever
+  // provider has credentials configured (Groq -> OpenAI -> Cloudflare).
+  AI_PROVIDER:
+    process.env.AI_PROVIDER ??
+    (process.env.GROQ_API_KEY
+      ? "groq"
+      : process.env.OPENAI_API_KEY
+        ? "openai"
+        : "cloudflare"),
   AI_PROVIDER_TIMEOUT_MS: Number(process.env.AI_PROVIDER_TIMEOUT_MS ?? 20000),
   AI_ANALYSIS_RATE_LIMIT: Number(process.env.AI_ANALYSIS_RATE_LIMIT ?? 5),
   CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID ?? "",

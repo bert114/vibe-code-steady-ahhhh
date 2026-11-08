@@ -10,6 +10,7 @@ export const useInsightsStore = create((set) => ({
   firstCheckinAt: null,
   weeklyDrain: null,
   weeklyBurnout: null,
+  periods: null,
   status: 'idle', // idle | loading | analyzing | succeeded | failed
   notice: null,
   error: null,
@@ -17,7 +18,7 @@ export const useInsightsStore = create((set) => ({
   load: async () => {
     set({ status: 'loading', error: null, notice: null })
     try {
-      const { insights, totalCheckins, firstCheckinAt, weeklyDrain, weeklyBurnout } =
+      const { insights, totalCheckins, firstCheckinAt, weeklyDrain, weeklyBurnout, periods } =
         await getInsights()
       set({
         status: 'succeeded',
@@ -26,6 +27,7 @@ export const useInsightsStore = create((set) => ({
         firstCheckinAt: firstCheckinAt ?? null,
         weeklyDrain: weeklyDrain ?? null,
         weeklyBurnout: weeklyBurnout ?? null,
+        periods: periods ?? null,
       })
     } catch (err) {
       set({ status: 'failed', error: err.message })
@@ -39,12 +41,16 @@ export const useInsightsStore = create((set) => ({
       const fallbackMessage = result.fallback ? (result.message ?? null) : null
       set((state) => ({
         status: 'succeeded',
-        insights: result.insights ?? [],
-        lastInsight: result.lastInsight ?? null,
+        insights:
+          Array.isArray(result.insights) && (result.insights.length > 0 || !result.fallback)
+            ? result.insights
+            : state.insights,
+        lastInsight: result.lastInsight ?? state.lastInsight,
         totalCheckins: result.totalCheckins ?? state.totalCheckins,
         firstCheckinAt: result.firstCheckinAt ?? state.firstCheckinAt,
         weeklyDrain: result.weeklyDrain ?? state.weeklyDrain,
         weeklyBurnout: result.weeklyBurnout ?? state.weeklyBurnout,
+        periods: result.periods ?? state.periods,
         notice: fallbackMessage,
       }))
       if (fallbackMessage) {

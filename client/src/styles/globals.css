@@ -621,10 +621,10 @@ main>section {
 
 .battery-updated {
   margin: 0;
-  color: var(--text-muted);
+  color: #4a443d;
   font-family: 'Satoshi', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 500;
   white-space: nowrap;
 }
 
@@ -662,10 +662,19 @@ main>section {
 
 .battery-ring__fill {
   transition: stroke-dasharray 600ms var(--ease-out);
+  filter: drop-shadow(0 2px 6px rgba(47, 107, 78, 0.25));
 }
 
 .battery-ring__status {
   margin: 0;
+}
+
+.battery-ring__status .tag--green {
+  background: rgba(47, 107, 78, 0.15);
+  color: #23533b;
+  border: 1px solid rgba(47, 107, 78, 0.35);
+  font-weight: 700;
+  padding: 0.3rem 0.85rem;
 }
 
 .battery-ring__bolt-slot {
@@ -677,10 +686,10 @@ main>section {
   place-items: center;
   width: 30px;
   height: 30px;
-  border: 1px solid var(--border-muted);
+  border: 1px solid #2f6b4e;
   border-radius: 8px;
-  background: var(--bg-light);
-  color: var(--text);
+  background: #2f6b4e;
+  color: #fffdf8;
 }
 
 .battery-ring__bolt {
@@ -746,15 +755,21 @@ main>section {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.35rem 0.15rem 0;
-  border: 0;
-  border-radius: 8px;
+  padding: 0.45rem 0.25rem 0.4rem;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
   background: transparent;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.capsule-col--active {
+  background: rgba(47, 107, 78, 0.08);
+  border-color: rgba(47, 107, 78, 0.4);
 }
 
 .capsule-col:hover .capsule-fill,
 .capsule-col:focus-visible .capsule-fill {
-  filter: brightness(1.25);
+  filter: brightness(1.12);
 }
 
 .capsule-col:hover .capsule-label,
@@ -771,7 +786,9 @@ main>section {
   height: clamp(140px, 22vw, 200px);
   overflow: hidden;
   border-radius: 9999px;
-  background: var(--bg-dark);
+  background: #e6dfd4;
+  border: 1px solid #cfc4b8;
+  box-shadow: inset 0 2px 4px rgba(41, 39, 35, 0.08);
 }
 
 .capsule-fill {
@@ -779,27 +796,38 @@ main>section {
   width: 100%;
   min-height: 12px;
   border-radius: inherit;
-  background: var(--bg-light);
+  background: #b86642;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .capsule-fill--active {
-  background: var(--primary100);
+  background: linear-gradient(180deg, #3b7d5d 0%, #2b5e45 100%);
+  box-shadow: 0 0 0 1px rgba(43, 94, 69, 0.3);
 }
 
 .capsule-fill--empty {
   min-height: 0;
-  background: var(--bg-dark);
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 5px,
+    rgba(111, 104, 97, 0.12) 5px,
+    rgba(111, 104, 97, 0.12) 10px
+  );
 }
 
 .capsule-label {
-  color: var(--text-muted);
+  color: #4f4942;
   font-family: 'Satoshi', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 0.72rem;
-  font-weight: 400;
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 .capsule-label--active {
-  color: var(--text);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #2b5e45;
+  color: #fffdf8;
   font-weight: 700;
 }
 
@@ -813,8 +841,8 @@ main>section {
   min-width: max-content;
   padding: 0.5rem 0.65rem 0.65rem;
   border-radius: 8px;
-  background: var(--bg-dark);
-  color: var(--text);
+  background: #292723;
+  color: #fffdf8;
   text-align: center;
   opacity: 0;
   pointer-events: none;
@@ -829,13 +857,18 @@ main>section {
   left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: var(--bg-dark);
+  border-top-color: #292723;
 }
 
+.capsule-col--active .capsule-tip,
 .capsule-col:hover .capsule-tip,
 .capsule-col:focus-visible .capsule-tip {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+.capsule-col--active:last-child .capsule-tip {
+  transform: translate(0, 0);
 }
 
 /* Edge clamp: end-column tooltips pin inside the card instead of clipping past it. */

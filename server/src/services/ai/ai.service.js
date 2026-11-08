@@ -14,11 +14,20 @@ import * as repository from '../../modules/insights/insights.repository.js'
 
 export const FALLBACK_MESSAGE = 'Insights are temporarily unavailable.'
 
-function aiConfig() {
-  return {
-    provider: env.AI_PROVIDER,
-    model: env.CLOUDFLARE_AI_MODEL,
+function resolveProvider() {
+  const explicit = process.env.AI_PROVIDER
+  if (explicit === 'groq') return { provider: 'groq', model: env.GROQ_MODEL, run: groqRun }
+  if (explicit === 'openai') return { provider: 'openai', model: env.OPENAI_MODEL, run: openaiRun }
+  if (explicit === 'cloudflare') {
+    return { provider: 'cloudflare', model: env.CLOUDFLARE_AI_MODEL, run: cloudflareRun }
   }
+  if (process.env.GROQ_API_KEY || env.GROQ_API_KEY) {
+    return { provider: 'groq', model: env.GROQ_MODEL, run: groqRun }
+  }
+  if (process.env.OPENAI_API_KEY || env.OPENAI_API_KEY) {
+    return { provider: 'openai', model: env.OPENAI_MODEL, run: openaiRun }
+  }
+  return { provider: env.AI_PROVIDER, model: env.CLOUDFLARE_AI_MODEL, run: cloudflareRun }
 }
 
 function aggregatesFor(rows) {
@@ -46,17 +55,10 @@ function fallbackResult(lastInsight, errorCode) {
   return { insights: [], lastInsight, fallback: true, message: FALLBACK_MESSAGE, errorCode }
 }
 
-// deps.provider defaults to the configured provider; tests inject fakes with
-// the same async ({ system, user }) => string signature.
-function defaultProvider() {
-  if (env.AI_PROVIDER === 'groq') return groqRun
-  if (env.AI_PROVIDER === 'openai') return openaiRun
-  return cloudflareRun
-}
-
 export async function analyzeRecentCheckins(userId, deps = {}) {
-  const runProvider = deps.provider ?? defaultProvider()
-  const { provider, model } = aiConfig()
+  const resolved = resolveProvider()
+  const runProvider = deps.provider ?? resolved.run
+  const { provider, model } = resolved
 
   const rows = await listCheckins(userId, { limit: 100, offset: 0 })
   if (rows.length === 0) {

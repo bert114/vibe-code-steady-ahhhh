@@ -1,11 +1,18 @@
 // Cross-module read model: composes existing module services (never SQL,
 // never user-facing copy). One payload for the Dashboard summary screen.
 import { getLatestInsights } from '../../services/ai/ai.service.js'
+import { readThrough } from '../../services/cache/cache.service.js'
 import { analyzeUserPatterns } from '../../services/patterns/pattern.service.js'
 import { getCheckins } from '../checkins/checkins.service.js'
 import { countUnreadReminders, getReminders } from '../reminders/reminders.service.js'
 
-export async function getDashboardSummary(userId) {
+// Served from the per-user Redis cache when warm; invalidated by check-in,
+// insight-analysis, and reminder writes.
+export function getDashboardSummary(userId) {
+  return readThrough(userId, 'dashboard:summary', () => buildDashboardSummary(userId))
+}
+
+async function buildDashboardSummary(userId) {
   const [recentCheckins, insights, patterns, reminders, unreadReminders] = await Promise.all([
     getCheckins(userId, { limit: 5, offset: 0 }),
     getLatestInsights(userId),

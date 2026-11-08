@@ -158,6 +158,65 @@ describe.skipIf(!HAS_DB)('insights signals (db)', () => {
     }
   }, 30000)
 
+  it('returns week and month averages (mood, energy, drain) and sorted interactions', async () => {
+    await dbQuery('INSERT INTO users (clerk_id) VALUES ($1), ($2) ON CONFLICT DO NOTHING', [
+      USER_A,
+      USER_B,
+    ])
+    await dbQuery('DELETE FROM checkins WHERE user_id IN ($1, $2)', [USER_A, USER_B])
+    await dbQuery(
+      `INSERT INTO checkins (user_id, occurred_at, mood_score, energy_score, drain_score, emotions, context_tags, note)
+       VALUES ($1, now(), 5, 3, 1, '{}', '{work,calls}', ''),
+              ($1, now() - interval '2 days', 3, 1, 5, '{}', '{work}', ''),
+              ($1, now() - interval '15 days', 1, 5, 3, '{}', '{family}', '')`,
+      [USER_A],
+    )
+
+    try {
+      const overview = await request(authedApp(USER_A)).get('/api/insights')
+      expect(overview.status).toBe(200)
+      expect(overview.body.periods.week).toEqual({
+        windowDays: 7,
+        checkins: 2,
+        averageMood: 4,
+        averageEnergy: 2,
+        averageDrain: 3,
+        interactions: [
+          { tag: 'work', count: 2, averageDrain: 3 },
+          { tag: 'calls', count: 1, averageDrain: 1 },
+        ],
+        mostDrainingInteraction: { tag: 'work', count: 2, averageDrain: 3 },
+      })
+      expect(overview.body.periods.month).toEqual({
+        windowDays: 30,
+        checkins: 3,
+        averageMood: 3,
+        averageEnergy: 3,
+        averageDrain: 3,
+        interactions: [
+          { tag: 'work', count: 2, averageDrain: 3 },
+          { tag: 'calls', count: 1, averageDrain: 1 },
+          { tag: 'family', count: 1, averageDrain: 3 },
+        ],
+        mostDrainingInteraction: { tag: 'work', count: 2, averageDrain: 3 },
+      })
+
+      const fresh = await request(authedApp(USER_B)).get('/api/insights')
+      expect(fresh.status).toBe(200)
+      expect(fresh.body.periods.week).toEqual({
+        windowDays: 7,
+        checkins: 0,
+        averageMood: null,
+        averageEnergy: null,
+        averageDrain: null,
+        interactions: [],
+        mostDrainingInteraction: null,
+      })
+    } finally {
+      await dbQuery('DELETE FROM checkins WHERE user_id IN ($1, $2)', [USER_A, USER_B])
+    }
+  }, 30000)
+
   it('returns the weekly burnout level with evidence and excludes boundary signals', async () => {
     await dbQuery('INSERT INTO users (clerk_id) VALUES ($1), ($2) ON CONFLICT DO NOTHING', [
       USER_A,
