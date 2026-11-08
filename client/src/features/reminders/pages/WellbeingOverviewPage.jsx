@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import CheckInGuide from "../components/CheckInGuide.jsx";
+import DailyCheckInModal from "../components/DailyCheckInModal.jsx";
 import { latestCheckin } from "../components/energyBattery.helpers.js";
 import EnergyBattery from "../components/EnergyBattery.jsx";
 import EnergyOverview from "../components/EnergyOverview.jsx";
@@ -269,6 +271,8 @@ export default function WellbeingOverviewPage() {
         <p>Looking at your recent reflections…</p>
       ) : summary ? (
         <>
+          <DailyCheckInModal checkins={summary?.recentCheckins ?? []} />
+          <CheckInGuide checkins={summary?.recentCheckins ?? []} />
           {renderEnergyOverview()}
           {renderInsight()}
           {renderSupportGrid()}

@@ -11,6 +11,7 @@ export default function ReflectionPage() {
     status,
     saveDraft,
     loadHistory,
+    setDraft,
     resetDraft,
     removeCheckin,
   } = useCheckinsStore();
@@ -18,6 +19,10 @@ export default function ReflectionPage() {
 
   useEffect(() => {
     resetDraft();
+    const initialMood = Number(new URLSearchParams(location.search).get("mood"));
+    if (initialMood === 1 || initialMood === 3 || initialMood === 5) {
+      setDraft({ moodScore: initialMood });
+    }
     loadHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -170,4 +170,13 @@ describe('Daily reflection page', () => {
     expect(screen.getByRole('radio', { name: 'A lot' })).toBeInTheDocument()
     expect(screen.getByRole('radio', { name: 'Not at all' })).toBeInTheDocument()
   })
+
+  it('pre-selects the mood choice when opened from the check-in guide query param', () => {
+    render(
+      <MemoryRouter initialEntries={['/check-in?mood=1']}>
+        <ReflectionPage />
+      </MemoryRouter>,
+    )
+    expect(screen.getByRole('radio', { name: 'Low' })).toBeChecked()
+  })
 })

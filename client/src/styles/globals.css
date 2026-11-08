@@ -4872,3 +4872,392 @@ dialog[data-impeccable-live-open] {
 .reflection-save-dialog[data-impeccable-live-open] {
   box-shadow: 0 24px 70px rgba(46, 35, 25, 0.26), 0 0 0 100vmax rgba(38, 31, 25, 0.48);
 }
+
+/* Optional daily check-in guide on the dashboard when no check-in is recorded today */
+.checkin-guide {
+  display: grid;
+  gap: 1.1rem;
+  margin-bottom: 1.25rem;
+  padding: 1.35rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-light);
+}
+
+.checkin-guide__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.checkin-guide__copy {
+  min-width: 0;
+}
+
+.checkin-guide__eyebrow {
+  margin: 0 0 0.45rem;
+  color: var(--text-muted);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.checkin-guide h2 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+}
+
+.checkin-guide__lead {
+  margin: 0;
+  max-width: 54ch;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.checkin-guide__skip {
+  flex: none;
+  min-height: 2.35rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--border-muted);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: color 160ms var(--ease-out), border-color 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+
+.checkin-guide__skip:hover {
+  border-color: var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.checkin-guide__choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.checkin-guide__choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 3.35rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border-muted);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+.checkin-guide__choice:hover {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 10%, var(--bg-light));
+  transform: translateY(-1px);
+}
+
+.checkin-guide__choice-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--primary) 14%, transparent);
+  color: var(--primary);
+  flex: none;
+}
+
+.checkin-guide__face {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+@media (max-width: 560px) {
+  .checkin-guide__head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .checkin-guide__choices {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .checkin-guide__choice {
+    justify-content: flex-start;
+  }
+}
+
+/* Daily Check-In Prompt Modal */
+.daily-checkin-modal {
+  width: min(calc(100vw - 2rem), 35rem);
+  max-width: none;
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--border-muted);
+  border-radius: 18px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+  animation: modal-fade-in 220ms var(--ease-out) both;
+}
+
+.daily-checkin-modal::backdrop {
+  background: rgba(4, 8, 14, 0.75);
+  backdrop-filter: blur(5px);
+}
+
+.daily-checkin-modal[data-impeccable-live-open] {
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45), 0 0 0 100vmax rgba(4, 8, 14, 0.75);
+}
+
+.daily-checkin-modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  padding: clamp(1.5rem, 4vw, 2.35rem);
+}
+
+.daily-checkin-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.daily-checkin-modal__lead-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.daily-checkin-modal__host-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+  border: 1px solid color-mix(in oklch, var(--primary) 28%, transparent);
+  color: var(--primary);
+  font-size: 0.74rem;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+}
+
+.daily-checkin-modal__host-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.daily-checkin-modal__header h2 {
+  margin: 0;
+  font-family: 'Steady Sans', 'Satoshi', system-ui, sans-serif;
+  font-size: clamp(1.4rem, 3.6vw, 1.8rem);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.daily-checkin-modal__close {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: none;
+  place-items: center;
+  border: 1px solid var(--border-muted);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 160ms var(--ease-out);
+}
+
+.daily-checkin-modal__close:hover {
+  background: var(--bg-light);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.daily-checkin-modal__close svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.daily-checkin-modal__body-note {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.daily-checkin-modal__desc {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.daily-checkin-modal__safety-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.daily-checkin-modal__lock-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  flex: none;
+}
+
+.daily-checkin-modal__choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.daily-checkin-modal__choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 5.75rem;
+  padding: 0.85rem 0.6rem;
+  border: 1px solid var(--border-muted);
+  border-radius: 12px;
+  background: var(--bg-light);
+  color: var(--text);
+  text-decoration: none;
+  text-align: center;
+  transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+.daily-checkin-modal__choice:hover {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 10%, var(--bg-light));
+  transform: translateY(-2px);
+}
+
+.daily-checkin-modal__choice-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--primary) 14%, transparent);
+  color: var(--primary);
+  flex: none;
+}
+
+.daily-checkin-modal__face {
+  width: 1.55rem;
+  height: 1.55rem;
+}
+
+.daily-checkin-modal__choice-label {
+  font-size: 0.88rem;
+  font-weight: 650;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.daily-checkin-modal__choice-nuance {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.daily-checkin-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-muted);
+}
+
+.daily-checkin-modal__skip {
+  padding: 0.65rem 1.1rem;
+  border: 1px solid var(--border-muted);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 160ms var(--ease-out);
+}
+
+.daily-checkin-modal__skip:hover {
+  border-color: var(--border);
+  background: var(--bg-light);
+  color: var(--text);
+}
+
+.daily-checkin-modal__start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.35rem;
+  border-radius: 8px;
+  background: var(--primary);
+  color: var(--bg-dark);
+  font-size: 0.88rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition: all 160ms var(--ease-out);
+}
+
+.daily-checkin-modal__start:hover {
+  background: color-mix(in oklch, var(--primary) 85%, white);
+  transform: translateY(-1px);
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 560px) {
+  .daily-checkin-modal {
+    width: calc(100vw - 1rem);
+  }
+
+  .daily-checkin-modal__actions {
+    flex-direction: column-reverse;
+  }
+
+  .daily-checkin-modal__actions button,
+  .daily-checkin-modal__actions a {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+

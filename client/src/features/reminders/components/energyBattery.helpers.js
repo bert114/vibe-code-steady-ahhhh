@@ -5,6 +5,12 @@ export function latestCheckin(checkins) {
   return [...checkins].sort((a, b) => new Date(b.occurredAt) - new Date(a.occurredAt))[0]
 }
 
+export function hasCheckedInToday(checkins, now = new Date()) {
+  const latest = latestCheckin(checkins)
+  if (!latest?.occurredAt) return false
+  return sameDay(new Date(latest.occurredAt), new Date(now))
+}
+
 export function statusFor(energy) {
   if (energy <= 2) return { label: 'Low', className: 'tag tag--red', stroke: '#b85c3c' }
   if (energy === 3) return { label: 'Steady', className: 'tag tag--yellow', stroke: '#9a712b' }

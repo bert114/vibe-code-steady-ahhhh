@@ -106,7 +106,7 @@ export default function QuickReflectionDialog({ open, onClose }) {
         <header className="quick-checkin__header">
           <div>
             <h2 id="quick-checkin-title">Quick reflection</h2>
-            <p className="quick-checkin__intro">Rate your mood, energy, and how drained you feel.</p>
+            <p className="quick-checkin__intro">Take a gentle moment to notice how you&apos;re feeling right now.</p>
           </div>
           <button type="button" className="quick-checkin__close" aria-label="Close quick reflection" onClick={closeDialog}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>

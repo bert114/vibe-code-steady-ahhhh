@@ -11,6 +11,7 @@ afterEach(() => {
   cleanup()
   useToastStore.getState().clear()
   vi.unstubAllGlobals()
+  window.sessionStorage?.clear?.()
 })
 
 const summaryPayload = {
@@ -136,6 +137,83 @@ describe('wellbeing overview page', () => {
     const alert = await screen.findByRole('alert')
     expect(alert).toHaveTextContent(/could not reach the server/i)
     expect(alert.closest('.toast-stack')).not.toBeNull()
+  })
+
+  it('shows a simple optional check-in guide when the user has not checked in today and hides it on skip', async () => {
+    renderPage(() => Promise.resolve(jsonResponse(summaryPayload)))
+
+    expect(
+      await screen.findByRole('heading', { name: 'How are you feeling today?' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Optional check-in guide/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Low' })).toHaveAttribute('href', '/check-in?mood=1')
+    expect(screen.getByRole('link', { name: 'Okay' })).toHaveAttribute('href', '/check-in?mood=3')
+    expect(screen.getByRole('link', { name: 'Good' })).toHaveAttribute('href', '/check-in?mood=5')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Skip for now' }))
+    expect(
+      screen.queryByRole('heading', { name: 'How are you feeling today?' }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('hides the check-in guide when the user has already checked in today', async () => {
+    const todayPayload = {
+      ...summaryPayload,
+      recentCheckins: [
+        {
+          id: 'c-today',
+          occurredAt: new Date().toISOString(),
+          moodScore: 4,
+          energyScore: 4,
+          drainScore: 2,
+        },
+      ],
+    }
+    renderPage(() => Promise.resolve(jsonResponse(todayPayload)))
+
+    expect(await screen.findByRole('heading', { name: 'Energy Overview' })).toBeInTheDocument()
+    expect(
+      screen.queryByRole('heading', { name: 'How are you feeling today?' }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('pops up a hospitable host modal when the user has not checked in today and closes on dismiss', async () => {
+    renderPage(() => Promise.resolve(jsonResponse(summaryPayload)))
+
+    const modal = await screen.findByRole('dialog', { name: /Welcome in/i })
+    expect(modal).toBeInTheDocument()
+    expect(screen.getByText(/A safe space for you/i)).toBeInTheDocument()
+    expect(screen.getByText(/Private to you · Zero pressure/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Close welcome guide' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Start reflection with Low mood/i })).toHaveAttribute(
+      'href',
+      '/check-in?mood=1',
+    )
+    expect(
+      screen.getByRole('link', { name: /Guide me through a reflection/i }),
+    ).toHaveAttribute('href', '/check-in')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Skip daily check-in for now' }))
+    expect(screen.queryByRole('dialog', { name: /Welcome in/i })).not.toBeInTheDocument()
+  })
+
+  it('does not pop up the modal when the user has already checked in today', async () => {
+    const todayPayload = {
+      ...summaryPayload,
+      recentCheckins: [
+        {
+          id: 'c-today',
+          occurredAt: new Date().toISOString(),
+          moodScore: 4,
+          energyScore: 4,
+          drainScore: 2,
+        },
+      ],
+    }
+    renderPage(() => Promise.resolve(jsonResponse(todayPayload)))
+
+    expect(await screen.findByRole('heading', { name: 'Energy Overview' })).toBeInTheDocument()
+    expect(screen.queryByRole('dialog', { name: /Welcome in/i })).not.toBeInTheDocument()
   })
 })
 
